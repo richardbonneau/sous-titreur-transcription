@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,useCallback } from "react";
 import { Player, ControlBar } from "video-react";
 import Waveform from "./Waveform";
 import { Spinner } from "@blueprintjs/core";
@@ -9,8 +9,13 @@ const Container = styled.div`
 `
 
 function VideoPlayer() {
-  const player = useRef();
+  const [videoPlayer,setVideoPlayer] = useState()
   const [videoPath, setVideoPath] = useState(null);
+
+  const player = useCallback((node)=>{
+    if(node)setVideoPlayer(node)
+    
+  },[])
 
   useEffect(()=>{
     console.log(JSON.stringify({"ident": "604a7d13cb7cd089704016_5494"}))
@@ -33,6 +38,8 @@ function VideoPlayer() {
     let duration = playerState.player.duration;
     player.current.seek((time*100) * duration / 100);
   };
+
+  console.log("player.current",player)
   return (
     <Container>
       {!videoPath ? (
@@ -42,7 +49,8 @@ function VideoPlayer() {
           <Player ref={player} playsInline src={videoPath}>
             <ControlBar autoHide={false} />
           </Player>
-          <Waveform videoURL={videoPath} seek={seek} />
+
+         {videoPlayer && <Waveform videoURL={videoPath} seek={seek} videoRef={videoPlayer} />} 
         </>
       )}
     </Container>

@@ -1,28 +1,27 @@
-import React, { useRef, useEffect, useState,  } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
-function Waveform({videoURL,seek}) {
-    const waveformRef = useRef();
-    const [seekTime,setSeekTime] = useState(0)
-    
+function Waveform({ videoURL, seek, videoRef }) {
+  const waveformRef = useRef();
+  const [seekTime, setSeekTime] = useState(0);
 
-    useEffect(()=>{
-        if(waveformRef.current){
-            const wavesurfer = WaveSurfer.create({
-                container: waveformRef.current,
-                  waveColor: 'red',
-                    progressColor: 'blue',
-            })
-            wavesurfer.load(videoURL)
-            wavesurfer.on('seek', function (time) {
-                seek(time)
-            });
-        }
-    },[]);
+  useEffect(() => {
+    console.log("videoRef.current", videoRef);
+    if (waveformRef.current) {
+      const wavesurfer = WaveSurfer.create({
+        container: waveformRef.current,
+        waveColor: "red",
+        progressColor: "blue",
+        backend: "MediaElement",
+      });
+      wavesurfer.load(videoRef);
+      wavesurfer.on("seek", function (time) {
+        seek(time);
+      });
+    }
+  }, []);
   return (
     <>
-        <div ref={waveformRef}>
-
-        </div>
+      <div ref={waveformRef}></div>
     </>
   );
 }
