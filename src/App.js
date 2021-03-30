@@ -12,6 +12,7 @@ const Container = styled.div`
   /* padding:1em; */
   /* display: flex;
     flex-direction: column; */
+
   @media (min-width: 1040px) {
   }
 `;

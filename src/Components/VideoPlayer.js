@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Player, ControlBar } from "video-react";
+import {
+  Player,
+  ControlBar,
+  ProgressControl,
+  DurationDisplay,
+  CurrentTimeDisplay,
+  TimeDivider,
+} from "video-react";
 import Waveform from "./Waveform";
 import { Spinner } from "@blueprintjs/core";
 import styled from "styled-components";
@@ -7,8 +14,7 @@ import styled from "styled-components";
 const Container = styled.div`
   max-width: 800px;
   padding: 0 1em;
-  width: 90%;
-  flex: 1;
+
   width: 100%;
   @media (min-width: 1040px) {
     /* flex: 1;
@@ -16,8 +22,17 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer() {
+function VideoPlayer({ isPlaying, playbackSpeed }) {
   const player = useRef();
+
+  useEffect(() => {
+    if (isPlaying) player.current.play();
+    else player.current.pause();
+  }, [isPlaying]);
+
+  useEffect(() => {
+    player.current.playbackRate = playbackSpeed;
+  }, [playbackSpeed]);
 
   const seek = (time) => {
     let playerState = player.current.getState();
@@ -32,7 +47,12 @@ function VideoPlayer() {
         playsInline
         src={"https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"}
       >
-        <ControlBar autoHide={false} />
+        <ControlBar disableDefaultControls={true}>
+          <CurrentTimeDisplay />
+          <TimeDivider />
+          <DurationDisplay />
+          <ProgressControl />
+        </ControlBar>
       </Player>
     </Container>
   );

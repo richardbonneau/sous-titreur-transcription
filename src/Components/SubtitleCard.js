@@ -5,6 +5,7 @@ import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
 import styled from "styled-components";
 
 const Container = styled.div`
+  margin-bottom: 0.2em;
   .bp3-card {
     display: flex;
   }
@@ -42,7 +43,7 @@ const InputContainer = styled.div`
 function SubtitleCard({ subtitleNum }) {
   return (
     <Container>
-      <Card elevation={Elevation.TWO}>
+      <Card elevation={Elevation.ONE}>
         <TimeContainer>
           <SubtitleNumber>{subtitleNum}</SubtitleNumber>
           <div>
