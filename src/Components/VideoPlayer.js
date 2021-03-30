@@ -22,8 +22,12 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer({ isPlaying, playbackSpeed }) {
+function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   const player = useRef();
+
+  useEffect(() => {
+    player.current.subscribeToStateChange(playerStateChanges);
+  }, []);
 
   useEffect(() => {
     if (isPlaying) player.current.play();

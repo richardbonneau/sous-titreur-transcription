@@ -19,9 +19,18 @@ function VideoSection() {
   const [isPlaying, setIsplaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
+  const playerStateChanges = (state) => {
+    console.log("changes", state);
+    if (state.ended) setIsplaying(false);
+  };
+
   return (
     <Container>
-      <VideoPlayer isPlaying={isPlaying} playbackSpeed={playbackSpeed} />
+      <VideoPlayer
+        isPlaying={isPlaying}
+        playbackSpeed={playbackSpeed}
+        playerStateChanges={playerStateChanges}
+      />
 
       <VideoController>
         <div>
