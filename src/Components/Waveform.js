@@ -1,29 +1,95 @@
-import React, { useRef, useEffect, useState } from "react";
-import WaveSurfer from "wavesurfer.js";
-function Waveform({ videoURL, seek, videoRef }) {
-  const waveformRef = useRef();
-  const [seekTime, setSeekTime] = useState(0);
+import React, { useRef, useEffect, useState,useCallback } from "react";
+// import WaveSurfer from "wavesurfer.js"
+import {WaveSurfer,WaveForm} from "wavesurfer-react";
 
-  useEffect(() => {
-    console.log("videoRef.current", videoRef);
-    if (waveformRef.current) {
-      const wavesurfer = WaveSurfer.create({
-        container: waveformRef.current,
-        waveColor: "red",
-        progressColor: "blue",
-        backend: "MediaElement",
-      });
-      wavesurfer.load(videoRef);
-      wavesurfer.on("seek", function (time) {
-        seek(time);
-      });
-    }
-  }, []);
+
+function Waveform({ videoURL, seek, videoRef }) {
+ const wavesurferRef = useRef();
+
+  const handleWSMount = useCallback(
+
+
+    waveSurfer => {
+      wavesurferRef.current = waveSurfer;
+      console.log("wavesurferRef.current",wavesurferRef.current)
+      if (wavesurferRef.current) {
+        console.log("videoURL",videoURL)
+ 
+        wavesurferRef.current.load(videoURL);
+
+        wavesurferRef.current.on("ready", () => {
+          console.log("WaveSurfer is ready");
+        });
+
+        wavesurferRef.current.on("loading", data => {
+          console.log("loading --> ", data);
+        });
+
+        if (window) {
+          window.surferidze = wavesurferRef.current;
+        }
+      }
+    },
+    []
+  );
+
+
+
   return (
     <>
-      <div ref={waveformRef}></div>
+      <WaveSurfer onMount={handleWSMount}>
+      <WaveForm 
+      id="waveform"
+      xhr = {{ mode: 'no-cors'}}
+      backend='MediaElement'
+      >
+   
+        </WaveForm>
+        </WaveSurfer>
     </>
   );
+
+
+
+//   const waveformRef = useRef();
+//   const [seekTime, setSeekTime] = useState(0);
+
+//   useEffect(() => {
+//     console.log("videoRef.current", videoRef);
+//     if (waveformRef.current) {
+//       const wavesurfer = WaveSurfer.create({
+//         container: waveformRef.current,
+//         waveColor: "red",
+//         progressColor: "blue",
+//         backend: "MediaElement",
+//         xhr: {
+//           cache: "default",
+//           mode: "cors",
+//           method: "GET",
+//           credentials: "include",
+//           headers: [
+//             { key: "cache-control", value: "no-cache" },
+//             { key: "pragma", value: "no-cache" }
+//           ]
+//         }
+//       });
+//       // console.log("videoRef",videoRef.getChildren)
+//       wavesurfer.load(videoURL);
+//       wavesurfer.on("seek", function (time) {
+//         seek(time);
+//       });
+//       wavesurfer.on("ready", function (time) {
+//         console.log("miaow")
+//       });
+//     }
+//   }, []);
+
+  // return (
+  //   <>
+  //     <div ref={waveformRef} />
+  //   </>
+  // );
+ 
 }
 
 export default Waveform;
