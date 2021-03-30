@@ -4,54 +4,69 @@ import { WaveSurfer, WaveForm } from "wavesurfer-react";
 import styled from "styled-components";
 
 const Container = styled.div`
-
   height: 100px;
   width: 100%;
-  background-color: green;
-
 `;
 
 function Waveform({ videoURL, seek, videoRef }) {
-  //  const wavesurferRef = useRef();
+  const [audio, setAudio] = useState();
 
-  //   const handleWSMount = useCallback(
+  const wavesurferRef = useRef();
 
-  //     waveSurfer => {
-  //       wavesurferRef.current = waveSurfer;
-  //       console.log("wavesurferRef.current",wavesurferRef.current)
-  //       if (wavesurferRef.current) {
-  //         console.log("videoURL",videoURL)
+  const handleWSMount = useCallback(
+    (waveSurfer) => {
+      wavesurferRef.current = waveSurfer;
+      console.log("wavesurferRef.current", wavesurferRef.current);
+      if (wavesurferRef.current) {
+        console.log("audio", audio);
 
-  //         wavesurferRef.current.load(videoURL);
+        // const myAudio = new Audio(audio);
+        // myAudio.crossOrigin = "anonymous";
+        // console.log("myAudio", myAudio);
 
-  //         wavesurferRef.current.on("ready", () => {
-  //           console.log("WaveSurfer is ready");
-  //         });
+        wavesurferRef.current.load(audio);
 
-  //         wavesurferRef.current.on("loading", data => {
-  //           console.log("loading --> ", data);
-  //         });
+        wavesurferRef.current.on("ready", () => {
+          console.log("WaveSurfer is ready");
+        });
 
-  //         if (window) {
-  //           window.surferidze = wavesurferRef.current;
-  //         }
-  //       }
-  //     },
-  //     []
-  //   );
+        wavesurferRef.current.on("loading", (data) => {
+          console.log("loading --> ", data);
+        });
+
+        if (window) {
+          window.surferidze = wavesurferRef.current;
+        }
+      }
+    },
+    [audio]
+  );
+
+  useEffect(() => {
+    // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    console.log(JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }));
+    fetch("https://api.soustitreur.com/customer/get-srt", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
+    })
+      .then((res) => res.json())
+      .then((body) => {
+        console.log("body.data.audiofile", body.data.audiofile, body);
+        setAudio(body.data.audiofile);
+      });
+  }, []);
 
   return (
     <Container>
-      {/* <WaveSurfer onMount={handleWSMount}>
-      <WaveForm 
-      id="waveform"
-      xhr = {{ mode: 'no-cors'}}
-      backend='MediaElement'
-      >
-   
-        </WaveForm>
+      {audio && (
+        <WaveSurfer onMount={handleWSMount}>
+          <WaveForm id="waveform"></WaveForm>
         </WaveSurfer>
-     */}
+      )}
     </Container>
   );
 

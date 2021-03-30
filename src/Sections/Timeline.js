@@ -8,7 +8,7 @@ const Container = styled.div`
   /* position: fixed; */
   width: 100%;
   /* margin: 0 0.5em; */
-  display: none;
+  /* display: none; */
   @media (min-width: 1040px) {
     display: block;
   }

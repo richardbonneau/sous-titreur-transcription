@@ -33,23 +33,23 @@ const TopSections = styled.div`
 `;
 
 function App() {
-  useEffect(() => {
-    // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
-    console.log(JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }));
-    fetch("https://api.soustitreur.com/customer/get-srt", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "post",
-      body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
-    })
-      .then((res) => res.json())
-      .then((body) => {
-        console.log("body", body);
-        // setVideoPath(body.data.videolink);
-      });
-  }, []);
+  // useEffect(() => {
+  //   // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+  //   console.log(JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }));
+  //   fetch("https://api.soustitreur.com/customer/get-srt", {
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     method: "post",
+  //     body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((body) => {
+  //       console.log("body", body);
+  //       // setVideoPath(body.data.videolink);
+  //     });
+  // }, []);
 
   return (
     <Container>
