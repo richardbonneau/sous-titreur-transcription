@@ -4,6 +4,7 @@ import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
 import { Button, Label, Spinner } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
+import { isVideoPlaying,seeking } from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -18,13 +19,15 @@ const VideoController = styled.div`
 `;
 
 function VideoSection() {
-  const [isPlaying, setIsplaying] = useState(false);
+  const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const videoUrl = useSelector((state) => state.data.videoUrl);
+  const isPlaying = useSelector((state) => state.media.isPlaying);
 
   const playerStateChanges = (state) => {
-    // console.log("changes", state);
-    if (state.ended) setIsplaying(false);
+    if (state.paused) dispatch(isVideoPlaying(false));
+    else if (!state.paused) dispatch(isVideoPlaying(true));
+    
+    dispatch(seeking(state.seekingTime))
   };
 
   return (
@@ -41,7 +44,7 @@ function VideoSection() {
           <Button
             large={true}
             icon={isPlaying ? "pause" : "play"}
-            onClick={() => setIsplaying(!isPlaying)}
+            onClick={() => dispatch(isVideoPlaying(!isPlaying))}
           />
           <Button icon="step-forward" />
         </div>

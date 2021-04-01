@@ -17,7 +17,6 @@ const Container = styled.div`
 
 function SubtitlesEditor() {
   const subtitles = useSelector((state) => state.data.subtitles);
-  console.log("subtitles", subtitles);
   return (
     <Container>
       {subtitles.map((subData, i) => (

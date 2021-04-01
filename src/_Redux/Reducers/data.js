@@ -17,7 +17,6 @@ export default (
         isFetching: true,
       };
     case DATA_SUCCESS:
-      console.log("action.data", action.data);
       return {
         ...state,
         isFetching: false,

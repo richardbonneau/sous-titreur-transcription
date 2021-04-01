@@ -23,10 +23,12 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
+function VideoPlayer({ playbackSpeed, playerStateChanges }) {
   const player = useRef();
   const videoUrl = useSelector((state) => state.data.videoUrl);
   const subtitles = useSelector((state) => state.data.subtitles);
+  const isPlaying = useSelector((state) => state.media.isPlaying);
+  const seekingTime = useSelector((state) => state.media.seekingTime);
 
   useEffect(() => {
     player.current.subscribeToStateChange(playerStateChanges);
@@ -35,11 +37,11 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   useEffect(() => {
     if (player.current) {
       let videoElement = player.current.video.video;
-      console.log("videoElement", videoElement.children);
+      // console.log("videoElement", videoElement.children);
       var i = 0;
       for (let track of videoElement.textTracks) {
-       console.log(track)
-       track.mode = "disabled"
+        //  console.log(track)
+        track.mode = "disabled";
         // if(track.language !== targetLanguage){
         // videoElement.removeChild(videoElement.children[i]);
         // }
@@ -48,7 +50,6 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
       const track = videoElement.addTextTrack("captions");
       track.mode = "showing";
       subtitles.forEach((sub) => {
-        console.log("sub", sub);
         const cueEn = new VTTCue(sub.start, sub.end, sub.lines.join("\n"));
         track.addCue(cueEn);
       });
@@ -61,24 +62,17 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   }, [isPlaying]);
 
   useEffect(() => {
+    if (seekingTime !== 0) player.current.seek(seekingTime);
+  }, [seekingTime]);
+
+  useEffect(() => {
     player.current.playbackRate = playbackSpeed;
   }, [playbackSpeed]);
-
-  const seek = (time) => {
-    let playerState = player.current.getState();
-    let duration = playerState.player.duration;
-    player.current.seek((time * 100 * duration) / 100);
-  };
 
   return (
     <Container>
       <Player ref={player} playsInline src={videoUrl}>
-        <ControlBar disableDefaultControls={true}>
-          <CurrentTimeDisplay />
-          <TimeDivider />
-          <DurationDisplay />
-          <ProgressControl />
-        </ControlBar>
+        <ControlBar></ControlBar>
       </Player>
     </Container>
   );

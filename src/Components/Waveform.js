@@ -3,6 +3,8 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { WaveSurfer, WaveForm } from "wavesurfer-react";
 import styled from "styled-components";
+
+import {seeking} from "../_Redux/Actions"
 import { Spinner } from "@blueprintjs/core";
 
 const Container = styled.div`
@@ -11,27 +13,33 @@ const Container = styled.div`
 `;
 
 function Waveform({ videoURL, seek, videoRef }) {
+  const dispatch = useDispatch()
   const [waveformReady, setWaveformReady] = useState(false);
-
+  const isPlaying = useSelector((state) => state.media.isPlaying);
   const audio = useSelector((state) => state.data.audioUrl);
+  const seekingTime = useSelector((state) => state.media.seekingTime);
+  
   const wavesurferRef = useRef();
 
   const handleWSMount = useCallback(
     (waveSurfer) => {
       wavesurferRef.current = waveSurfer;
-      console.log("wavesurferRef.current", wavesurferRef.current);
       if (wavesurferRef.current) {
-        console.log("audio", audio);
-
         wavesurferRef.current.load(audio);
 
         wavesurferRef.current.on("ready", () => {
           console.log("WaveSurfer is ready");
           setWaveformReady(true);
+          wavesurferRef.current.setMute(true);
         });
 
         wavesurferRef.current.on("loading", (data) => {
-          console.log("loading --> ", data);
+          // console.log("loading --> ", data);
+        });
+
+        wavesurferRef.current.on("seek", (time) => { 
+          let duration = wavesurferRef.current.getDuration();
+          dispatch(seeking((time * 100 * duration) / 100))
         });
 
         if (window) {
@@ -42,12 +50,36 @@ function Waveform({ videoURL, seek, videoRef }) {
     [audio]
   );
 
+  useEffect(
+    function playPause() {
+      if (wavesurferRef.current) {
+        if (isPlaying) wavesurferRef.current.play();
+        else wavesurferRef.current.pause();
+      }
+    },
+    [isPlaying]
+  );
+
+  useEffect(function seekTo() {
+    if(wavesurferRef.current){
+      if (seekingTime !== 0) {
+        wavesurferRef.current.pause();
+        let duration = wavesurferRef.current.getDuration();
+        wavesurferRef.current.seekTo(seekingTime / duration)
+        
+      } else if(seekingTime === 0 && isPlaying){
+        wavesurferRef.current.play();
+      }
+    }
+
+  },[seekingTime]);
+
   return (
     <Container>
       {audio && (
         <WaveSurfer onMount={handleWSMount}>
           {!waveformReady && <Spinner />}
-          <WaveForm id="waveform" waveColor="#000" progressColor="#f3ca20"></WaveForm>
+          <WaveForm id="waveform" waveColor="#000" progressColor="#f3ca20" autoCenter={true}></WaveForm>
         </WaveSurfer>
       )}
     </Container>
