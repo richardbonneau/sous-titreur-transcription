@@ -38,6 +38,7 @@ function Waveform({ videoURL, seek, videoRef }) {
         });
 
         wavesurferRef.current.on("seek", (time) => { 
+          if(time === 0) time = 0.0001
           let duration = wavesurferRef.current.getDuration();
           dispatch(seeking((time * 100 * duration) / 100))
         });
