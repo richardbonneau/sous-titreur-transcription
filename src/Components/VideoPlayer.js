@@ -26,10 +26,25 @@ const Container = styled.div`
 function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   const player = useRef();
   const videoUrl = useSelector((state) => state.data.videoUrl);
+  const subtitles = useSelector((state) => state.data.subtitles);
 
   useEffect(() => {
     player.current.subscribeToStateChange(playerStateChanges);
   }, []);
+
+  useEffect(() => {
+    if(player.current){
+      let videoElement = player.current.video.video;
+      const track = videoElement.addTextTrack("captions");
+      track.mode = "showing";
+      subtitles.forEach(sub=>{
+        console.log("sub",sub)
+        const cueEn = new VTTCue(sub.start, sub.end, sub.lines.join("\n"));
+        track.addCue(cueEn);
+      })
+
+    }
+  }, [subtitles]);
 
   useEffect(() => {
     if (isPlaying) player.current.play();
@@ -45,6 +60,7 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
     let duration = playerState.player.duration;
     player.current.seek((time * 100 * duration) / 100);
   };
+
 
   return (
     <Container>

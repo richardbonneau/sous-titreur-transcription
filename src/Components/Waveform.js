@@ -47,7 +47,7 @@ function Waveform({ videoURL, seek, videoRef }) {
       {audio && (
         <WaveSurfer onMount={handleWSMount}>
           {!waveformReady && <Spinner />}
-          <WaveForm id="waveform"></WaveForm>
+          <WaveForm id="waveform" waveColor="#000" progressColor="#f3ca20"></WaveForm>
         </WaveSurfer>
       )}
     </Container>

@@ -6,6 +6,7 @@ export default (
     audioUrl: null,
     videoUrl: null,
     subtitles: [],
+    vttFile:null
   },
   action
 ) => {
@@ -26,10 +27,7 @@ export default (
       };
     case MODIFY_SINGLE_SUBTITLE:
       let newSubtitles = [...state.subtitles]
-      
-
       newSubtitles[action.subIndex] = {...newSubtitles[action.subIndex], lines:action.newLines}
-      console.log("newSubtitles",newSubtitles)
       return { ...state, subtitles: newSubtitles  };
 
     // case DATA_FAILURE:
@@ -41,7 +39,10 @@ export default (
     //     errorObj: action.error,
     //   };
 
+
+
     default:
       return state;
   }
 };
+
