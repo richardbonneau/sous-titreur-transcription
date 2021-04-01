@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { requestData, receiveData } from "./_Redux/Actions/data";
 import logo from "./logo.svg";
 import "./App.css";
 import styled from "styled-components";
@@ -33,23 +35,25 @@ const TopSections = styled.div`
 `;
 
 function App() {
-  // useEffect(() => {
-  //   // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
-  //   console.log(JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }));
-  //   fetch("https://api.soustitreur.com/customer/get-srt", {
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     method: "post",
-  //     body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((body) => {
-  //       console.log("body", body);
-  //       // setVideoPath(body.data.videolink);
-  //     });
-  // }, []);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    dispatch(requestData());
+    fetch("https://api.soustitreur.com/customer/get-srt", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
+    })
+      .then((res) => res.json())
+      .then((body) => {
+        console.log("body", body);
+        dispatch(receiveData(body.data));
+        // setVideoPath(body.data.videolink);
+      });
+  }, []);
 
   return (
     <Container>

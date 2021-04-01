@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 
 import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
-import { Button, Label } from "@blueprintjs/core";
+import { Button, Label, Spinner } from "@blueprintjs/core";
+import { useSelector, useDispatch } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const Container = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
+  flex: 1;
 `;
 const VideoController = styled.div`
   margin-top: 2em;
@@ -18,6 +20,7 @@ const VideoController = styled.div`
 function VideoSection() {
   const [isPlaying, setIsplaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const videoUrl = useSelector((state) => state.data.videoUrl);
 
   const playerStateChanges = (state) => {
     // console.log("changes", state);

@@ -7,6 +7,7 @@ import {
   CurrentTimeDisplay,
   TimeDivider,
 } from "video-react";
+import { useSelector, useDispatch } from "react-redux";
 import Waveform from "./Waveform";
 import { Spinner } from "@blueprintjs/core";
 import styled from "styled-components";
@@ -24,6 +25,7 @@ const Container = styled.div`
 
 function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   const player = useRef();
+  const videoUrl = useSelector((state) => state.data.videoUrl);
 
   useEffect(() => {
     player.current.subscribeToStateChange(playerStateChanges);
@@ -46,11 +48,7 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
 
   return (
     <Container>
-      <Player
-        ref={player}
-        playsInline
-        src={"https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"}
-      >
+      <Player ref={player} playsInline src={videoUrl}>
         <ControlBar disableDefaultControls={true}>
           <CurrentTimeDisplay />
           <TimeDivider />

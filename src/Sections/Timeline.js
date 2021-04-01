@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Player, ControlBar } from "video-react";
 import Waveform from "../Components/Waveform";
+import { useSelector, useDispatch } from "react-redux";
 
 import styled from "styled-components";
 
@@ -15,6 +16,7 @@ const Container = styled.div`
 `;
 
 function Timeline() {
+  const audioUrl = useSelector((state) => state.data.audioUrl);
   return (
     <Container>
       <Waveform />

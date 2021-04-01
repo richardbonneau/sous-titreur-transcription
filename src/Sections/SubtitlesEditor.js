@@ -4,21 +4,24 @@ import Waveform from "../Components/Waveform";
 import { Spinner } from "@blueprintjs/core";
 import styled from "styled-components";
 import SubtitleCard from "../Components/SubtitleCard";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const Container = styled.div`
   width: 100%;
-  min-width: 450px;
+  min-width: 700px;
   height: 100%;
   overflow-y: scroll;
   flex: 1;
 `;
 
 function SubtitlesEditor() {
-  const numCards = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1];
+  const subtitles = useSelector((state) => state.data.subtitles);
+  console.log("subtitles", subtitles);
   return (
     <Container>
-      {numCards.map((card, i) => (
-        <SubtitleCard subtitleNum={i + 1} key={"sub" + i} />
+      {subtitles.map((subData, i) => (
+        <SubtitleCard subIndex={i} subData={subData} key={"sub" + i} />
       ))}
     </Container>
   );

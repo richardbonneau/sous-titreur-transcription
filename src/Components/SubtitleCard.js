@@ -3,6 +3,8 @@ import { Player, ControlBar } from "video-react";
 import Waveform from "../Components/Waveform";
 import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { modifySingleSubtitle } from "../_Redux/Actions";
 
 const Container = styled.div`
   margin-bottom: 0.2em;
@@ -40,23 +42,30 @@ const InputContainer = styled.div`
   }
 `;
 
-function SubtitleCard({ subtitleNum }) {
+function SubtitleCard({ subIndex, subData }) {
+  const dispatch = useDispatch();
+
+  const writeText = (e) => {
+    let newLines = e.target.value.split("\n");
+    dispatch(modifySingleSubtitle(subIndex, newLines));
+  };
+
   return (
     <Container>
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
-          <SubtitleNumber>{subtitleNum}</SubtitleNumber>
+          <SubtitleNumber>{subIndex + 1}</SubtitleNumber>
           <div>
             <Icon icon={"double-chevron-right"} />
-            <span>00:00:15.440</span>
+            <span>{subData.start}</span>
           </div>
           <div>
             <Icon icon={"double-chevron-left"} />
-            <span>00:00:15.440</span>
+            <span>{subData.end}</span>
           </div>
         </TimeContainer>
         <InputContainer>
-          <textarea type="text" />
+          <textarea type="text" onChange={writeText} value={subData.lines.join("\n")} />
         </InputContainer>
       </Card>
     </Container>
