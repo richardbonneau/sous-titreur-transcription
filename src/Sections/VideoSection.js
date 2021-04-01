@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 
 import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
-import { Button, Label, Spinner } from "@blueprintjs/core";
+import { Button, Label, Slider } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import { isVideoPlaying,seeking } from "../_Redux/Actions";
+import { isVideoPlaying, seeking,videoIsSeeking, verticalZoom, horizontalZoom } from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -22,12 +22,15 @@ function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const isPlaying = useSelector((state) => state.media.isPlaying);
+  const barHeight = useSelector((state) => state.media.barHeight);
+  const waveformWidth = useSelector((state) => state.media.waveformWidth);
 
   const playerStateChanges = (state) => {
     if (state.paused) dispatch(isVideoPlaying(false));
     else if (!state.paused) dispatch(isVideoPlaying(true));
-    
-    dispatch(seeking(state.seekingTime))
+
+    dispatch(seeking(state.seekingTime));
+    dispatch(videoIsSeeking(state.isSeeking))
   };
 
   return (
@@ -59,6 +62,27 @@ function VideoSection() {
               <option value={1.5}>1.5x</option>
             </select>
           </div>
+        </Label>
+        <Label>
+          Vertical Zoom
+          <Slider
+            min={0.5}
+            max={10}
+            stepSize={1}
+            onChange={(newValue) => dispatch(verticalZoom(newValue))}
+            value={barHeight}
+          />
+        </Label>
+        <Label>
+          Horizontal Zoom
+          <Slider
+            min={1}
+            max={100}
+            labelStepSize={100}
+            stepSize={25}
+            onChange={(newValue) => dispatch(horizontalZoom(newValue))}
+            value={waveformWidth}
+          />
         </Label>
       </VideoController>
     </Container>
