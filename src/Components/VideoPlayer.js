@@ -33,16 +33,25 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
   }, []);
 
   useEffect(() => {
-    if(player.current){
+    if (player.current) {
       let videoElement = player.current.video.video;
+      console.log("videoElement", videoElement.children);
+      var i = 0;
+      for (let track of videoElement.textTracks) {
+       console.log(track)
+       track.mode = "disabled"
+        // if(track.language !== targetLanguage){
+        // videoElement.removeChild(videoElement.children[i]);
+        // }
+        i++;
+      }
       const track = videoElement.addTextTrack("captions");
       track.mode = "showing";
-      subtitles.forEach(sub=>{
-        console.log("sub",sub)
+      subtitles.forEach((sub) => {
+        console.log("sub", sub);
         const cueEn = new VTTCue(sub.start, sub.end, sub.lines.join("\n"));
         track.addCue(cueEn);
-      })
-
+      });
     }
   }, [subtitles]);
 
@@ -60,7 +69,6 @@ function VideoPlayer({ isPlaying, playbackSpeed, playerStateChanges }) {
     let duration = playerState.player.duration;
     player.current.seek((time * 100 * duration) / 100);
   };
-
 
   return (
     <Container>
