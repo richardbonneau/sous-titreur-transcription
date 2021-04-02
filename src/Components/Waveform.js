@@ -4,7 +4,7 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 
 import { useSelector, useDispatch } from "react-redux";
-import { WaveSurfer, WaveForm,Region } from "wavesurfer-react";
+import { WaveSurfer, WaveForm, Region } from "wavesurfer-react";
 import styled from "styled-components";
 import { seeking } from "../_Redux/Actions";
 import { Spinner } from "@blueprintjs/core";
@@ -29,6 +29,16 @@ const Container = styled.div`
     position: absolute;
     width: 100%;
   }
+  region.wavesurfer-region:before {
+    content: attr(data-region-label);
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    height: 20px;
+    padding: 0 10px;
+    word-break: break-word;
+}
+}
 `;
 
 function Waveform({}) {
@@ -76,13 +86,19 @@ function Waveform({}) {
   useEffect(
     function subtitlesToRegions() {
       if (wavesurferRef.current) {
-        setRegions(subtitles.map(caption=>{
-          console.log("caption",caption)
-          return {
-            start:caption.start,
-            end:caption.end
-          }
-        }))
+        setRegions(
+          subtitles.map((caption) => {
+            console.log("caption", caption);
+            return {
+              start: caption.start,
+              end: caption.end,
+
+              attributes: {
+                label: caption.lines.join("\n"),
+              },
+            };
+          })
+        );
       }
     },
     [subtitles]
@@ -150,7 +166,7 @@ function Waveform({}) {
     },
     {
       plugin: RegionsPlugin,
-      options: { dragSelection: true }
+      options: { dragSelection: true },
     },
   ];
 
@@ -169,11 +185,8 @@ function Waveform({}) {
             minPxPerSec={1}
           ></WaveForm>
           <div id="timeline" />
-          {regions.map(regionProps => (
-            <Region
-              key={regionProps.id}
-              {...regionProps}
-            />
+          {regions.map((regionProps) => (
+            <Region key={regionProps.id} {...regionProps} />
           ))}
         </WaveSurfer>
       )}
