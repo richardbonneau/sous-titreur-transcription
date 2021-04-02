@@ -14,6 +14,7 @@ import {
   videoIsSeeking,
   verticalZoom,
   horizontalZoom,
+  setCurrentTime
 } from "../_Redux/Actions";
 import Waveform from "./Waveform";
 import { Spinner } from "@blueprintjs/core";
@@ -42,6 +43,7 @@ function VideoPlayer({ playbackSpeed }) {
   const waveformWidth = useSelector((state) => state.media.waveformWidth);
   const isSeeking = useSelector((state) => state.media.isSeeking);
 
+
   useEffect(() => {
     player.current.subscribeToStateChange((state) => setVideoState(state));
   }, []);
@@ -49,13 +51,6 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(
     function videoStateChanges() {
       if (Object.keys(videoState).length > 0) {
-        // console.log(
-        //   "isSeeking",
-        //   isSeeking,
-        //   "videoState.seeking",
-        //   videoState.seeking,
-  
-        // );
         if (!videoState.paused !== isPlaying && !videoState.seeking) dispatch(isVideoPlaying(!videoState.paused));
         if (seekingTime !== videoState.seekingTime) dispatch(seeking(videoState.seekingTime));
         if (isSeeking !== videoState.seeking) dispatch(videoIsSeeking(videoState.seeking));

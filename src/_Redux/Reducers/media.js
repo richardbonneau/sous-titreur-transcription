@@ -1,10 +1,10 @@
-import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM,IS_SEEKING } from "../Actions";
+import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM,IS_SEEKING ,CURRENT_TIME} from "../Actions";
 
 export default (
   state = {
     isPlaying: false,
     isSeeking: false,
-    
+
     seekingTime: 0,
     barHeight: 1,
     waveformWidth: 0,
@@ -40,6 +40,7 @@ export default (
         ...state,
         waveformWidth: action.waveformWidth,
       };
+
     default:
       return state;
   }

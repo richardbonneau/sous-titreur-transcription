@@ -10,7 +10,7 @@ import { Spinner } from "@blueprintjs/core";
 const Container = styled.div`
   height: 100px;
   width: 100%;
-  .bp3-spinner{
+  .bp3-spinner {
     position: absolute;
     transform: translate(50vw, 50%);
   }
@@ -84,9 +84,11 @@ function Waveform({}) {
   useEffect(
     function adjustBarHeight() {
       if (wavesurferRef.current) {
-        wavesurferRef.current.params.barHeight = barHeight
+        let time = wavesurferRef.current.getCurrentTime();
+        wavesurferRef.current.params.barHeight = barHeight;
         wavesurferRef.current.empty();
         wavesurferRef.current.drawBuffer();
+        dispatch(seeking(time));
       }
     },
     [barHeight]
@@ -94,22 +96,21 @@ function Waveform({}) {
   useEffect(
     function adjustBarWidth() {
       if (wavesurferRef.current) {
-        wavesurferRef.current.params.minPxPerSec = waveformWidth
+        let time = wavesurferRef.current.getCurrentTime();
+        wavesurferRef.current.params.minPxPerSec = waveformWidth;
         wavesurferRef.current.empty();
         wavesurferRef.current.drawBuffer();
+        dispatch(seeking(time));
       }
     },
     [waveformWidth]
   );
-  
 
   return (
     <Container>
       {audio && (
         <WaveSurfer onMount={handleWSMount}>
-          {!waveformReady
-
-           && <Spinner />}
+          {!waveformReady && <Spinner />}
           <WaveForm
             id="waveform"
             waveColor="#000"
