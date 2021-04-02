@@ -21,6 +21,8 @@ const VideoController = styled.div`
 function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [verticalZoomSlider,setVerticalZoomSlider] = useState(1)
+  const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(1)
   const isPlaying = useSelector((state) => state.media.isPlaying);
   const barHeight = useSelector((state) => state.media.barHeight);
   const waveformWidth = useSelector((state) => state.media.waveformWidth);
@@ -61,19 +63,21 @@ function VideoSection() {
             min={0.5}
             max={10}
             stepSize={1}
-            onChange={(newValue) => dispatch(verticalZoom(newValue))}
-            value={barHeight}
+            onRelease={(newValue) => dispatch(verticalZoom(newValue))}
+            onChange={(newValue)=>setVerticalZoomSlider(newValue)}
+            value={verticalZoomSlider}
           />
         </Label>
         <Label>
           Horizontal Zoom
           <Slider
-            min={1}
+            min={0}
             max={100}
             labelStepSize={100}
-            stepSize={25}
-            onChange={(newValue) => dispatch(horizontalZoom(newValue))}
-            value={waveformWidth}
+            stepSize={10}
+            onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
+            onChange={(newValue)=>setHorizontalZoomSlider(newValue)}
+            value={horizontalZoomSlider}
           />
         </Label>
       </VideoController>

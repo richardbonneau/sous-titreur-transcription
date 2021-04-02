@@ -58,7 +58,6 @@ function Waveform({}) {
 
   useEffect(
     function playPause() {
-      console.log("waveform isPlaying",isPlaying)
       if (wavesurferRef.current) {
         if (isPlaying) wavesurferRef.current.play();
         else wavesurferRef.current.pause();
