@@ -16,7 +16,7 @@ const Container = styled.div`
   }
 `;
 
-function Waveform({ videoURL, seek, videoRef }) {
+function Waveform({}) {
   const dispatch = useDispatch();
   const [waveformReady, setWaveformReady] = useState(false);
   const isPlaying = useSelector((state) => state.media.isPlaying);
@@ -58,7 +58,7 @@ function Waveform({ videoURL, seek, videoRef }) {
 
   useEffect(
     function playPause() {
-      console.log("playPause isPlaying",isPlaying)
+      console.log("waveform isPlaying",isPlaying)
       if (wavesurferRef.current) {
         if (isPlaying) wavesurferRef.current.play();
         else wavesurferRef.current.pause();

@@ -48,14 +48,23 @@ function VideoPlayer({ playbackSpeed }) {
 
   useEffect(
     function videoStateChanges() {
-      console.log("videoState",videoState)
-      if (!videoState.paused !== isVideoPlaying) dispatch(isVideoPlaying(!videoState.paused));
-      if(seekingTime !== videoState.seekingTime)dispatch(seeking(videoState.seekingTime));
-      if(isSeeking !== videoState.seeking)dispatch(videoIsSeeking(videoState.seeking));
+      if (Object.keys(videoState).length > 0) {
+        // console.log(
+        //   "isSeeking",
+        //   isSeeking,
+        //   "videoState.seeking",
+        //   videoState.seeking,
+  
+        // );
+        if (!videoState.paused !== isPlaying && !videoState.seeking) dispatch(isVideoPlaying(!videoState.paused));
+        if (seekingTime !== videoState.seekingTime) dispatch(seeking(videoState.seekingTime));
+        if (isSeeking !== videoState.seeking) dispatch(videoIsSeeking(videoState.seeking));
+      }
     },
     [videoState]
   );
 
+ 
   useEffect(() => {
     if (player.current) {
       let videoElement = player.current.video.video;

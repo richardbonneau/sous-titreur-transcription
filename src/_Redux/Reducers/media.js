@@ -11,8 +11,10 @@ export default (
   },
   action
 ) => {
+
   switch (action.type) {
     case PLAY_PAUSE:
+      console.log(action)
       return {
         ...state,
         isPlaying: action.isPlaying,
@@ -20,8 +22,8 @@ export default (
     case IS_SEEKING:
       return{
         ...state,
-        isSeeking:action.isSeeking,
-        isPlaying: !action.videoIsSeeking
+        isSeeking:action.videoIsSeeking,
+        isPlaying: !action.videoIsSeeking 
       }
     case SEEKING:
       return {

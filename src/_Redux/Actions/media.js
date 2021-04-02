@@ -5,6 +5,7 @@ export const HORIZONTAL_ZOOM = "HORIZONTAL_ZOOM";
 export const IS_SEEKING = "IS_SEEKING";
 
 export const isVideoPlaying = (isPlaying) => {
+  console.log("in action is playing",isPlaying)
   return {
     type: PLAY_PAUSE,
     isPlaying,

@@ -30,7 +30,6 @@ function VideoSection() {
   return (
     <Container>
       <VideoPlayer
-        isPlaying={isPlaying}
         playbackSpeed={playbackSpeed}
       />
 
