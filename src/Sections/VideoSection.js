@@ -24,10 +24,6 @@ function VideoSection() {
   const [verticalZoomSlider,setVerticalZoomSlider] = useState(1)
   const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(0)
   const isPlaying = useSelector((state) => state.media.isPlaying);
-  const barHeight = useSelector((state) => state.media.barHeight);
-  const waveformWidth = useSelector((state) => state.media.waveformWidth);
-
-
 
   return (
     <Container>

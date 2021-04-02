@@ -14,6 +14,13 @@ const Container = styled.div`
     position: absolute;
     transform: translate(50vw, 50%);
   }
+  #waveform {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* height: 80px; */
+    background:#CED9E0;
+  }
 `;
 
 function Waveform({}) {
@@ -109,12 +116,13 @@ function Waveform({}) {
   return (
     <Container>
       {audio && (
-        <WaveSurfer onMount={handleWSMount}>
+        <WaveSurfer  onMount={handleWSMount}>
           {!waveformReady && <Spinner />}
           <WaveForm
             id="waveform"
-            waveColor="#000"
-            progressColor="#f3ca20"
+            
+            waveColor="#1E242C"
+            progressColor="#028090"
             autoCenter={true}
             scrollParent={true}
             height={110}
