@@ -20,7 +20,8 @@ export default (
     case IS_SEEKING:
       return{
         ...state,
-        isSeeking:action.isSeeking
+        isSeeking:action.isSeeking,
+        isPlaying: !action.videoIsSeeking
       }
     case SEEKING:
       return {

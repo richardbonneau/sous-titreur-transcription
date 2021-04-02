@@ -11,7 +11,6 @@ export const isVideoPlaying = (isPlaying) => {
   };
 };
 export const seeking = (seekingTime) => {
-  console.log("seekingTime", seekingTime);
   return {
     type: SEEKING,
     seekingTime,
@@ -35,5 +34,6 @@ export const videoIsSeeking = (videoIsSeeking) => {
   return {
     type: IS_SEEKING,
     videoIsSeeking,
+    
   };
 };

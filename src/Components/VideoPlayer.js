@@ -8,6 +8,13 @@ import {
   TimeDivider,
 } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  isVideoPlaying,
+  seeking,
+  videoIsSeeking,
+  verticalZoom,
+  horizontalZoom,
+} from "../_Redux/Actions";
 import Waveform from "./Waveform";
 import { Spinner } from "@blueprintjs/core";
 import styled from "styled-components";
@@ -23,16 +30,31 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer({ playbackSpeed, playerStateChanges }) {
+function VideoPlayer({ playbackSpeed }) {
+  const dispatch = useDispatch();
   const player = useRef();
+  const [videoState, setVideoState] = useState({});
   const videoUrl = useSelector((state) => state.data.videoUrl);
   const subtitles = useSelector((state) => state.data.subtitles);
   const isPlaying = useSelector((state) => state.media.isPlaying);
   const seekingTime = useSelector((state) => state.media.seekingTime);
+  const barHeight = useSelector((state) => state.media.barHeight);
+  const waveformWidth = useSelector((state) => state.media.waveformWidth);
+  const isSeeking = useSelector((state) => state.media.isSeeking);
 
   useEffect(() => {
-    player.current.subscribeToStateChange(playerStateChanges);
+    player.current.subscribeToStateChange((state) => setVideoState(state));
   }, []);
+
+  useEffect(
+    function videoStateChanges() {
+      console.log("videoState",videoState)
+      if (!videoState.paused !== isVideoPlaying) dispatch(isVideoPlaying(!videoState.paused));
+      if(seekingTime !== videoState.seekingTime)dispatch(seeking(videoState.seekingTime));
+      if(isSeeking !== videoState.seeking)dispatch(videoIsSeeking(videoState.seeking));
+    },
+    [videoState]
+  );
 
   useEffect(() => {
     if (player.current) {

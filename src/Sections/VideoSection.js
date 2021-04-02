@@ -25,20 +25,13 @@ function VideoSection() {
   const barHeight = useSelector((state) => state.media.barHeight);
   const waveformWidth = useSelector((state) => state.media.waveformWidth);
 
-  const playerStateChanges = (state) => {
-    if (state.paused) dispatch(isVideoPlaying(false));
-    else if (!state.paused) dispatch(isVideoPlaying(true));
 
-    dispatch(seeking(state.seekingTime));
-    dispatch(videoIsSeeking(state.isSeeking))
-  };
 
   return (
     <Container>
       <VideoPlayer
         isPlaying={isPlaying}
         playbackSpeed={playbackSpeed}
-        playerStateChanges={playerStateChanges}
       />
 
       <VideoController>
