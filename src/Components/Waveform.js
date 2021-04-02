@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-// import WaveSurfer from "wavesurfer.js"
-import { useSelector, useDispatch } from "react-redux";
-import { WaveSurfer, WaveForm } from "wavesurfer-react";
-import styled from "styled-components";
+import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
+import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
+import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 
+import { useSelector, useDispatch } from "react-redux";
+import { WaveSurfer, WaveForm,Region } from "wavesurfer-react";
+import styled from "styled-components";
 import { seeking } from "../_Redux/Actions";
 import { Spinner } from "@blueprintjs/core";
 
@@ -19,18 +21,26 @@ const Container = styled.div`
     bottom: 0;
     width: 100%;
     /* height: 80px; */
-    background:#CED9E0;
+    background: #ced9e0;
+  }
+  #timeline{
+
+    bottom: 18px;
+    position: absolute;
+    width: 100%;
   }
 `;
 
 function Waveform({}) {
   const dispatch = useDispatch();
   const [waveformReady, setWaveformReady] = useState(false);
+  const [regions, setRegions] = useState([]);
   const isPlaying = useSelector((state) => state.media.isPlaying);
   const audio = useSelector((state) => state.data.audioUrl);
   const seekingTime = useSelector((state) => state.media.seekingTime);
   const barHeight = useSelector((state) => state.media.barHeight);
   const waveformWidth = useSelector((state) => state.media.waveformWidth);
+  const subtitles = useSelector((state) => state.data.subtitles);
   const wavesurferRef = useRef();
 
   const handleWSMount = useCallback(
@@ -61,6 +71,21 @@ function Waveform({}) {
       }
     },
     [audio]
+  );
+
+  useEffect(
+    function subtitlesToRegions() {
+      if (wavesurferRef.current) {
+        setRegions(subtitles.map(caption=>{
+          console.log("caption",caption)
+          return {
+            start:caption.start,
+            end:caption.end
+          }
+        }))
+      }
+    },
+    [subtitles]
   );
 
   useEffect(
@@ -113,14 +138,29 @@ function Waveform({}) {
     [waveformWidth]
   );
 
+  const plugins = [
+    {
+      plugin: CursorPlugin,
+    },
+    {
+      plugin: TimelinePlugin,
+      options: {
+        container: "#timeline",
+      },
+    },
+    {
+      plugin: RegionsPlugin,
+      options: { dragSelection: true }
+    },
+  ];
+
   return (
     <Container>
       {audio && (
-        <WaveSurfer  onMount={handleWSMount}>
+        <WaveSurfer plugins={plugins} onMount={handleWSMount}>
           {!waveformReady && <Spinner />}
           <WaveForm
             id="waveform"
-            
             waveColor="#1E242C"
             progressColor="#028090"
             autoCenter={true}
@@ -128,6 +168,13 @@ function Waveform({}) {
             height={110}
             minPxPerSec={1}
           ></WaveForm>
+          <div id="timeline" />
+          {regions.map(regionProps => (
+            <Region
+              key={regionProps.id}
+              {...regionProps}
+            />
+          ))}
         </WaveSurfer>
       )}
     </Container>

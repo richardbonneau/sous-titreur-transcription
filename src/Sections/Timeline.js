@@ -19,7 +19,7 @@ function Timeline() {
   return (
     <Container>
       <Waveform />
-      {subtitles.map(caption=><CaptionMarker captionData={caption} />)}
+      {/* {subtitles.map(caption=><CaptionMarker captionData={caption} />)} */}
     </Container>
   );
 }

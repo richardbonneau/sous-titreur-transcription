@@ -31,3 +31,34 @@ console.log("captionData",captionData)
 }
 
 export default CaptionMarker;
+
+
+// const [regions, setRegions] = useState([
+//     {
+//       id: "region-1",
+//       start: 0.5,
+//       end: 10,
+//       color: "rgba(0, 0, 0, .5)",
+//       data: {
+//         systemRegionId: 31
+//       }
+//     },
+//     {
+//       id: "region-2",
+//       start: 5,
+//       end: 25,
+//       color: "rgba(225, 195, 100, .5)",
+//       data: {
+//         systemRegionId: 32
+//       }
+//     },
+//     {
+//       id: "region-3",
+//       start: 15,
+//       end: 35,
+//       color: "rgba(25, 95, 195, .5)",
+//       data: {
+//         systemRegionId: 33
+//       }
+//     }
+//   ]);
