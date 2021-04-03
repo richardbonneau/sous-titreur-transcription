@@ -186,8 +186,7 @@ function Waveform({}) {
   const updateCaptionPosition = (updatedRegion, captionIndex) => {
     let maxStart = regions[captionIndex].maxStart
     let maxEnd = regions[captionIndex].maxEnd
-    console.log("updatedRegion.end > maxEnd",updatedRegion.end , maxEnd,maxStart)
-    // console.log("regions[captionIndex]",regions[captionIndex])
+
     if(updatedRegion.start < maxStart) updatedRegion.start = maxStart
     if(updatedRegion.end > maxEnd) updatedRegion.end = maxEnd
 
