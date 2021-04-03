@@ -1,7 +1,7 @@
 export const DATA_REQUEST = "DATA_REQUEST";
 export const DATA_SUCCESS = "DATA_SUCCESS";
 export const DATA_FAILURE = "DATA_FAILURE";
-export const MODIFY_SINGLE_SUBTITLE = "MODIFY_SINGLE_SUBTITLE";
+export const MODIFY_SINGLE_CAPTION = "MODIFY_SINGLE_CAPTION";
 
 export const requestData = () => {
   return {
@@ -23,9 +23,9 @@ export const dataError = (error) => {
   };
 };
 
-export const modifySingleSubtitle = (subIndex, newLines) => {
+export const modifySingleCaption = (subIndex, newLines) => {
   return {
-    type: MODIFY_SINGLE_SUBTITLE,
+    type: MODIFY_SINGLE_CAPTION,
     subIndex,
     newLines,
   };

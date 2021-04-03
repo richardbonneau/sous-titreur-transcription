@@ -1,4 +1,4 @@
-import { DATA_REQUEST, DATA_SUCCESS, DATA_FAILURE, MODIFY_SINGLE_SUBTITLE } from "../Actions";
+import { DATA_REQUEST, DATA_SUCCESS, DATA_FAILURE, MODIFY_SINGLE_CAPTION } from "../Actions";
 
 export default (
   state = {
@@ -24,7 +24,7 @@ export default (
         videoUrl: action.data.videolink,
         subtitles: action.data.subtitles,
       };
-    case MODIFY_SINGLE_SUBTITLE:
+    case MODIFY_SINGLE_CAPTION:
       let newSubtitles = [...state.subtitles]
       newSubtitles[action.subIndex] = {...newSubtitles[action.subIndex], lines:action.newLines}
       return { ...state, subtitles: newSubtitles  };

@@ -4,7 +4,6 @@ export default (
   state = {
     isPlaying: false,
     isSeeking: false,
-
     seekingTime: 0,
     barHeight: 1,
     waveformWidth: 0,

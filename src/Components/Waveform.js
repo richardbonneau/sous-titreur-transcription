@@ -23,8 +23,7 @@ const Container = styled.div`
     /* height: 80px; */
     background: #ced9e0;
   }
-  #timeline{
-
+  #timeline {
     bottom: 18px;
     position: absolute;
     width: 100%;
@@ -34,11 +33,23 @@ const Container = styled.div`
     position: absolute;
     top: 0;
     overflow: hidden;
-    height: 20px;
+    height: 25px;
     padding: 0 10px;
     word-break: break-word;
-}
-}
+    font-size: 10px;
+
+  }
+  .wavesurfer-region {
+    height: 35% !important;
+    border: 1px solid black;
+    &:hover handle {
+      display: block;
+    }
+  }
+  handle {
+    display: none;
+    width: 8px !important;
+  }
 `;
 
 function Waveform({}) {
@@ -141,6 +152,7 @@ function Waveform({}) {
     },
     [barHeight]
   );
+
   useEffect(
     function adjustBarWidth() {
       if (wavesurferRef.current) {
@@ -166,9 +178,16 @@ function Waveform({}) {
     },
     {
       plugin: RegionsPlugin,
-      options: { dragSelection: true },
+      // options: { dragSelection: true },
     },
   ];
+
+  const preventOverlap = (updatedRegion,captionIndex) => {
+    
+  };
+  const updateCaptionPosition = (updatedRegion,captionIndex) => {
+    // dispatch
+  };
 
   return (
     <Container>
@@ -185,8 +204,13 @@ function Waveform({}) {
             minPxPerSec={1}
           ></WaveForm>
           <div id="timeline" />
-          {regions.map((regionProps) => (
-            <Region key={regionProps.id} {...regionProps} />
+          {regions.map((regionProps, i) => (
+            <Region
+              onUpdateEnd={(updatedRegion) => updateCaptionPosition(updatedRegion, i)}
+              onUpdate={(updatedRegion) => preventOverlap(updatedRegion, i)}
+              key={regionProps.id}
+              {...regionProps}
+            />
           ))}
         </WaveSurfer>
       )}

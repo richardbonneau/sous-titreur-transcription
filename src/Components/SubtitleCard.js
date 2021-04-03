@@ -4,7 +4,7 @@ import Waveform from "../Components/Waveform";
 import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { modifySingleSubtitle } from "../_Redux/Actions";
+import { modifySingleCaption } from "../_Redux/Actions";
 
 const Container = styled.div`
   margin-bottom: 0.2em;
@@ -47,7 +47,7 @@ function SubtitleCard({ subIndex, subData }) {
 
   const writeText = (e) => {
     let newLines = e.target.value.split("\n");
-    dispatch(modifySingleSubtitle(subIndex, newLines));
+    dispatch(modifySingleCaption(subIndex, newLines));
   };
 
   return (
