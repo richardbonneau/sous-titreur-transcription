@@ -97,11 +97,12 @@ function Waveform({}) {
     function subtitlesToRegions() {
       if (wavesurferRef.current) {
         setRegions(
-          subtitles.map((caption) => {
+          subtitles.map((caption, i) => {
             return {
               start: caption.start,
               end: caption.end,
-
+              maxStart: i > 0 ? subtitles[i - 1].end : undefined,
+              maxEnd: i < subtitles.length - 1 ? subtitles[i + 1].start : undefined,
               attributes: {
                 label: caption.lines.join("\n"),
               },
@@ -180,16 +181,29 @@ function Waveform({}) {
     },
   ];
 
-  const preventOverlap = (updatedRegion, captionIndex) => {};
+
+
   const updateCaptionPosition = (updatedRegion, captionIndex) => {
+    let maxStart = regions[captionIndex].maxStart
+    let maxEnd = regions[captionIndex].maxEnd
+    console.log("updatedRegion.end > maxEnd",updatedRegion.end , maxEnd,maxStart)
+    // console.log("regions[captionIndex]",regions[captionIndex])
+    if(updatedRegion.start < maxStart) updatedRegion.start = maxStart
+    if(updatedRegion.end > maxEnd) updatedRegion.end = maxEnd
+
+    if(updatedRegion.start > maxEnd || updatedRegion.end < maxStart){
+      updatedRegion.start = subtitles[captionIndex].start
+      updatedRegion.end = subtitles[captionIndex].end
+    }
     let newCaption = {
       ...subtitles[captionIndex],
-      start: updatedRegion.start.toFixed(3),
-      end: updatedRegion.end.toFixed(3),
+      start: Number(updatedRegion.start.toFixed(3)),
+      end: Number(updatedRegion.end.toFixed(3)),
     };
     console.log("newCaption", newCaption, "updatedRegion", updatedRegion);
     dispatch(modifySingleCaption(newCaption, captionIndex));
   };
+
 
   return (
     <Container>
@@ -209,7 +223,7 @@ function Waveform({}) {
           {regions.map((regionProps, i) => (
             <Region
               onUpdateEnd={(updatedRegion) => updateCaptionPosition(updatedRegion, i)}
-              onUpdate={(updatedRegion) => preventOverlap(updatedRegion, i)}
+              // onUpdate={(updatedRegion) => preventOverlap(updatedRegion, i)}
               key={regionProps.id}
               {...regionProps}
             />
