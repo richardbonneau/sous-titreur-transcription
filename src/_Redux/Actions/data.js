@@ -23,10 +23,10 @@ export const dataError = (error) => {
   };
 };
 
-export const modifySingleCaption = (subIndex, newLines) => {
+export const modifySingleCaption = (newCaption, subIndex ) => {
   return {
     type: MODIFY_SINGLE_CAPTION,
     subIndex,
-    newLines,
+    newCaption,
   };
 };

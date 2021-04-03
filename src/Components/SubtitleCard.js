@@ -47,7 +47,8 @@ function SubtitleCard({ subIndex, subData }) {
 
   const writeText = (e) => {
     let newLines = e.target.value.split("\n");
-    dispatch(modifySingleCaption(subIndex, newLines));
+    let newCaption = {...subData,lines:newLines}
+    dispatch(modifySingleCaption(newCaption,subIndex ));
   };
 
   return (

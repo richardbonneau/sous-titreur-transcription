@@ -26,7 +26,7 @@ export default (
       };
     case MODIFY_SINGLE_CAPTION:
       let newSubtitles = [...state.subtitles]
-      newSubtitles[action.subIndex] = {...newSubtitles[action.subIndex], lines:action.newLines}
+      newSubtitles[action.subIndex] = action.newCaption
       return { ...state, subtitles: newSubtitles  };
 
     // case DATA_FAILURE:

@@ -6,7 +6,7 @@ import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import { useSelector, useDispatch } from "react-redux";
 import { WaveSurfer, WaveForm, Region } from "wavesurfer-react";
 import styled from "styled-components";
-import { seeking } from "../_Redux/Actions";
+import { seeking, modifySingleCaption } from "../_Redux/Actions";
 import { Spinner } from "@blueprintjs/core";
 
 const Container = styled.div`
@@ -37,7 +37,6 @@ const Container = styled.div`
     padding: 0 10px;
     word-break: break-word;
     font-size: 10px;
-
   }
   .wavesurfer-region {
     height: 35% !important;
@@ -99,7 +98,6 @@ function Waveform({}) {
       if (wavesurferRef.current) {
         setRegions(
           subtitles.map((caption) => {
-            console.log("caption", caption);
             return {
               start: caption.start,
               end: caption.end,
@@ -182,11 +180,15 @@ function Waveform({}) {
     },
   ];
 
-  const preventOverlap = (updatedRegion,captionIndex) => {
-    
-  };
-  const updateCaptionPosition = (updatedRegion,captionIndex) => {
-    // dispatch
+  const preventOverlap = (updatedRegion, captionIndex) => {};
+  const updateCaptionPosition = (updatedRegion, captionIndex) => {
+    let newCaption = {
+      ...subtitles[captionIndex],
+      start: updatedRegion.start.toFixed(3),
+      end: updatedRegion.end.toFixed(3),
+    };
+    console.log("newCaption", newCaption, "updatedRegion", updatedRegion);
+    dispatch(modifySingleCaption(newCaption, captionIndex));
   };
 
   return (
