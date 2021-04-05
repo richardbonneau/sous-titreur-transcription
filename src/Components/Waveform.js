@@ -1,53 +1,34 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
-import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 
 import { useSelector, useDispatch } from "react-redux";
-import { WaveSurfer, WaveForm, Region } from "wavesurfer-react";
+
 import styled from "styled-components";
-import { seeking, modifySingleCaption } from "../_Redux/Actions";
+
 import { Spinner } from "@blueprintjs/core";
+import Peaks from "peaks.js";
 
 const Container = styled.div`
-  height: 100px;
+  height: 310px;
   width: 100%;
   .bp3-spinner {
     position: absolute;
     transform: translate(50vw, 50%);
   }
-  #waveform {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* height: 80px; */
-    background: #ced9e0;
+  .zoomview-container {
+    box-shadow: 3px 3px 20px #919191;
+    -moz-box-shadow: 3px 3px 20px #919191;
+    -webkit-box-shadow: 3px 3px 20px #919191;
+    margin: 24px 0 24px 0;
+    line-height: 0;
   }
-  #timeline {
-    bottom: 18px;
-    position: absolute;
-    width: 100%;
-  }
-  region.wavesurfer-region:before {
-    content: attr(data-region-label);
-    position: absolute;
-    top: 0;
-    overflow: hidden;
-    height: 25px;
-    padding: 0 10px;
-    word-break: break-word;
-    font-size: 10px;
-  }
-  .wavesurfer-region {
-    height: 35% !important;
-    border: 1px solid black;
-    &:hover handle {
-      display: block;
-    }
-  }
-  handle {
-    display: none;
-    width: 8px !important;
+
+  .overview-container {
+    box-shadow: 3px 3px 20px #919191;
+    -moz-box-shadow: 3px 3px 20px #919191;
+    -webkit-box-shadow: 3px 3px 20px #919191;
+    margin: 0 0 24px 0;
+    line-height: 0;
+    height: 85px;
   }
 `;
 
@@ -61,188 +42,116 @@ const SpinnerContainer = styled.div`
 
 function Waveform({}) {
   const dispatch = useDispatch();
-  const [waveformReady, setWaveformReady] = useState(false);
+  const [peaksReady, setPeaksReady] = useState(false);
   const [regions, setRegions] = useState([]);
-  const isPlaying = useSelector((state) => state.media.isPlaying);
+  // const isPlaying = useSelector((state) => state.media.isPlaying);
   const audio = useSelector((state) => state.data.audioUrl);
-  const seekingTime = useSelector((state) => state.media.seekingTime);
-  const barHeight = useSelector((state) => state.media.barHeight);
-  const waveformWidth = useSelector((state) => state.media.waveformWidth);
+  // const seekingTime = useSelector((state) => state.media.seekingTime);
+  // const barHeight = useSelector((state) => state.media.barHeight);
+  // const waveformWidth = useSelector((state) => state.media.waveformWidth);
   const subtitles = useSelector((state) => state.data.subtitles);
-  const wavesurferRef = useRef();
 
-  const handleWSMount = useCallback(
-    (waveSurfer) => {
-      wavesurferRef.current = waveSurfer;
-      if (wavesurferRef.current) {
-        // wavesurferRef.current.load(audio);
-        
-        // wavesurfer.backend.setPeaks(peaks, duration)
-        // wavesurfer.drawer.drawBars(peaks, width, 0, width)
+  const peaks = useRef();
+  const zoomviewWaveformRef = useRef();
+  const overviewWaveformRef = useRef();
+  const audioElementRef = useRef();
 
-        wavesurferRef.current.on("ready", () => {
-          console.log("WaveSurfer is ready");
-          setWaveformReady(true);
-          wavesurferRef.current.setMute(true);
-        });
-
-        wavesurferRef.current.on("loading", (data) => {
-          // console.log("loading --> ", data);
-        });
-
-        wavesurferRef.current.on("seek", (time) => {
-          if (time === 0) time = 0.0001;
-          let duration = wavesurferRef.current.getDuration();
-          dispatch(seeking((time * 100 * duration) / 100));
-        });
-
-        if (window) {
-          window.surferidze = wavesurferRef.current;
-        }
-      }
+  useEffect(
+    function initPeaksJs() {
+      if (audio) initPeaks();
     },
     [audio]
   );
 
-  useEffect(
-    function subtitlesToRegions() {
-      if (wavesurferRef.current) {
-        setRegions(
-          subtitles.map((caption, i) => {
-            return {
-              start: caption.start,
-              end: caption.end,
-              maxStart: i > 0 ? subtitles[i - 1].end : undefined,
-              maxEnd: i < subtitles.length - 1 ? subtitles[i + 1].start : undefined,
-              attributes: {
-                label: caption.lines.join("\n"),
-              },
-            };
-          })
-        );
-      }
-    },
-    [subtitles]
-  );
-
-  useEffect(
-    function playPause() {
-      if (wavesurferRef.current) {
-        if (isPlaying) wavesurferRef.current.play();
-        else wavesurferRef.current.pause();
-      }
-    },
-    [isPlaying]
-  );
-
-  useEffect(
-    function seekTo() {
-      if (wavesurferRef.current) {
-        if (seekingTime !== 0) {
-          wavesurferRef.current.pause();
-          let duration = wavesurferRef.current.getDuration();
-          wavesurferRef.current.seekTo(seekingTime / duration);
-        } else if (seekingTime === 0 && isPlaying) {
-          wavesurferRef.current.play();
-        }
-      }
-    },
-    [seekingTime]
-  );
-
-  useEffect(
-    function adjustBarHeight() {
-      if (wavesurferRef.current) {
-        let time = wavesurferRef.current.getCurrentTime();
-        wavesurferRef.current.params.barHeight = barHeight;
-        wavesurferRef.current.empty();
-        wavesurferRef.current.drawBuffer();
-        dispatch(seeking(time));
-      }
-    },
-    [barHeight]
-  );
-
-  useEffect(
-    function adjustBarWidth() {
-      if (wavesurferRef.current) {
-        let time = wavesurferRef.current.getCurrentTime();
-        wavesurferRef.current.params.minPxPerSec = waveformWidth;
-        wavesurferRef.current.empty();
-        wavesurferRef.current.drawBuffer();
-        dispatch(seeking(time));
-      }
-    },
-    [waveformWidth]
-  );
-
-  const plugins = [
-    {
-      plugin: CursorPlugin,
-    },
-    {
-      plugin: TimelinePlugin,
-      options: {
-        container: "#timeline",
+  const initPeaks = () => {
+    audioElementRef.current = document.querySelector(".video-react-video");
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+    // console.log("audioElementRef",audioElementRef,"audioContext",audioContext,"overviewWaveformRef.current",overviewWaveformRef.current,"zoomviewWaveformRef.current",zoomviewWaveformRef.current)
+    const options = {
+      containers: {
+        overview: overviewWaveformRef.current,
+        zoomview: zoomviewWaveformRef.current,
       },
-    },
-    {
-      plugin: RegionsPlugin,
-      // options: { dragSelection: true },
-    },
-  ];
-
-  const updateCaptionPosition = (updatedRegion, captionIndex) => {
-    let maxStart = regions[captionIndex].maxStart;
-    let maxEnd = regions[captionIndex].maxEnd;
-
-    if (updatedRegion.start < maxStart) updatedRegion.start = maxStart;
-    if (updatedRegion.end > maxEnd) updatedRegion.end = maxEnd;
-
-    if (updatedRegion.start > maxEnd || updatedRegion.end < maxStart) {
-      updatedRegion.start = subtitles[captionIndex].start;
-      updatedRegion.end = subtitles[captionIndex].end;
-    }
-    let newCaption = {
-      ...subtitles[captionIndex],
-      start: Number(updatedRegion.start.toFixed(3)),
-      end: Number(updatedRegion.end.toFixed(3)),
+      mediaElement: audioElementRef.current,
+      webAudio: {
+        audioContext: audioContext,
+      },
+      keyboard: true,
+      logger: console.error.bind(console),
     };
-    console.log("newCaption", newCaption, "updatedRegion", updatedRegion);
-    dispatch(modifySingleCaption(newCaption, captionIndex));
+
+    // audioElementRef.current.src = audio;
+
+    // if (peaks.current) {
+    //   peaks.current.destroy();
+    //   peaks.current = null;
+    // }
+
+    Peaks.init(options, (err, initalizedPeaks) => {
+      if (err) console.error("err", err);
+      peaks.current = initalizedPeaks;
+      console.log("done", peaks, "initalizedPeaks", initalizedPeaks);
+      setPeaksReady(true);
+    });
   };
 
-  console.log("!waveformReady", !waveformReady);
+  // useEffect(
+  //   function subtitlesToRegions() {
+  //     if (wavesurferRef.current) {
+  //       setRegions(
+  //         subtitles.map((caption, i) => {
+  //           return {
+  //             start: caption.start,
+  //             end: caption.end,
+  //             maxStart: i > 0 ? subtitles[i - 1].end : undefined,
+  //             maxEnd: i < subtitles.length - 1 ? subtitles[i + 1].start : undefined,
+  //             attributes: {
+  //               label: caption.lines.join("\n"),
+  //             },
+  //           };
+  //         })
+  //       );
+  //     }
+  //   },
+  //   [subtitles]
+  // );
+
+  // useEffect(
+  //   function adjustBarHeight() {
+  //     if (wavesurferRef.current) {
+  //       let time = wavesurferRef.current.getCurrentTime();
+  //       wavesurferRef.current.params.barHeight = barHeight;
+  //       wavesurferRef.current.empty();
+  //       wavesurferRef.current.drawBuffer();
+  //       dispatch(seeking(time));
+  //     }
+  //   },
+  //   [barHeight]
+  // );
+
+  // useEffect(
+  //   function adjustBarWidth() {
+  //     if (wavesurferRef.current) {
+  //       let time = wavesurferRef.current.getCurrentTime();
+  //       wavesurferRef.current.params.minPxPerSec = waveformWidth;
+  //       wavesurferRef.current.empty();
+  //       wavesurferRef.current.drawBuffer();
+  //       dispatch(seeking(time));
+  //     }
+  //   },
+  //   [waveformWidth]
+  // );
+
   return (
     <Container>
-      {audio && (
-        <WaveSurfer plugins={plugins} onMount={handleWSMount}>
-          {!waveformReady && (
-            <SpinnerContainer>
-              <Spinner />
-            </SpinnerContainer>
-          )}
-          <WaveForm
-            id="waveform"
-            waveColor="#1E242C"
-            progressColor="#028090"
-            autoCenter={true}
-            scrollParent={true}
-            backend = 'MediaElement'
-            height={110}
-            minPxPerSec={1}
-          ></WaveForm>
-          <div id="timeline" />
-          {regions.map((regionProps, i) => (
-            <Region
-              onUpdateEnd={(updatedRegion) => updateCaptionPosition(updatedRegion, i)}
-              // onUpdate={(updatedRegion) => preventOverlap(updatedRegion, i)}
-              key={regionProps.id}
-              {...regionProps}
-            />
-          ))}
-        </WaveSurfer>
+      {!peaksReady && (
+        <SpinnerContainer>
+          <Spinner />
+        </SpinnerContainer>
       )}
+      <div className="zoomview-container" ref={zoomviewWaveformRef}></div>
+      <div className="overview-container" ref={overviewWaveformRef}></div>
     </Container>
   );
 }
