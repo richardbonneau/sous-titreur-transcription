@@ -8,7 +8,7 @@ import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
 
 const Container = styled.div`
-  height: 310px;
+  height: 290px;
   width: 100%;
   .bp3-spinner {
     position: absolute;
@@ -18,7 +18,7 @@ const Container = styled.div`
     box-shadow: 3px 3px 20px #919191;
     -moz-box-shadow: 3px 3px 20px #919191;
     -webkit-box-shadow: 3px 3px 20px #919191;
-    margin: 24px 0 24px 0;
+    margin: 5px 0;
     line-height: 0;
   }
 
@@ -26,7 +26,6 @@ const Container = styled.div`
     box-shadow: 3px 3px 20px #919191;
     -moz-box-shadow: 3px 3px 20px #919191;
     -webkit-box-shadow: 3px 3px 20px #919191;
-    margin: 0 0 24px 0;
     line-height: 0;
     height: 85px;
   }

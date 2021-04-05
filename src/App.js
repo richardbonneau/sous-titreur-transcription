@@ -23,7 +23,7 @@ const Container = styled.div`
 const TopSections = styled.div`
   display: flex;
   /* flex-direction:column-reverse; */
-  height: calc(100vh - 168px);
+  height: calc(100vh - 352px);
   /* background:red; */
   align-items: center;
   flex-direction: row;
