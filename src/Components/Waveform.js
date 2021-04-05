@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-
+import {modifySingleCaption} from "../_Redux/Actions"
 import { useSelector, useDispatch } from "react-redux";
 
 import styled from "styled-components";
@@ -48,10 +48,12 @@ function Waveform({}) {
   const [regions, setRegions] = useState([]);
   // const isPlaying = useSelector((state) => state.media.isPlaying);
   const audio = useSelector((state) => state.data.audioUrl);
+  const video = useSelector((state) => state.data.videoUrl);
   // const seekingTime = useSelector((state) => state.media.seekingTime);
   // const barHeight = useSelector((state) => state.media.barHeight);
   // const waveformWidth = useSelector((state) => state.media.waveformWidth);
   const subtitles = useSelector((state) => state.data.subtitles);
+  const subtitlesRef = useRef()
 
   const peaks = useRef();
   const zoomviewWaveformRef = useRef();
@@ -64,6 +66,30 @@ function Waveform({}) {
     },
     [audio]
   );
+
+  useEffect(
+    function incomingSubtitlesChanges() {
+      if(peaks.current){
+        let allSegments = peaks.current.segments.getSegments()
+        console.log("allSegments",allSegments)
+        subtitles.forEach((sub,i)=>{
+          if(sub.start !== allSegments[i].startTime) allSegments[i].update({startTime:sub.start})
+          else if(sub.end !== allSegments[i].endTime) allSegments[i].update({endTime:sub.end})
+          else if(sub.lines.join("\n") !== allSegments[i].labelText) allSegments[i].update({labelText:sub.lines.join("\n")})
+        })
+        subtitlesRef.current = subtitles
+      }
+    },
+    [subtitles]
+  );
+
+  const segmentsDragEnd=(seg)=>{
+    let newSubtitle = subtitlesRef.current[seg.id]
+    newSubtitle.start = Number(seg.startTime.toFixed(3))
+    newSubtitle.end = Number(seg.endTime.toFixed(3))
+
+    dispatch(modifySingleCaption(newSubtitle,seg.id))
+  }
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
@@ -83,21 +109,21 @@ function Waveform({}) {
       logger: console.error.bind(console),
     };
 
-    // audioElementRef.current.src = audio;
-
-    // if (peaks.current) {
-    //   peaks.current.destroy();
-    //   peaks.current = null;
-    // }
+    audioElementRef.current.src = audio;
 
     Peaks.init(options, (err, initalizedPeaks) => {
       if (err) console.error("err", err);
       peaks.current = initalizedPeaks;
-      initalizedPeaks.segments.add(subtitles.map(sub=>{return {startTime:sub.start,endTime:sub.end,labelText:sub.lines.join("\n"),editable:true}}))
-      console.log("done", peaks, "initalizedPeaks", initalizedPeaks.segments.getSegments());
+
+      initalizedPeaks.segments.add(subtitles.map((sub,index)=>{return {startTime:sub.start,endTime:sub.end,labelText:sub.lines.join("\n"),editable:true,id:index}}))
+      
+      audioElementRef.current.src = video;
+      initalizedPeaks.on("segments.dragend",segmentsDragEnd)
       setPeaksReady(true);
     });
   };
+
+
 
   // useEffect(
   //   function subtitlesToRegions() {

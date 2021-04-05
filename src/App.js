@@ -35,14 +35,16 @@ function App() {
       },
       method: "post",
       body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
-      //Long body: JSON.stringify({ ident: "60634330c1fe9826860056_6185" }),
-      //Court body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
+      //Long 
+      // body: JSON.stringify({ ident: "60634330c1fe9826860056_6185" }),
+      //Court 
+      // body: JSON.stringify({ ident: "604a7d13cb7cd089704016_5494" }),
     })
       .then((res) => res.json())
       .then((body) => {
         console.log("body", body);
         dispatch(receiveData(body.data));
-        // setVideoPath(body.data.videolink);
+
       });
   }, []);
 

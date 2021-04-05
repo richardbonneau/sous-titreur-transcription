@@ -92,7 +92,7 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(() => {
     player.current.playbackRate = playbackSpeed;
   }, [playbackSpeed]);
-console.log("player ref",player.current)
+
   return (
     <Container>
       <Player ref={player} playsInline src={videoUrl}>
