@@ -19,10 +19,11 @@ export default (
         isPlaying: action.isPlaying,
       };
     case IS_SEEKING:
+      console.log("IS_SEEKING")
       return{
         ...state,
         isSeeking:action.videoIsSeeking,
-        isPlaying: !action.videoIsSeeking 
+        // isPlaying: !action.videoIsSeeking 
       }
     case SEEKING:
       return {

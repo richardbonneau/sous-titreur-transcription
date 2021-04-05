@@ -51,6 +51,14 @@ const Container = styled.div`
   }
 `;
 
+const SpinnerContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  background: #ced9e0;
+  z-index: 100;
+  position: fixed;
+`;
+
 function Waveform({}) {
   const dispatch = useDispatch();
   const [waveformReady, setWaveformReady] = useState(false);
@@ -181,18 +189,16 @@ function Waveform({}) {
     },
   ];
 
-
-
   const updateCaptionPosition = (updatedRegion, captionIndex) => {
-    let maxStart = regions[captionIndex].maxStart
-    let maxEnd = regions[captionIndex].maxEnd
+    let maxStart = regions[captionIndex].maxStart;
+    let maxEnd = regions[captionIndex].maxEnd;
 
-    if(updatedRegion.start < maxStart) updatedRegion.start = maxStart
-    if(updatedRegion.end > maxEnd) updatedRegion.end = maxEnd
+    if (updatedRegion.start < maxStart) updatedRegion.start = maxStart;
+    if (updatedRegion.end > maxEnd) updatedRegion.end = maxEnd;
 
-    if(updatedRegion.start > maxEnd || updatedRegion.end < maxStart){
-      updatedRegion.start = subtitles[captionIndex].start
-      updatedRegion.end = subtitles[captionIndex].end
+    if (updatedRegion.start > maxEnd || updatedRegion.end < maxStart) {
+      updatedRegion.start = subtitles[captionIndex].start;
+      updatedRegion.end = subtitles[captionIndex].end;
     }
     let newCaption = {
       ...subtitles[captionIndex],
@@ -203,12 +209,16 @@ function Waveform({}) {
     dispatch(modifySingleCaption(newCaption, captionIndex));
   };
 
-
+  console.log("!waveformReady", !waveformReady);
   return (
     <Container>
       {audio && (
         <WaveSurfer plugins={plugins} onMount={handleWSMount}>
-          {!waveformReady && <Spinner />}
+          {!waveformReady && (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          )}
           <WaveForm
             id="waveform"
             waveColor="#1E242C"

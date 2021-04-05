@@ -15,11 +15,9 @@ const Container = styled.div`
 `;
 
 function Timeline() {
-  const subtitles = useSelector((state) => state.data.subtitles);
   return (
     <Container>
       <Waveform />
-      {/* {subtitles.map(caption=><CaptionMarker captionData={caption} />)} */}
     </Container>
   );
 }
