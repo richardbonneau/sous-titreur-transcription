@@ -50,7 +50,7 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(
     function videoStateChanges() {
       if (Object.keys(videoState).length > 0) {
-        if (!videoState.paused !== isPlaying) dispatch(isVideoPlaying(!videoState.paused));
+        if (!videoState.paused !== isPlaying && !videoState.seeking) dispatch(isVideoPlaying(!videoState.paused));
         if (seekingTime !== videoState.seekingTime) dispatch(seeking(videoState.seekingTime));
         if (isSeeking !== videoState.seeking) dispatch(videoIsSeeking(videoState.seeking));
       }

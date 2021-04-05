@@ -75,7 +75,10 @@ function Waveform({}) {
     (waveSurfer) => {
       wavesurferRef.current = waveSurfer;
       if (wavesurferRef.current) {
-        wavesurferRef.current.load(audio);
+        // wavesurferRef.current.load(audio);
+        
+        // wavesurfer.backend.setPeaks(peaks, duration)
+        // wavesurfer.drawer.drawBars(peaks, width, 0, width)
 
         wavesurferRef.current.on("ready", () => {
           console.log("WaveSurfer is ready");
@@ -225,6 +228,7 @@ function Waveform({}) {
             progressColor="#028090"
             autoCenter={true}
             scrollParent={true}
+            backend = 'MediaElement'
             height={110}
             minPxPerSec={1}
           ></WaveForm>
