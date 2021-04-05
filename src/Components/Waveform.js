@@ -37,6 +37,9 @@ const SpinnerContainer = styled.div`
   background: #ced9e0;
   z-index: 100;
   position: fixed;
+  .loading-text{
+    text-align:center;
+  }
 `;
 
 function Waveform({}) {
@@ -90,7 +93,8 @@ function Waveform({}) {
     Peaks.init(options, (err, initalizedPeaks) => {
       if (err) console.error("err", err);
       peaks.current = initalizedPeaks;
-      console.log("done", peaks, "initalizedPeaks", initalizedPeaks);
+      initalizedPeaks.segments.add(subtitles.map(sub=>{return {startTime:sub.start,endTime:sub.end,labelText:sub.lines.join("\n"),editable:true}}))
+      console.log("done", peaks, "initalizedPeaks", initalizedPeaks.segments.getSegments());
       setPeaksReady(true);
     });
   };
@@ -147,6 +151,7 @@ function Waveform({}) {
       {!peaksReady && (
         <SpinnerContainer>
           <Spinner />
+          <div className="loading-text">Génération des ondes, cette opération peut prendre quelque temps</div>
         </SpinnerContainer>
       )}
       <div className="zoomview-container" ref={zoomviewWaveformRef}></div>
