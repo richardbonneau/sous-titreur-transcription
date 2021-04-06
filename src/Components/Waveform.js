@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
 import {createSegmentMarker} from "../Utils/CustomSegmentMarker"
+// import {createSegment} from "../Utils/CustomSegment"
 
 const Container = styled.div`
   height: 290px;
@@ -77,8 +78,8 @@ function Waveform({}) {
           if (sub.start !== allSegments[i].startTime)
             allSegments[i].update({ startTime: sub.start });
           else if (sub.end !== allSegments[i].endTime) allSegments[i].update({ endTime: sub.end });
-          else if (sub.lines.join("\n") !== allSegments[i].labelText)
-            allSegments[i].update({ labelText: sub.lines.join("\n") });
+          else if (sub.lines.join("\n") !== allSegments[i].attributes.label)
+            allSegments[i].update({ attributes: {label:sub.lines.join("\n")} });
         });
         subtitlesRef.current = subtitles;
       }
@@ -95,31 +96,14 @@ function Waveform({}) {
 
     if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
     else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
-    else if (seg.endTime < maxStart) allSegments[seg.id].update({ endTime: maxStart });
+
     console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
-    newSubtitle.start = Number(seg.startTime.toFixed(3));
-    newSubtitle.end = Number(seg.endTime.toFixed(3));
+    newSubtitle.start = seg.startTime;
+    newSubtitle.end =seg.endTime;
 
     dispatch(modifySingleCaption(newSubtitle, seg.id));
   };
 
-  // const segmentClicked = (seg) => {
-  //   dispatch(selectSub(seg.id))
-    // let newSubtitle = subtitlesRef.current[seg.id];
-
-    // let allSegments = peaks.current.segments.getSegments();
-    // let maxStart = seg.id > 0 ? allSegments[seg.id - 1].endTime : null;
-    // let maxEnd = seg.id < allSegments.length - 1 ? allSegments[seg.id + 1].startTime : null;
-
-    // if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
-    // else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
-    // else if (seg.endTime < maxStart) allSegments[seg.id].update({ endTime: maxStart });
-
-    // newSubtitle.start = Number(seg.startTime.toFixed(3));
-    // newSubtitle.end = Number(seg.endTime.toFixed(3));
-
-    // dispatch(modifySingleCaption(newSubtitle, seg.id));
-  // };
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
@@ -140,8 +124,8 @@ function Waveform({}) {
       randomizeSegmentColor: false,
       zoomWaveformColor: "#6a6a6a",
       segmentColor: "#f8f8f8",
-      segmentStartMarkerColor: "#00ff118a",
-      segmentEndMarkerColor: "#ff00008a",
+      segmentStartMarkerColor: "#00ff11",
+      segmentEndMarkerColor: "#ff0000",
 
     };
 
@@ -154,14 +138,19 @@ function Waveform({}) {
       subtitlesRef.current = subtitles;
       audioElementRef.current.src = video;
       initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
+
+      
       initalizedPeaks.segments.add(
         subtitles.map((sub, index) => {
           return {
             startTime: sub.start,
             endTime: sub.end,
-            labelText: sub.lines.join("\n"),
+
             editable: true,
             id: index,
+            attributes:{
+              label:sub.lines.join("\n")
+            }
           };
         })
       );

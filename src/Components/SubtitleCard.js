@@ -59,11 +59,11 @@ function SubtitleCard({ subIndex, subData }) {
           <SubtitleNumber onClick={()=>dispatch(seeking(subData.start))}>{subIndex + 1}</SubtitleNumber>
           <div>
             <Icon icon={"double-chevron-right"} />
-            <span>{subData.start}</span>
+            <span>{subData.start.toFixed(3)}</span>
           </div>
           <div>
             <Icon icon={"double-chevron-left"} />
-            <span>{subData.end}</span>
+            <span>{subData.end.toFixed(3)}</span>
           </div>
         </TimeContainer>
         <InputContainer>

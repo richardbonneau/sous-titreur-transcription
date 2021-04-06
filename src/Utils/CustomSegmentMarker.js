@@ -5,9 +5,9 @@ function DefaultSegmentMarker(options) {
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
-  var handleWidth = 10;
-  var handleHeight = 20;
-  var handleX = -(handleWidth / 2) + 0.5; // Place in the middle of the marker
+  var handleWidth = 15;
+  var handleHeight = 30;
+  var handleX = this._options.startMarker ? -handleWidth  :0 ; // Place in the middle of the marker
 
   var xPosition = this._options.startMarker ? -24 : 24;
 
@@ -41,17 +41,16 @@ DefaultSegmentMarker.prototype.init = function (group) {
   });
 
   //Caption
-  console.log(this._options)
   this._caption = new window.Konva.Text({
     x: xPosition + 30,
     y: 0,
-    text: this._options.startMarker ? this._options.segment._labelText : "",
+    text: this._options.segment.attributes.label,
     fontFamily: this._options.fontFamily,
     fontSize: this._options.fontSize,
     fontStyle: this._options.fontStyle,
     fill: "#000",
     textAlign: "left",
-    
+
   });
 
   // Vertical Line - create with default y and points, the real values
@@ -66,8 +65,8 @@ DefaultSegmentMarker.prototype.init = function (group) {
   group.add(this._label);
   group.add(this._line);
   group.add(this._handle);
-  group.add(this._caption);
-
+  if(this._options.startMarker) group.add(this._caption);
+  
   this.fitToView();
 
   this.bindEventHandlers(group);
