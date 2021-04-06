@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
+import {createSegmentMarker} from "../Utils/CustomSegmentMarker"
 
 const Container = styled.div`
   height: 290px;
@@ -95,12 +96,30 @@ function Waveform({}) {
     if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
     else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
     else if (seg.endTime < maxStart) allSegments[seg.id].update({ endTime: maxStart });
-    console.log("seg.startTime",seg.startTime,"seg.endTime",seg.endTime,"maxStart",maxStart)
+    console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
     newSubtitle.start = Number(seg.startTime.toFixed(3));
     newSubtitle.end = Number(seg.endTime.toFixed(3));
 
     dispatch(modifySingleCaption(newSubtitle, seg.id));
   };
+
+  // const segmentClicked = (seg) => {
+  //   dispatch(selectSub(seg.id))
+    // let newSubtitle = subtitlesRef.current[seg.id];
+
+    // let allSegments = peaks.current.segments.getSegments();
+    // let maxStart = seg.id > 0 ? allSegments[seg.id - 1].endTime : null;
+    // let maxEnd = seg.id < allSegments.length - 1 ? allSegments[seg.id + 1].startTime : null;
+
+    // if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
+    // else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
+    // else if (seg.endTime < maxStart) allSegments[seg.id].update({ endTime: maxStart });
+
+    // newSubtitle.start = Number(seg.startTime.toFixed(3));
+    // newSubtitle.end = Number(seg.endTime.toFixed(3));
+
+    // dispatch(modifySingleCaption(newSubtitle, seg.id));
+  // };
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
@@ -119,10 +138,11 @@ function Waveform({}) {
       keyboard: true,
       logger: console.error.bind(console),
       randomizeSegmentColor: false,
-      zoomWaveformColor:"#6a6a6a",
-      segmentColor:"#f8f8f8",
+      zoomWaveformColor: "#6a6a6a",
+      segmentColor: "#f8f8f8",
       segmentStartMarkerColor: "#00ff118a",
       segmentEndMarkerColor: "#ff00008a",
+
     };
 
     audioElementRef.current.src = audio;
@@ -133,7 +153,7 @@ function Waveform({}) {
       peaks.current = initalizedPeaks;
       subtitlesRef.current = subtitles;
       audioElementRef.current.src = video;
-
+      initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
       initalizedPeaks.segments.add(
         subtitles.map((sub, index) => {
           return {
@@ -145,12 +165,27 @@ function Waveform({}) {
           };
         })
       );
+
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
+      
 
       setPeaksReady(true);
     });
   };
+  // const createSegmentMarker=(options) =>{
+    
 
+  //   if (options.view === 'overview') {
+  //     return null;
+  //   }
+  //   console.log("options",options)
+  //   // return new Konva.Text({
+  //   //   text:       options.segment.labelText,
+  //   //   fontSize:   26,
+  //   //   fontFamily: 'Calibri',
+  //   //   fill:       'black',
+  //   // });
+  // }
   // useEffect(
   //   function subtitlesToRegions() {
   //     if (wavesurferRef.current) {

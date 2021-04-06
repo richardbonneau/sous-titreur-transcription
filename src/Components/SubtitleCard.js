@@ -4,7 +4,7 @@ import Waveform from "../Components/Waveform";
 import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { modifySingleCaption } from "../_Redux/Actions";
+import { modifySingleCaption,seeking } from "../_Redux/Actions";
 
 const Container = styled.div`
   margin-bottom: 0.2em;
@@ -16,6 +16,7 @@ const SubtitleNumber = styled.div`
   font-size: 1.1em;
   opacity: 0.4;
   padding-bottom: 0.5em;
+  cursor: pointer;
 `;
 const TimeContainer = styled.div`
   width: 175px;
@@ -55,7 +56,7 @@ function SubtitleCard({ subIndex, subData }) {
     <Container>
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
-          <SubtitleNumber>{subIndex + 1}</SubtitleNumber>
+          <SubtitleNumber onClick={()=>dispatch(seeking(subData.start))}>{subIndex + 1}</SubtitleNumber>
           <div>
             <Icon icon={"double-chevron-right"} />
             <span>{subData.start}</span>
