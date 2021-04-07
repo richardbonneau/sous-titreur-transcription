@@ -76,7 +76,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var self = this;
 
   var xPosition = self._options.startMarker ? -24 : 24;
-
+  
   if (self._options.draggable) {
     group.on("dragstart", function () {
       if (self._options.startMarker) {
@@ -126,10 +126,10 @@ function resizeCaption(self, group) {
       if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
     });
   }
-  console.log("startMarkerGroup", startMarkerGroup, "endMarkerGroup", endMarkerGroup);
+
   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
-  console.log("caption", caption);
-  caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x)
+
+  caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x -10)
 }
 
 DefaultSegmentMarker.prototype.fitToView = function () {

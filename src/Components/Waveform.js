@@ -156,8 +156,9 @@ function Waveform({}) {
         })
       );
 
+      console.log(initalizedPeaks.segments.getSegments())
+
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
-      
 
       setPeaksReady(true);
     });
