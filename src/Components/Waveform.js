@@ -104,14 +104,14 @@ function Waveform({}) {
   const segmentsDragEnd = (seg) => {
     let newSubtitle = subtitlesRef.current[seg.id];
 
-    let allSegments = peaks.current.segments.getSegments();
-    let maxStart = seg.id > 0 ? allSegments[seg.id - 1].endTime : null;
-    let maxEnd = seg.id < allSegments.length - 1 ? allSegments[seg.id + 1].startTime : null;
+    // let allSegments = peaks.current.segments.getSegments();
+    // let maxStart = seg.id > 0 ? allSegments[seg.id - 1].endTime : null;
+    // let maxEnd = seg.id < allSegments.length - 1 ? allSegments[seg.id + 1].startTime : null;
 
-    if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
-    else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
+    // if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
+    // else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
 
-    console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
+    // console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
     newSubtitle.start = seg.startTime;
     newSubtitle.end = seg.endTime;
 

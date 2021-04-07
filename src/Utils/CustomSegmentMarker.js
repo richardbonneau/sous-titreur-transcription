@@ -73,7 +73,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var self = this;
 
   var xPosition = self._options.startMarker ? -24 : 24;
-  
+
   if (self._options.draggable) {
     group.on("dragstart", function () {
       if (self._options.startMarker) {
@@ -83,6 +83,11 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
       self._label.show();
       self._options.layer.draw();
     });
+
+    // group.on("dragmove",function(){
+    //   console.log("dragmove")
+    //   return
+    // })
 
     group.on("dragend", function () {
       resizeCaption(self, group);
@@ -104,8 +109,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     self._label.hide();
     self._options.layer.draw();
   });
-  setTimeout(()=>resizeCaption(self, group),50)
-  
+  setTimeout(() => resizeCaption(self, group), 50);
 };
 
 function resizeCaption(self, group) {
@@ -113,21 +117,42 @@ function resizeCaption(self, group) {
 
   let startMarkerGroup;
   let endMarkerGroup;
+  let neighbour;
+  let xMaxBound;
+  let xMinBound;
   if (self._options.startMarker) {
     startMarkerGroup = group;
-    console.log("startMarkerGroup.index", startMarkerGroup.index);
-    children.forEach((child,i) => {
-      if (child.index === startMarkerGroup.index + 1) endMarkerGroup = child;
+
+    children.forEach((child, i) => {
+      if (child.index === startMarkerGroup.index - 3) neighbour = child;
+      else if (child.index === startMarkerGroup.index - 4) xMinBound = child.attrs.x;
+      else if (child.index === startMarkerGroup.index + 1) endMarkerGroup = child;
     });
+    xMaxBound = startMarkerGroup.attrs.x;
   } else {
     endMarkerGroup = group;
-    children.forEach((child,i) => {
-      if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
+    children.forEach((child, i) => {
+      if (child.index === endMarkerGroup.index + 3) neighbour = child;
+      else if (child.index === endMarkerGroup.index + 4) xMaxBound = child.attrs.x;
+      else if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
     });
+    xMinBound = endMarkerGroup.attrs.x;
   }
 
   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
-  caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x -10)
+  if (caption) caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x - 10);
+
+  const newDragBoundFunc = function (pos) {
+    let newX;
+    newX = pos.x > xMaxBound ? xMaxBound : pos.x < xMinBound ? xMinBound : pos.x;
+    return {
+      x: newX,
+      y: 0,
+    };
+  };
+  if (neighbour) {
+    neighbour.attrs.dragBoundFunc = newDragBoundFunc;
+  }
 }
 
 DefaultSegmentMarker.prototype.fitToView = function () {
