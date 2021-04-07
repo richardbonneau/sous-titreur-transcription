@@ -88,6 +88,7 @@ function Waveform({}) {
   );
 
   const segmentsDragEnd = (seg) => {
+
     let newSubtitle = subtitlesRef.current[seg.id];
 
     let allSegments = peaks.current.segments.getSegments();

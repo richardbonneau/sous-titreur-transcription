@@ -1,13 +1,13 @@
 function DefaultSegmentMarker(options) {
-  console.log("optionsoptions", options);
   options.draggable = true;
   this._options = options;
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
+  let gr = { ...group };
   var handleWidth = 15;
   var handleHeight = 30;
-  var handleX = this._options.startMarker ? -handleWidth  :0 ; // Place in the middle of the marker
+  var handleX = this._options.startMarker ? 0 : -handleWidth; // Place in the middle of the marker
 
   var xPosition = this._options.startMarker ? -24 : 24;
 
@@ -41,6 +41,7 @@ DefaultSegmentMarker.prototype.init = function (group) {
   });
 
   //Caption
+
   this._caption = new window.Konva.Text({
     x: xPosition + 30,
     y: 0,
@@ -50,7 +51,6 @@ DefaultSegmentMarker.prototype.init = function (group) {
     fontStyle: this._options.fontStyle,
     fill: "#000",
     textAlign: "left",
-
   });
 
   // Vertical Line - create with default y and points, the real values
@@ -65,8 +65,8 @@ DefaultSegmentMarker.prototype.init = function (group) {
   group.add(this._label);
   group.add(this._line);
   group.add(this._handle);
-  if(this._options.startMarker) group.add(this._caption);
-  
+  if (this._options.startMarker) group.add(this._caption);
+
   this.fitToView();
 
   this.bindEventHandlers(group);
@@ -76,7 +76,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var self = this;
 
   var xPosition = self._options.startMarker ? -24 : 24;
-  
+
   if (self._options.draggable) {
     group.on("dragstart", function () {
       if (self._options.startMarker) {
@@ -88,6 +88,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     });
 
     group.on("dragend", function () {
+      resizeCaption(self, group);
       self._label.hide();
       self._options.layer.draw();
     });
@@ -107,6 +108,29 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     self._options.layer.draw();
   });
 };
+
+function resizeCaption(self, group) {
+  let children = self._options.layer._layer.children;
+
+  let startMarkerGroup;
+  let endMarkerGroup;
+  if (self._options.startMarker) {
+    startMarkerGroup = group;
+    console.log("startMarkerGroup.index", startMarkerGroup.index);
+    children.forEach((child,i) => {
+      if (child.index === startMarkerGroup.index + 1) endMarkerGroup = child;
+    });
+  } else {
+    endMarkerGroup = group;
+    children.forEach((child,i) => {
+      if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
+    });
+  }
+  console.log("startMarkerGroup", startMarkerGroup, "endMarkerGroup", endMarkerGroup);
+  let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
+  console.log("caption", caption);
+  caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x)
+}
 
 DefaultSegmentMarker.prototype.fitToView = function () {
   var height = this._options.layer.getHeight();
