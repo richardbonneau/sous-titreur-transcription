@@ -3,7 +3,7 @@ import { DATA_REQUEST, DATA_SUCCESS, DATA_FAILURE, MODIFY_SINGLE_CAPTION } from 
 export default (
   state = {
     isFetching: false,
-    audioUrl: null,
+    peaksUrl: null,
     videoUrl: null,
     subtitles: [],
     vttFile:null
@@ -20,7 +20,7 @@ export default (
       return {
         ...state,
         isFetching: false,
-        audioUrl: action.data.audiofile,
+        peaksUrl: action.data.waveform,
         videoUrl: action.data.videolink,
         subtitles: action.data.subtitles,
       };

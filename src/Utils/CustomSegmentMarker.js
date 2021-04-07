@@ -41,8 +41,8 @@ DefaultSegmentMarker.prototype.init = function (group) {
 
   //Caption
   this._caption = new window.Konva.Text({
-    x: xPosition + 30,
-    y: 0,
+    x: xPosition + 40,
+    y: 15,
     text: this._options.segment.attributes.label,
     fontFamily: this._options.fontFamily,
     fontSize: this._options.fontSize,
@@ -84,11 +84,6 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
       self._options.layer.draw();
     });
 
-    // group.on("dragmove",function(){
-    //   console.log("dragmove")
-    //   return
-    // })
-
     group.on("dragend", function () {
       resizeCaption(self, group);
       self._label.hide();
@@ -114,33 +109,35 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
 
 function resizeCaption(self, group) {
   let children = self._options.layer._layer.children;
-
   let startMarkerGroup;
   let endMarkerGroup;
-  let neighbours = {  };
-  let neighbourBounds = { min: 0, max: 0 };
+  let neighbours = {};
+  let neighbourWithBoundsToUpdate = { min: 0, max: 0 };
+
   if (self._options.startMarker) {
     startMarkerGroup = group;
     children.forEach((child, i) => {
       if (child.index === startMarkerGroup.index - 3) neighbours.left = child;
       else if (child.index === startMarkerGroup.index + 4) neighbours.right = child;
-      else if (child.index === startMarkerGroup.index - 4) neighbourBounds.min = child.attrs.x;
+      else if (child.index === startMarkerGroup.index - 4)
+        neighbourWithBoundsToUpdate.min = child.attrs.x;
       else if (child.index === startMarkerGroup.index + 1) endMarkerGroup = child;
     });
-    neighbourBounds.max = startMarkerGroup.attrs.x;
+    neighbourWithBoundsToUpdate.max = startMarkerGroup.attrs.x;
   } else {
     endMarkerGroup = group;
     children.forEach((child, i) => {
       if (child.index === endMarkerGroup.index + 3) neighbours.right = child;
       else if (child.index === endMarkerGroup.index - 4) neighbours.left = child;
-      else if (child.index === endMarkerGroup.index + 4) neighbourBounds.max = child.attrs.x;
+      else if (child.index === endMarkerGroup.index + 4)
+        neighbourWithBoundsToUpdate.max = child.attrs.x;
       else if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
     });
-    neighbourBounds.min = endMarkerGroup.attrs.x;
+    neighbourWithBoundsToUpdate.min = endMarkerGroup.attrs.x;
   }
 
   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
-  if (caption) caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x - 10);
+  caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x - 10);
 
   const newDragBoundFunc = function (bounds) {
     return function (pos) {
@@ -153,16 +150,22 @@ function resizeCaption(self, group) {
     };
   };
 
-//  
-console.log("neighbours",neighbours)
   if (group._id === startMarkerGroup._id) {
-    let bounds = {min:startMarkerGroup.attrs.x,max:neighbours.right? neighbours.right.attrs.x: null}
+    let bounds = {
+      min: startMarkerGroup.attrs.x,
+      max: neighbours.right ? neighbours.right.attrs.x : null,
+    };
 
-    if(neighbours.left)neighbours.left.attrs.dragBoundFunc = newDragBoundFunc(neighbourBounds);
+    if (neighbours.left)
+      neighbours.left.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
     endMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(bounds);
-  } else   if (group._id === endMarkerGroup._id) {
-    let bounds = {min:neighbours.left? neighbours.left.attrs.x: null,max: endMarkerGroup.attrs.x}
-    if(neighbours.right)neighbours.right.attrs.dragBoundFunc = newDragBoundFunc(neighbourBounds);
+  } else if (group._id === endMarkerGroup._id) {
+    let bounds = {
+      min: neighbours.left ? neighbours.left.attrs.x : null,
+      max: endMarkerGroup.attrs.x,
+    };
+    if (neighbours.right)
+      neighbours.right.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
     startMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(bounds);
   }
 }

@@ -1,3 +1,6 @@
 input:focus {
   outline: none;
 }
+body{
+  background: #F5F8FA;
+}

@@ -10,6 +10,7 @@ const Container = styled.div`
   margin-bottom: 0.2em;
   .bp3-card {
     display: flex;
+    margin: 5px;
   }
 `;
 const SubtitleNumber = styled.div`

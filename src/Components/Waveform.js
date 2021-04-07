@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
 import { createSegmentMarker } from "../Utils/CustomSegmentMarker";
-// import {createSegment} from "../Utils/CustomSegment"
+
 
 const Container = styled.div`
   height: 290px;
@@ -39,20 +39,15 @@ const SpinnerContainer = styled.div`
   background: #ced9e0;
   z-index: 100;
   position: fixed;
-  .loading-text {
-    text-align: center;
-  }
 `;
 
 function Waveform({}) {
   const dispatch = useDispatch();
   const [peaksReady, setPeaksReady] = useState(false);
-  const [regions, setRegions] = useState([]);
-  // const isPlaying = useSelector((state) => state.media.isPlaying);
+
   const audio = useSelector((state) => state.data.audioUrl);
   const video = useSelector((state) => state.data.videoUrl);
-  // const seekingTime = useSelector((state) => state.media.seekingTime);
-  // const barHeight = useSelector((state) => state.media.barHeight);
+  const peaksUrl= useSelector((state) => state.data.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const subtitles = useSelector((state) => state.data.subtitles);
   const subtitlesRef = useRef();
@@ -62,22 +57,20 @@ function Waveform({}) {
   const overviewWaveformRef = useRef();
   const audioElementRef = useRef();
 
+
+
   useEffect(
     function initPeaksJs() {
-      if (audio) initPeaks();
+      if (peaksUrl) initPeaks();
     },
-    [audio]
+    [peaksUrl]
   );
   useEffect(
     function zoom() {
       if (peaks.current) {
-
-        // peaks.current.zoom.setZoom(horizontalZoom);
-
         const zoomView = peaks.current.views.getView("zoomview");
-        // const overview = peaks.current.views.getView("overview");
+
         zoomView.setAmplitudeScale(verticalZoom);
-        // overview.setAmplitudeScale(verticalZoom);
       }
     },
     [verticalZoom]
@@ -104,14 +97,6 @@ function Waveform({}) {
   const segmentsDragEnd = (seg) => {
     let newSubtitle = subtitlesRef.current[seg.id];
 
-    // let allSegments = peaks.current.segments.getSegments();
-    // let maxStart = seg.id > 0 ? allSegments[seg.id - 1].endTime : null;
-    // let maxEnd = seg.id < allSegments.length - 1 ? allSegments[seg.id + 1].startTime : null;
-
-    // if (seg.startTime < maxStart) allSegments[seg.id].update({ startTime: maxStart });
-    // else if (seg.endTime > maxEnd) allSegments[seg.id].update({ endTime: maxEnd });
-
-    // console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
     newSubtitle.start = seg.startTime;
     newSubtitle.end = seg.endTime;
 
@@ -119,6 +104,7 @@ function Waveform({}) {
   };
 
   const initPeaks = () => {
+    console.log("peaksUrl",peaksUrl)
     audioElementRef.current = document.querySelector(".video-react-video");
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
@@ -129,8 +115,11 @@ function Waveform({}) {
         zoomview: zoomviewWaveformRef.current,
       },
       mediaElement: audioElementRef.current,
-      webAudio: {
-        audioContext: audioContext,
+      // webAudio: {
+      //   audioContext: audioContext,
+      // },
+      dataUri : {
+        arraybuffer:peaksUrl
       },
       keyboard: true,
       logger: console.error.bind(console),
@@ -174,72 +163,11 @@ function Waveform({}) {
     });
   };
 
-  //   if (options.view === 'overview') {
-  //     return null;
-  //   }
-  //   console.log("options",options)
-  //   // return new Konva.Text({
-  //   //   text:       options.segment.labelText,
-  //   //   fontSize:   26,
-  //   //   fontFamily: 'Calibri',
-  //   //   fill:       'black',
-  //   // });
-  // }
-  // useEffect(
-  //   function subtitlesToRegions() {
-  //     if (wavesurferRef.current) {
-  //       setRegions(
-  //         subtitles.map((caption, i) => {
-  //           return {
-  //             start: caption.start,
-  //             end: caption.end,
-  //             maxStart: i > 0 ? subtitles[i - 1].end : undefined,
-  //             maxEnd: i < subtitles.length - 1 ? subtitles[i + 1].start : undefined,
-  //             attributes: {
-  //               label: caption.lines.join("\n"),
-  //             },
-  //           };
-  //         })
-  //       );
-  //     }
-  //   },
-  //   [subtitles]
-  // );
-
-  // useEffect(
-  //   function adjustBarHeight() {
-  //     if (wavesurferRef.current) {
-  //       let time = wavesurferRef.current.getCurrentTime();
-  //       wavesurferRef.current.params.barHeight = barHeight;
-  //       wavesurferRef.current.empty();
-  //       wavesurferRef.current.drawBuffer();
-  //       dispatch(seeking(time));
-  //     }
-  //   },
-  //   [barHeight]
-  // );
-
-  // useEffect(
-  //   function adjustBarWidth() {
-  //     if (wavesurferRef.current) {
-  //       let time = wavesurferRef.current.getCurrentTime();
-  //       wavesurferRef.current.params.minPxPerSec = waveformWidth;
-  //       wavesurferRef.current.empty();
-  //       wavesurferRef.current.drawBuffer();
-  //       dispatch(seeking(time));
-  //     }
-  //   },
-  //   [waveformWidth]
-  // );
-
   return (
     <Container>
       {!peaksReady && (
         <SpinnerContainer>
           <Spinner />
-          <div className="loading-text">
-            Génération des ondes, cette opération peut prendre quelque temps
-          </div>
         </SpinnerContainer>
       )}
       <div className="zoomview-container" ref={zoomviewWaveformRef}></div>

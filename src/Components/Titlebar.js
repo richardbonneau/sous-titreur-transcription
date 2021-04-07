@@ -7,6 +7,13 @@ import styled from "styled-components";
 const Container = styled.div`
 
   margin-bottom:.5em;
+  .bp3-navbar{
+    background-color: #293742;
+    color: white;
+  }
+  .bp3-button{
+    color:white;
+  }
 `;
 
 function Titlebar() {
@@ -14,10 +21,10 @@ function Titlebar() {
       <Container>
     <Navbar>
       <Navbar.Group align={Alignment.LEFT}>
-        <Navbar.Heading>Blueprint</Navbar.Heading>
+        <Navbar.Heading>Sous-Titreur</Navbar.Heading>
       </Navbar.Group>
       <Navbar.Group align={Alignment.RIGHT}>
-        <Button outlined={true} icon="document" text="Done" />
+        <Button outlined={true} icon="document" text="Envoyer" />
       </Navbar.Group>
     </Navbar>
     </Container>
