@@ -117,41 +117,53 @@ function resizeCaption(self, group) {
 
   let startMarkerGroup;
   let endMarkerGroup;
-  let neighbour;
-  let xMaxBound;
-  let xMinBound;
+  let neighbours = {  };
+  let neighbourBounds = { min: 0, max: 0 };
   if (self._options.startMarker) {
     startMarkerGroup = group;
-
     children.forEach((child, i) => {
-      if (child.index === startMarkerGroup.index - 3) neighbour = child;
-      else if (child.index === startMarkerGroup.index - 4) xMinBound = child.attrs.x;
+      if (child.index === startMarkerGroup.index - 3) neighbours.left = child;
+      else if (child.index === startMarkerGroup.index + 4) neighbours.right = child;
+      else if (child.index === startMarkerGroup.index - 4) neighbourBounds.min = child.attrs.x;
       else if (child.index === startMarkerGroup.index + 1) endMarkerGroup = child;
     });
-    xMaxBound = startMarkerGroup.attrs.x;
+    neighbourBounds.max = startMarkerGroup.attrs.x;
   } else {
     endMarkerGroup = group;
     children.forEach((child, i) => {
-      if (child.index === endMarkerGroup.index + 3) neighbour = child;
-      else if (child.index === endMarkerGroup.index + 4) xMaxBound = child.attrs.x;
+      if (child.index === endMarkerGroup.index + 3) neighbours.right = child;
+      else if (child.index === endMarkerGroup.index - 4) neighbours.left = child;
+      else if (child.index === endMarkerGroup.index + 4) neighbourBounds.max = child.attrs.x;
       else if (child.index === endMarkerGroup.index - 1) startMarkerGroup = child;
     });
-    xMinBound = endMarkerGroup.attrs.x;
+    neighbourBounds.min = endMarkerGroup.attrs.x;
   }
 
   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
   if (caption) caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x - 10);
 
-  const newDragBoundFunc = function (pos) {
-    let newX;
-    newX = pos.x > xMaxBound ? xMaxBound : pos.x < xMinBound ? xMinBound : pos.x;
-    return {
-      x: newX,
-      y: 0,
+  const newDragBoundFunc = function (bounds) {
+    return function (pos) {
+      let newX;
+      newX = pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x;
+      return {
+        x: newX,
+        y: 0,
+      };
     };
   };
-  if (neighbour) {
-    neighbour.attrs.dragBoundFunc = newDragBoundFunc;
+
+//  
+console.log("neighbours",neighbours)
+  if (group._id === startMarkerGroup._id) {
+    let bounds = {min:startMarkerGroup.attrs.x,max:neighbours.right? neighbours.right.attrs.x: null}
+
+    if(neighbours.left)neighbours.left.attrs.dragBoundFunc = newDragBoundFunc(neighbourBounds);
+    endMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(bounds);
+  } else   if (group._id === endMarkerGroup._id) {
+    let bounds = {min:neighbours.left? neighbours.left.attrs.x: null,max: endMarkerGroup.attrs.x}
+    if(neighbours.right)neighbours.right.attrs.dragBoundFunc = newDragBoundFunc(neighbourBounds);
+    startMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(bounds);
   }
 }
 
