@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
-import {createSegmentMarker} from "../Utils/CustomSegmentMarker"
+import { createSegmentMarker } from "../Utils/CustomSegmentMarker";
 // import {createSegment} from "../Utils/CustomSegment"
 
 const Container = styled.div`
@@ -53,7 +53,7 @@ function Waveform({}) {
   const video = useSelector((state) => state.data.videoUrl);
   // const seekingTime = useSelector((state) => state.media.seekingTime);
   // const barHeight = useSelector((state) => state.media.barHeight);
-  // const waveformWidth = useSelector((state) => state.media.waveformWidth);
+  const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const subtitles = useSelector((state) => state.data.subtitles);
   const subtitlesRef = useRef();
 
@@ -68,6 +68,20 @@ function Waveform({}) {
     },
     [audio]
   );
+  useEffect(
+    function zoom() {
+      if (peaks.current) {
+
+        // peaks.current.zoom.setZoom(horizontalZoom);
+
+        const zoomView = peaks.current.views.getView("zoomview");
+        // const overview = peaks.current.views.getView("overview");
+        zoomView.setAmplitudeScale(verticalZoom);
+        // overview.setAmplitudeScale(verticalZoom);
+      }
+    },
+    [verticalZoom]
+  );
 
   useEffect(
     function incomingSubtitlesChanges() {
@@ -79,7 +93,7 @@ function Waveform({}) {
             allSegments[i].update({ startTime: sub.start });
           else if (sub.end !== allSegments[i].endTime) allSegments[i].update({ endTime: sub.end });
           else if (sub.lines.join("\n") !== allSegments[i].attributes.label)
-            allSegments[i].update({ attributes: {label:sub.lines.join("\n")} });
+            allSegments[i].update({ attributes: { label: sub.lines.join("\n") } });
         });
         subtitlesRef.current = subtitles;
       }
@@ -88,7 +102,6 @@ function Waveform({}) {
   );
 
   const segmentsDragEnd = (seg) => {
-
     let newSubtitle = subtitlesRef.current[seg.id];
 
     let allSegments = peaks.current.segments.getSegments();
@@ -100,11 +113,10 @@ function Waveform({}) {
 
     console.log("seg.startTime", seg.startTime, "seg.endTime", seg.endTime, "maxStart", maxStart);
     newSubtitle.start = seg.startTime;
-    newSubtitle.end =seg.endTime;
+    newSubtitle.end = seg.endTime;
 
     dispatch(modifySingleCaption(newSubtitle, seg.id));
   };
-
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
@@ -127,7 +139,6 @@ function Waveform({}) {
       segmentColor: "#f8f8f8",
       segmentStartMarkerColor: "#00ff11",
       segmentEndMarkerColor: "#ff0000",
-
     };
 
     audioElementRef.current.src = audio;
@@ -140,7 +151,6 @@ function Waveform({}) {
       audioElementRef.current.src = video;
       initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
 
-      
       initalizedPeaks.segments.add(
         subtitles.map((sub, index) => {
           return {
@@ -149,21 +159,20 @@ function Waveform({}) {
 
             editable: true,
             id: index,
-            attributes:{
-              label:sub.lines.join("\n")
-            }
+            attributes: {
+              label: sub.lines.join("\n"),
+            },
           };
         })
       );
 
-      console.log(initalizedPeaks.segments.getSegments())
+      console.log(initalizedPeaks.segments.getSegments());
 
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
 
       setPeaksReady(true);
     });
   };
-    
 
   //   if (options.view === 'overview') {
   //     return null;

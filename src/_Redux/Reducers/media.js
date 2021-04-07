@@ -6,15 +6,15 @@ export default (
     isSeeking: false,
     seekingTime: 0,
     barHeight: 1,
-    waveformWidth: 0,
+    verticalZoom: 0,
     currentlySelected:null
   },
   action
 ) => {
-
+  console.log(action)
   switch (action.type) {
     case PLAY_PAUSE:
-      console.log(action)
+      
       return {
         ...state,
         isPlaying: action.isPlaying,
@@ -34,12 +34,12 @@ export default (
     case VERTICAL_ZOOM:
       return {
         ...state,
-        barHeight: action.barHeight,
+        verticalZoom: action.newZoom,
       };
     case HORIZONTAL_ZOOM:
       return {
         ...state,
-        waveformWidth: action.waveformWidth,
+        horizontalZoom: action.newZoom,
       };
       case CURRENTLY_SELECTED:
         return {

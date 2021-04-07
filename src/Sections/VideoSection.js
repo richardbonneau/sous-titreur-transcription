@@ -22,7 +22,7 @@ function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [verticalZoomSlider,setVerticalZoomSlider] = useState(1)
-  const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(0)
+  // const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(0)
   const isPlaying = useSelector((state) => state.media.isPlaying);
 
   return (
@@ -53,27 +53,17 @@ function VideoSection() {
             </select>
           </div>
         </Label>
+  
         <Label>
-          Vertical Zoom
+          Zoom Vertical
           <Slider
-            min={0.5}
-            max={10}
+            min={1}
+            max={6}
+            labelStepSize={1}
             stepSize={1}
             onRelease={(newValue) => dispatch(verticalZoom(newValue))}
             onChange={(newValue)=>setVerticalZoomSlider(newValue)}
             value={verticalZoomSlider}
-          />
-        </Label>
-        <Label>
-          Horizontal Zoom
-          <Slider
-            min={0}
-            max={100}
-            labelStepSize={100}
-            stepSize={10}
-            onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
-            onChange={(newValue)=>setHorizontalZoomSlider(newValue)}
-            value={horizontalZoomSlider}
           />
         </Label>
       </VideoController>

@@ -20,17 +20,18 @@ export const seeking = (seekingTime) => {
     seekingTime,
   };
 };
-export const verticalZoom = (barHeight) => {
-  console.log("barHeight", barHeight);
+export const verticalZoom = (newZoom) => {
+
   return {
     type: VERTICAL_ZOOM,
-    barHeight,
+    newZoom,
   };
 };
-export const horizontalZoom = (waveformWidth) => {
+export const horizontalZoom = (newZoom) => {
+  console.log("hi",newZoom)
   return {
     type: HORIZONTAL_ZOOM,
-    waveformWidth,
+    newZoom,
   };
 };
 
