@@ -4,7 +4,6 @@ function DefaultSegmentMarker(options) {
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
-  let gr = { ...group };
   var handleWidth = 15;
   var handleHeight = 30;
   var handleX = this._options.startMarker ? 0 : -handleWidth; // Place in the middle of the marker
@@ -41,7 +40,6 @@ DefaultSegmentMarker.prototype.init = function (group) {
   });
 
   //Caption
-
   this._caption = new window.Konva.Text({
     x: xPosition + 30,
     y: 0,
@@ -68,7 +66,6 @@ DefaultSegmentMarker.prototype.init = function (group) {
   if (this._options.startMarker) group.add(this._caption);
 
   this.fitToView();
-
   this.bindEventHandlers(group);
 };
 
@@ -107,6 +104,8 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     self._label.hide();
     self._options.layer.draw();
   });
+  setTimeout(()=>resizeCaption(self, group),50)
+  
 };
 
 function resizeCaption(self, group) {
@@ -128,7 +127,6 @@ function resizeCaption(self, group) {
   }
 
   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
-
   caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x -10)
 }
 

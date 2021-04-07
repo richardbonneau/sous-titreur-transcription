@@ -163,7 +163,6 @@ function Waveform({}) {
       setPeaksReady(true);
     });
   };
-  // const createSegmentMarker=(options) =>{
     
 
   //   if (options.view === 'overview') {
