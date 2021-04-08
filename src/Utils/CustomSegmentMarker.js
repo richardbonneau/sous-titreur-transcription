@@ -1,5 +1,4 @@
 function DefaultSegmentMarker(options) {
-  console.log("options", options);
   options.draggable = true;
   this._options = options;
 }
@@ -145,9 +144,8 @@ function resizeCaption(self) {
   let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
   let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];
-  caption.setWidth(endMarker._group.attrs.x - startMarker._group.attrs.x - 10);
+  caption.setWidth(endMarker._group.attrs.x - startMarker._group.attrs.x - 30);
 }
-
 
 
 DefaultSegmentMarker.prototype.fitToView = function () {

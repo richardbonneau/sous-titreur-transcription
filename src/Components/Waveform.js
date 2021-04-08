@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
 import { createSegmentMarker } from "../Utils/CustomSegmentMarker";
-import { createSegmentMarkerBuilder } from "../Utils/SegmentMarkerBuilder";
 
 const Container = styled.div`
   height: 290px;
@@ -47,7 +46,7 @@ function Waveform({}) {
 
   const audio = useSelector((state) => state.data.audioUrl);
   const video = useSelector((state) => state.data.videoUrl);
-  const peaksUrl= useSelector((state) => state.data.peaksUrl);
+  const peaksUrl = useSelector((state) => state.data.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const subtitles = useSelector((state) => state.data.subtitles);
   const subtitlesRef = useRef();
@@ -57,8 +56,6 @@ function Waveform({}) {
   const overviewWaveformRef = useRef();
   const audioElementRef = useRef();
 
-
-
   useEffect(
     function initPeaksJs() {
       if (peaksUrl) initPeaks();
@@ -66,7 +63,7 @@ function Waveform({}) {
     [peaksUrl]
   );
   useEffect(
-    function zoom() {
+    function incomingVerticalZoomChange() {
       if (peaks.current) {
         const zoomView = peaks.current.views.getView("zoomview");
 
@@ -81,18 +78,42 @@ function Waveform({}) {
       if (peaks.current) {
         let allSegments = peaks.current.segments.getSegments();
 
-        subtitles.forEach((sub, i) => {
-          if (sub.start !== allSegments[i].startTime)
-            allSegments[i].update({ startTime: sub.start });
-          else if (sub.end !== allSegments[i].endTime) allSegments[i].update({ endTime: sub.end });
-          else if (sub.lines.join("\n") !== allSegments[i].attributes.label)
-            allSegments[i].update({ attributes: { label: sub.lines.join("\n") } });
-        });
+        if (allSegments.length !== subtitles.length) {
+          console.log("generate segments again");
+        } else {
+          subtitles.forEach((sub, i) => {
+            if (sub.start !== allSegments[i].startTime)
+              allSegments[i].update({ startTime: sub.start });
+            else if (sub.end !== allSegments[i].endTime)
+              allSegments[i].update({ endTime: sub.end });
+            else if (sub.lines.join("\n") !== allSegments[i].attributes.label) {
+              allSegments[i].update({ attributes: { label: sub.lines.join("\n") } });
+            }
+          });
+        }
+
         subtitlesRef.current = subtitles;
       }
     },
     [subtitles]
   );
+  const createSegmentsFromSubtitles = () => {
+    peaks.current.segments.removeAll();
+    peaks.current.segments.add(
+      subtitles.map((sub, index) => {
+        return {
+          startTime: sub.start,
+          endTime: sub.end,
+
+          editable: true,
+          id: index,
+          attributes: {
+            label: sub.lines.join("\n"),
+          },
+        };
+      })
+    );
+  };
 
   const segmentsDragEnd = (seg) => {
     let newSubtitle = subtitlesRef.current[seg.id];
@@ -104,22 +125,16 @@ function Waveform({}) {
   };
 
   const initPeaks = () => {
-    console.log("peaksUrl",peaksUrl)
     audioElementRef.current = document.querySelector(".video-react-video");
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioContext = new AudioContext();
-    // console.log("audioElementRef",audioElementRef,"audioContext",audioContext,"overviewWaveformRef.current",overviewWaveformRef.current,"zoomviewWaveformRef.current",zoomviewWaveformRef.current)
+
     const options = {
       containers: {
         overview: overviewWaveformRef.current,
         zoomview: zoomviewWaveformRef.current,
       },
       mediaElement: audioElementRef.current,
-      // webAudio: {
-      //   audioContext: audioContext,
-      // },
-      dataUri : {
-        arraybuffer:peaksUrl
+      dataUri: {
+        arraybuffer: peaksUrl,
       },
       keyboard: true,
       logger: console.error.bind(console),
@@ -139,27 +154,10 @@ function Waveform({}) {
       subtitlesRef.current = subtitles;
       audioElementRef.current.src = video;
       initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
-      // initalizedPeaks.options.createSegmentMarker = createSegmentMarkerBuilder;
 
-      initalizedPeaks.segments.add(
-        subtitles.map((sub, index) => {
-          return {
-            startTime: sub.start,
-            endTime: sub.end,
-
-            editable: true,
-            id: index,
-            attributes: {
-              label: sub.lines.join("\n"),
-            },
-          };
-        })
-      );
-
-      console.log(initalizedPeaks.segments.getSegments());
+      createSegmentsFromSubtitles();
 
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
-  
       setPeaksReady(true);
     });
   };

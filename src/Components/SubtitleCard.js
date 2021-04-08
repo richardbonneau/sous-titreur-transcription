@@ -4,7 +4,7 @@ import Waveform from "../Components/Waveform";
 import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { modifySingleCaption,seeking } from "../_Redux/Actions";
+import { modifySingleCaption, seeking, addNewCaption, deleteCaption } from "../_Redux/Actions";
 
 const Container = styled.div`
   margin-bottom: 0.2em;
@@ -46,18 +46,39 @@ const InputContainer = styled.div`
 
 function SubtitleCard({ subIndex, subData }) {
   const dispatch = useDispatch();
+  const [shiftDown, setShiftDown] = useState(false);
+
+  const linesToString = subData.lines.join("\n");
 
   const writeText = (e) => {
     let newLines = e.target.value.split("\n");
-    let newCaption = {...subData,lines:newLines}
-    dispatch(modifySingleCaption(newCaption,subIndex ));
+    let newCaption = { ...subData, lines: newLines };
+    dispatch(modifySingleCaption(newCaption, subIndex));
+  };
+
+  const keyDown = (event) => {
+    if (event.key === "Shift") setShiftDown(true);
+    else if (!shiftDown && event.key === "Enter") {
+      event.preventDefault();
+      const oldCaption = linesToString.substr(0, event.target.selectionStart + 1).split("\n");
+      const newCaption = linesToString.substr(event.target.selectionStart + 1).split("\n");
+      console.log("oldCaption", oldCaption, "newCaption", newCaption);
+      dispatch(addNewCaption(oldCaption, newCaption, subIndex));
+    }
+  };
+  const keyUp = (event) => {
+    console.log(event.key);
+    if (event.key === "Shift") setShiftDown(false);
+    if (event.key === "Backspace" && linesToString === "") dispatch(deleteCaption(subIndex));
   };
 
   return (
     <Container>
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
-          <SubtitleNumber onClick={()=>dispatch(seeking(subData.start))}>{subIndex + 1}</SubtitleNumber>
+          <SubtitleNumber onClick={() => dispatch(seeking(subData.start))}>
+            {subIndex + 1}
+          </SubtitleNumber>
           <div>
             <Icon icon={"double-chevron-right"} />
             <span>{subData.start.toFixed(3)}</span>
@@ -68,7 +89,13 @@ function SubtitleCard({ subIndex, subData }) {
           </div>
         </TimeContainer>
         <InputContainer>
-          <textarea type="text" onChange={writeText} value={subData.lines.join("\n")} />
+          <textarea
+            onKeyDown={keyDown}
+            onKeyUp={keyUp}
+            type="text"
+            onChange={writeText}
+            value={linesToString}
+          />
         </InputContainer>
       </Card>
     </Container>
