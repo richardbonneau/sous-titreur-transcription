@@ -1,23 +1,8 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import {
-  Player,
-  ControlBar,
-  ProgressControl,
-  DurationDisplay,
-  CurrentTimeDisplay,
-  TimeDivider,
-} from "video-react";
+import { Player, ControlBar } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  isVideoPlaying,
-  seeking,
-  videoIsSeeking,
-  verticalZoom,
-  horizontalZoom,
-  setCurrentTime,
-} from "../_Redux/Actions";
-import Waveform from "./Waveform";
-import { Spinner } from "@blueprintjs/core";
+import { isVideoPlaying, seeking, videoIsSeeking } from "../_Redux/Actions";
+
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -26,8 +11,6 @@ const Container = styled.div`
 
   width: 100%;
   @media (min-width: 1040px) {
-    /* flex: 1;
-    width: 100%; */
   }
 `;
 
@@ -50,7 +33,8 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(
     function videoStateChanges() {
       if (Object.keys(videoState).length > 0) {
-        if (!videoState.paused !== isPlaying && !videoState.seeking) dispatch(isVideoPlaying(!videoState.paused));
+        if (!videoState.paused !== isPlaying && !videoState.seeking)
+          dispatch(isVideoPlaying(!videoState.paused));
         if (seekingTime !== videoState.seekingTime) dispatch(seeking(videoState.seekingTime));
         if (isSeeking !== videoState.seeking) dispatch(videoIsSeeking(videoState.seeking));
       }
@@ -61,14 +45,11 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(() => {
     if (player.current) {
       let videoElement = player.current.video.video;
-      // console.log("videoElement", videoElement.children);
+
       var i = 0;
       for (let track of videoElement.textTracks) {
-        //  console.log(track)
         track.mode = "disabled";
-        // if(track.language !== targetLanguage){
-        // videoElement.removeChild(videoElement.children[i]);
-        // }
+
         i++;
       }
       const track = videoElement.addTextTrack("captions");

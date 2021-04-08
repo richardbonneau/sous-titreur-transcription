@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import CaptionMarker from "../Components/CaptionMarker";
 
-
 const Container = styled.div`
   background: #ced9e0;
   width: 100%;
@@ -13,20 +12,12 @@ const Container = styled.div`
   @media (min-width: 1040px) {
     display: block;
   }
-
-
 `;
 
 function Timeline() {
-
-
-
-
   return (
     <Container>
       <Waveform />
-
-
     </Container>
   );
 }

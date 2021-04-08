@@ -6,7 +6,6 @@ import styled from "styled-components";
 import SubtitleCard from "../Components/SubtitleCard";
 import { useSelector, useDispatch } from "react-redux";
 
-
 const Container = styled.div`
   width: 100%;
   min-width: 700px;

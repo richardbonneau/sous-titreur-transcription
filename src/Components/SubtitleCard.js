@@ -14,7 +14,7 @@ const Container = styled.div`
   }
 `;
 const SubtitleNumber = styled.div`
-  font-size: 1.1em;
+  font-size: 1.3em;
   opacity: 0.4;
   padding-bottom: 0.5em;
   cursor: pointer;
@@ -23,9 +23,16 @@ const TimeContainer = styled.div`
   width: 175px;
   display: flex;
   flex-direction: column;
-  span {
+  .subtime {
+    display: flex;
+  }
+  input {
     opacity: 0.4;
     padding-right: 1em;
+    border: none;
+  }
+  input:focus {
+    border: 1px solid black;
   }
 `;
 const InputContainer = styled.div`
@@ -39,35 +46,69 @@ const InputContainer = styled.div`
     height: 40px;
     border: none;
   }
-  textarea:focus {
-    outline: none;
-  }
 `;
 
 function SubtitleCard({ subIndex, subData }) {
   const dispatch = useDispatch();
   const [shiftDown, setShiftDown] = useState(false);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [subtitleText, setSubtitleText] = useState("");
+  const subtitles = useSelector((state) => state.data.subtitles);
 
-  const linesToString = subData.lines.join("\n");
+  useEffect(
+    function onMount() {
+      const linesToString = subData.lines.join("\n");
+      setStartTime(subData.start.toFixed(3));
+      setEndTime(subData.end.toFixed(3));
+      setSubtitleText(linesToString);
+    },
+    [subtitles]
+  );
 
-  const writeText = (e) => {
-    let newLines = e.target.value.split("\n");
+  const setNewTime = () => {
+    let startInput = Number(startTime);
+    let endInput = Number(endTime);
+
+    let minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
+    let maxEnd =
+      subIndex < subtitles[subtitles.length - 1] ? subtitles[subtitles.length - 1].start : 9999;
+
+    let newStartTime = startInput < minStart ? minStart : startInput;
+    let newEndTime = endInput > maxEnd ? maxEnd : endInput;
+
+    let newCaption = { ...subData };
+
+    if (!isNaN(newStartTime)) newCaption.start = newStartTime;
+    if (!isNaN(newEndTime)) newCaption.end = newEndTime;
+
+    dispatch(modifySingleCaption(newCaption, subIndex));
+  };
+
+  const writeText = () => {
+    let newLines = subtitleText.split("\n");
     let newCaption = { ...subData, lines: newLines };
     dispatch(modifySingleCaption(newCaption, subIndex));
   };
 
+  const timeKeyUp = (event) => {
+    if (event.key === "Enter") setNewTime();
+  };
+
   const keyDown = (event) => {
+    const linesToString = subData.lines.join("\n");
     if (event.key === "Shift") setShiftDown(true);
     else if (!shiftDown && event.key === "Enter") {
       event.preventDefault();
-      const oldCaption = linesToString.substr(0, event.target.selectionStart ).split("\n");
+      const oldCaption = linesToString.substr(0, event.target.selectionStart).split("\n");
       const newCaption = linesToString.substr(event.target.selectionStart).split("\n");
       console.log("oldCaption", oldCaption, "newCaption", newCaption);
       dispatch(addNewCaption(oldCaption, newCaption, subIndex));
     }
   };
   const keyUp = (event) => {
-    console.log(event.key);
+    const linesToString = subData.lines.join("\n");
+
     if (event.key === "Shift") setShiftDown(false);
     if (event.key === "Backspace" && linesToString === "") dispatch(deleteCaption(subIndex));
   };
@@ -79,13 +120,23 @@ function SubtitleCard({ subIndex, subData }) {
           <SubtitleNumber onClick={() => dispatch(seeking(subData.start))}>
             {subIndex + 1}
           </SubtitleNumber>
-          <div>
+          <div className="subtime">
             <Icon icon={"double-chevron-right"} />
-            <span>{subData.start.toFixed(3)}</span>
+            <input
+              value={startTime}
+              onKeyUp={timeKeyUp}
+              onChange={(e) => setStartTime(e.target.value)}
+              onBlur={setNewTime}
+            />
           </div>
-          <div>
+          <div className="subtime">
             <Icon icon={"double-chevron-left"} />
-            <span>{subData.end.toFixed(3)}</span>
+            <input
+              value={endTime}
+              onKeyUp={timeKeyUp}
+              onChange={(e) => setEndTime(e.target.value)}
+              onBlur={setNewTime}
+            />
           </div>
         </TimeContainer>
         <InputContainer>
@@ -93,8 +144,9 @@ function SubtitleCard({ subIndex, subData }) {
             onKeyDown={keyDown}
             onKeyUp={keyUp}
             type="text"
-            onChange={writeText}
-            value={linesToString}
+            onChange={(e) => setSubtitleText(e.target.value)}
+            onBlur={writeText}
+            value={subtitleText}
           />
         </InputContainer>
       </Card>

@@ -1,4 +1,11 @@
-import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM,IS_SEEKING ,CURRENTLY_SELECTED} from "../Actions";
+import {
+  PLAY_PAUSE,
+  SEEKING,
+  VERTICAL_ZOOM,
+  HORIZONTAL_ZOOM,
+  IS_SEEKING,
+  CURRENTLY_SELECTED,
+} from "../Actions";
 
 export default (
   state = {
@@ -7,25 +14,22 @@ export default (
     seekingTime: 0,
     barHeight: 1,
     verticalZoom: 0,
-    currentlySelected:null
+    currentlySelected: null,
   },
   action
 ) => {
-  console.log(action)
   switch (action.type) {
     case PLAY_PAUSE:
-      
       return {
         ...state,
         isPlaying: action.isPlaying,
       };
     case IS_SEEKING:
-      console.log("IS_SEEKING")
-      return{
+      return {
         ...state,
-        isSeeking:action.videoIsSeeking,
-        // isPlaying: !action.videoIsSeeking 
-      }
+        isSeeking: action.videoIsSeeking,
+        // isPlaying: !action.videoIsSeeking
+      };
     case SEEKING:
       return {
         ...state,
@@ -41,11 +45,11 @@ export default (
         ...state,
         horizontalZoom: action.newZoom,
       };
-      case CURRENTLY_SELECTED:
-        return {
-          ...state,
-          currentlySelected: action.subIndex,
-        };
+    case CURRENTLY_SELECTED:
+      return {
+        ...state,
+        currentlySelected: action.subIndex,
+      };
     default:
       return state;
   }

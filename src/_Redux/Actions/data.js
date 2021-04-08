@@ -5,7 +5,6 @@ export const MODIFY_SINGLE_CAPTION = "MODIFY_SINGLE_CAPTION";
 export const ADD_NEW_CAPTION = "ADD_NEW_CAPTION";
 export const DELETE_CAPTION = "DELETE_CAPTION";
 
-
 export const requestData = () => {
   return {
     type: DATA_REQUEST,

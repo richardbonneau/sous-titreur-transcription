@@ -41,11 +41,9 @@ function App() {
       // body: JSON.stringify({ ident: "60634330c1fe9826860056_6185" }),
       // waveform
       body: JSON.stringify({ ident: "606def0995049815127141_6607" }),
-      
     })
       .then((res) => res.json())
       .then((body) => {
-        console.log("body", body);
         dispatch(receiveData(body.data));
       });
   }, []);

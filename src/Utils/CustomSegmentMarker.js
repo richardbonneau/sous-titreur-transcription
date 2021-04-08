@@ -106,11 +106,9 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   });
   setTimeout(() => {
     resizeCaption(self);
-    defineBounds(self,group);
+    defineBounds(self, group);
   }, 50);
 };
-
-
 
 function newDragBoundFunc(self) {
   return function (pos) {
@@ -136,7 +134,7 @@ function newDragBoundFunc(self) {
   };
 }
 
-function defineBounds(self,group) {
+function defineBounds(self, group) {
   group.attrs.dragBoundFunc = newDragBoundFunc(self);
 }
 
@@ -146,7 +144,6 @@ function resizeCaption(self) {
   let caption = startMarker._group.children[3];
   caption.setWidth(endMarker._group.attrs.x - startMarker._group.attrs.x - 30);
 }
-
 
 DefaultSegmentMarker.prototype.fitToView = function () {
   var height = this._options.layer.getHeight();

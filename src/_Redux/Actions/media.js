@@ -5,10 +5,7 @@ export const HORIZONTAL_ZOOM = "HORIZONTAL_ZOOM";
 export const IS_SEEKING = "IS_SEEKING";
 export const CURRENTLY_SELECTED = "CURRENTLY_SELECTED";
 
-
-
 export const isVideoPlaying = (isPlaying) => {
-  console.log("in action is playing",isPlaying)
   return {
     type: PLAY_PAUSE,
     isPlaying,
@@ -21,14 +18,12 @@ export const seeking = (seekingTime) => {
   };
 };
 export const verticalZoom = (newZoom) => {
-
   return {
     type: VERTICAL_ZOOM,
     newZoom,
   };
 };
 export const horizontalZoom = (newZoom) => {
-  console.log("hi",newZoom)
   return {
     type: HORIZONTAL_ZOOM,
     newZoom,

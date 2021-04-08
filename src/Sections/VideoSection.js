@@ -4,7 +4,13 @@ import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
 import { Button, Label, Slider } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import { isVideoPlaying, seeking,videoIsSeeking, verticalZoom, horizontalZoom } from "../_Redux/Actions";
+import {
+  isVideoPlaying,
+  seeking,
+  videoIsSeeking,
+  verticalZoom,
+  horizontalZoom,
+} from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -21,15 +27,13 @@ const VideoController = styled.div`
 function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [verticalZoomSlider,setVerticalZoomSlider] = useState(1)
+  const [verticalZoomSlider, setVerticalZoomSlider] = useState(1);
   // const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(0)
   const isPlaying = useSelector((state) => state.media.isPlaying);
 
   return (
     <Container>
-      <VideoPlayer
-        playbackSpeed={playbackSpeed}
-      />
+      <VideoPlayer playbackSpeed={playbackSpeed} />
 
       <VideoController>
         <div>
@@ -53,7 +57,7 @@ function VideoSection() {
             </select>
           </div>
         </Label>
-  
+
         <Label>
           Zoom Vertical
           <Slider
@@ -62,7 +66,7 @@ function VideoSection() {
             labelStepSize={1}
             stepSize={1}
             onRelease={(newValue) => dispatch(verticalZoom(newValue))}
-            onChange={(newValue)=>setVerticalZoomSlider(newValue)}
+            onChange={(newValue) => setVerticalZoomSlider(newValue)}
             value={verticalZoomSlider}
           />
         </Label>
