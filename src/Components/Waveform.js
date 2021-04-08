@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { Spinner } from "@blueprintjs/core";
 import Peaks from "peaks.js";
 import { createSegmentMarker } from "../Utils/CustomSegmentMarker";
-
+import { createSegmentMarkerBuilder } from "../Utils/SegmentMarkerBuilder";
 
 const Container = styled.div`
   height: 290px;
@@ -139,6 +139,7 @@ function Waveform({}) {
       subtitlesRef.current = subtitles;
       audioElementRef.current.src = video;
       initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
+      // initalizedPeaks.options.createSegmentMarker = createSegmentMarkerBuilder;
 
       initalizedPeaks.segments.add(
         subtitles.map((sub, index) => {
@@ -158,7 +159,7 @@ function Waveform({}) {
       console.log(initalizedPeaks.segments.getSegments());
 
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
-
+  
       setPeaksReady(true);
     });
   };

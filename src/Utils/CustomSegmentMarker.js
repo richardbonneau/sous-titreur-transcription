@@ -1,4 +1,5 @@
 function DefaultSegmentMarker(options) {
+  console.log("options", options);
   options.draggable = true;
   this._options = options;
 }
@@ -85,7 +86,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     });
 
     group.on("dragend", function () {
-      resizeCaption(self, group);
+      resizeCaption(self);
       self._label.hide();
       self._options.layer.draw();
     });
@@ -104,191 +105,50 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     self._label.hide();
     self._options.layer.draw();
   });
-  setTimeout(() => resizeCaption(self, group, false), 50);
+  setTimeout(() => {
+    resizeCaption(self);
+    defineBounds(self,group);
+  }, 50);
 };
 
-function newDragBoundFunc(bounds) {
+
+
+function newDragBoundFunc(self) {
   return function (pos) {
-    let newX;
-    newX = pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x;
+    let startMarker = self._options.layer._segmentShapes[
+      self._options.segment._id
+    ].getStartMarker();
+    let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+    let leftNeighbour = self._options.layer._segmentShapes[self._options.segment._id - 1];
+    let rightNeighbour = self._options.layer._segmentShapes[self._options.segment._id + 1];
+
+    let bounds = { min: 0, max: 9999 };
+    if (self._options.startMarker) {
+      if (leftNeighbour) bounds.min = leftNeighbour.getEndMarker().getX();
+      if (endMarker) bounds.max = endMarker.getX() - endMarker.getWidth();
+    } else {
+      if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
+      if (rightNeighbour) bounds.max = rightNeighbour.getStartMarker().getX();
+    }
     return {
-      x: newX,
+      x: pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x,
       y: 0,
     };
   };
 }
 
-// SegmentMarker.prototype._dragBoundFunc = function (pos) {
-//   var marker;
-//   var limit;
-//   if (this._startMarker) {
-//       marker = this._segmentShape.getEndMarker();
-//       limit = marker.getX() - marker.getWidth();
-//       if (pos.x > limit) {
-//           pos.x = limit;
-//       }
-//   } else {
-//       marker = this._segmentShape.getStartMarker();
-//       limit = marker.getX() + marker.getWidth();
-//       if (pos.x < limit) {
-//           pos.x = limit;
-//       }
-//   }
-//   return {
-//       x: pos.x,
-//       y: this._group.getAbsolutePosition().y
-//   };
-// };
-
-function resizeCaption(self, group) {
-  let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
-  let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
-
-  let caption = startMarker._group.children[3];
-  caption.setWidth(endMarker._group.attrs.x - startMarker._group.attrs.x - 10);
-
-  console.log("self._options.layer._segmentShapes", self._options);
-
-  let newbounds = { min: 0, max: 9999 };
-  let closestNeighbourNewBounds = {};
-  let leftNeighbour = self._options.layer._segmentShapes[self._options.segment._id - 1];
-  let rightNeighbour = self._options.layer._segmentShapes[self._options.segment._id + 1];
-
-  if (self._options.startMarker) {
-    if (rightNeighbour) newbounds.max = rightNeighbour.getStartMarker().getX();
-    newbounds.min = startMarker.getX();
-    if (leftNeighbour) {
-      closestNeighbourNewBounds.min = leftNeighbour.getStartMarker().getX();
-      closestNeighbourNewBounds.max = startMarker.getX();
-      leftNeighbour.getEndMarker()._group.attrs.dragBoundFunc = newDragBoundFunc(
-        closestNeighbourNewBounds
-      );
-    }
-    endMarker._group.attrs.dragBoundFunc = newDragBoundFunc(newbounds);
-  } else {
-    if (leftNeighbour) newbounds.min = leftNeighbour.getEndMarker().getX();
-    newbounds.max = endMarker.getX();
-
-    if (rightNeighbour) {
-      closestNeighbourNewBounds.min = endMarker.getX();
-      closestNeighbourNewBounds.max = rightNeighbour.getEndMarker().getX();
-      rightNeighbour.getStartMarker()._group.attrs.dragBoundFunc = newDragBoundFunc(
-        closestNeighbourNewBounds
-      );
-    }
-    startMarker._group.attrs.dragBoundFunc = newDragBoundFunc(newbounds);
-  }
-
-  // group.attrs.dragBoundFunc = newDragBoundFunc(newbounds)
-
-  // if (group._id === startMarkerGroup._id) {
-  //   let otherMarkerBounds = {
-  //     min: startMarkerGroup.attrs.x,
-  //     max: neighbours.right ? neighbours.right.attrs.x : 9999,
-  //   };
-
-  //   if (neighbours.left) {
-  //     console.log("neighbourWithBoundsToUpdate", neighbourWithBoundsToUpdate);
-  //     neighbours.left.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
-  //   }
-  //   endMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(otherMarkerBounds);
-  // } else if (group._id === endMarkerGroup._id) {
-  //   let otherMarkerBounds = {
-  //     min: neighbours.left ? neighbours.left.attrs.x : 0,
-  //     max: endMarkerGroup.attrs.x,
-  //   };
-  //   // console.log("bounds",bounds,endMarkerGroup,children)
-  //   if (neighbours.right) {
-  //     console.log("neighbourWithBoundsToUpdate", neighbourWithBoundsToUpdate);
-  //     neighbours.right.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
-  //   }
-  //   startMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(otherMarkerBounds);
-  // }
+function defineBounds(self,group) {
+  group.attrs.dragBoundFunc = newDragBoundFunc(self);
 }
 
-// function resizeCaption(self, group) {
-//   let children = self._options.layer._layer.children;
-//   let startMarkerGroup;
-//   let endMarkerGroup;
-//   let neighbours = {};
-//   let neighbourWithBoundsToUpdate = { min: 0, max: 0 };
-//   console.log("children", children, "group", group);
-//   if (self._options.startMarker) {
-//     startMarkerGroup = group;
-//     children.forEach((child, i) => {
-//       if (child.index === startMarkerGroup.index - 3) {
-//         console.log("left neighbours endmark", child);
-//         neighbours.left = child;
-//       } else if (child.index === startMarkerGroup.index + 4) {
-//         console.log("right neighbour startmark", child);
-//         neighbours.right = child;
-//       } else if (child.index === startMarkerGroup.index - 4) {
-//         console.log("left neighbours startmark", child);
-//         neighbourWithBoundsToUpdate.min = child.attrs.x;
-//       } else if (child.index === startMarkerGroup.index + 1) {
-//         console.log("endmark", child);
-//         endMarkerGroup = child;
-//       }
-//     });
-//     neighbourWithBoundsToUpdate.max = startMarkerGroup.attrs.x;
-//   } else {
-//     endMarkerGroup = group;
-//     children.forEach((child, i) => {
-//       if (child.index === endMarkerGroup.index + 3) {
-//         console.log("right neighbour startmark", child);
-//         neighbours.right = child;
-//       } else if (child.index === endMarkerGroup.index - 4) {
-//         console.log("left neighbour endmark", child);
-//         neighbours.left = child;
-//       } else if (child.index === endMarkerGroup.index + 4) {
-//         console.log("right neighbour endmark", child);
-//         neighbourWithBoundsToUpdate.max = child.attrs.x;
-//       } else if (child.index === endMarkerGroup.index - 1) {
-//         console.log("this neighbour startmark", child);
-//         startMarkerGroup = child;
-//       }
-//     });
-//     neighbourWithBoundsToUpdate.min = endMarkerGroup.attrs.x;
-//   }
+function resizeCaption(self) {
+  let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
+  let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+  let caption = startMarker._group.children[3];
+  caption.setWidth(endMarker._group.attrs.x - startMarker._group.attrs.x - 10);
+}
 
-//   let caption = startMarkerGroup.children[startMarkerGroup.children.length - 1];
-//   caption.setWidth(endMarkerGroup.attrs.x - startMarkerGroup.attrs.x - 10);
 
-//   const newDragBoundFunc = function (bounds) {
-//     return function (pos) {
-//       let newX;
-//       newX = pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x;
-//       return {
-//         x: newX,
-//         y: 0,
-//       };
-//     };
-//   };
-
-//   if (group._id === startMarkerGroup._id) {
-//     let otherMarkerBounds = {
-//       min: startMarkerGroup.attrs.x,
-//       max: neighbours.right ? neighbours.right.attrs.x : 9999,
-//     };
-
-//     if (neighbours.left) {
-//       console.log("neighbourWithBoundsToUpdate",neighbourWithBoundsToUpdate)
-//       neighbours.left.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
-//     }
-//     endMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(otherMarkerBounds);
-//   } else if (group._id === endMarkerGroup._id) {
-//     let otherMarkerBounds = {
-//       min: neighbours.left ? neighbours.left.attrs.x : 0,
-//       max: endMarkerGroup.attrs.x,
-//     };
-//     // console.log("bounds",bounds,endMarkerGroup,children)
-//     if (neighbours.right) {
-//       console.log("neighbourWithBoundsToUpdate",neighbourWithBoundsToUpdate)
-//       neighbours.right.attrs.dragBoundFunc = newDragBoundFunc(neighbourWithBoundsToUpdate);
-//     }
-//     startMarkerGroup.attrs.dragBoundFunc = newDragBoundFunc(otherMarkerBounds);
-//   }
-// }
 
 DefaultSegmentMarker.prototype.fitToView = function () {
   var height = this._options.layer.getHeight();
