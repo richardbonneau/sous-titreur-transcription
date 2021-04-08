@@ -4,13 +4,7 @@ import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
 import { Button, Label, Slider } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  isVideoPlaying,
-  seeking,
-  videoIsSeeking,
-  verticalZoom,
-  horizontalZoom,
-} from "../_Redux/Actions";
+import { isVideoPlaying, verticalZoom } from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;

@@ -1,6 +1,4 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Player, ControlBar } from "video-react";
-import Waveform from "../Components/Waveform";
 import { Navbar, Alignment, Button } from "@blueprintjs/core";
 import styled from "styled-components";
 

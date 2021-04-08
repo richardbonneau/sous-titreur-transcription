@@ -22,8 +22,6 @@ function VideoPlayer({ playbackSpeed }) {
   const subtitles = useSelector((state) => state.data.subtitles);
   const isPlaying = useSelector((state) => state.media.isPlaying);
   const seekingTime = useSelector((state) => state.media.seekingTime);
-  const barHeight = useSelector((state) => state.media.barHeight);
-  const waveformWidth = useSelector((state) => state.media.waveformWidth);
   const isSeeking = useSelector((state) => state.media.isSeeking);
 
   useEffect(() => {

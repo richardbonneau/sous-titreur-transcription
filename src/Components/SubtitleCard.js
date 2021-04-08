@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Player, ControlBar } from "video-react";
-import Waveform from "../Components/Waveform";
-import { Spinner, Card, Elevation, Icon, TextArea } from "@blueprintjs/core";
+import { Card, Elevation, Icon } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { modifySingleCaption, seeking, addNewCaption, deleteCaption } from "../_Redux/Actions";

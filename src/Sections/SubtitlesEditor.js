@@ -1,7 +1,4 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Player, ControlBar } from "video-react";
-import Waveform from "../Components/Waveform";
-import { Spinner } from "@blueprintjs/core";
 import styled from "styled-components";
 import SubtitleCard from "../Components/SubtitleCard";
 import { useSelector, useDispatch } from "react-redux";
