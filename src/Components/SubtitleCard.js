@@ -60,8 +60,8 @@ function SubtitleCard({ subIndex, subData }) {
     if (event.key === "Shift") setShiftDown(true);
     else if (!shiftDown && event.key === "Enter") {
       event.preventDefault();
-      const oldCaption = linesToString.substr(0, event.target.selectionStart + 1).split("\n");
-      const newCaption = linesToString.substr(event.target.selectionStart + 1).split("\n");
+      const oldCaption = linesToString.substr(0, event.target.selectionStart ).split("\n");
+      const newCaption = linesToString.substr(event.target.selectionStart).split("\n");
       console.log("oldCaption", oldCaption, "newCaption", newCaption);
       dispatch(addNewCaption(oldCaption, newCaption, subIndex));
     }

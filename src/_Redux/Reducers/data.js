@@ -49,21 +49,19 @@ export default (
 
       let newSub = {
         start: oldSub.end,
-        end:
-          (newSubtitles[action.subIndex].end - newSubtitles[action.subIndex].start) / 2 +
-          newSubtitles[action.subIndex].end,
+        end: newSubtitles[action.subIndex].end,
         lines: action.newCaption,
       };
 
       newSubtitles[action.subIndex] = oldSub;
       newSubtitles.splice(action.subIndex + 1, 0, newSub);
-      console.log("newSubtitles", newSubtitles);
+
       return { ...state, subtitles: newSubtitles };
     }
 
     case DELETE_CAPTION: {
-      let newSubtitles = state.subtitles.filter((sub,i)=>i!==action.subIndex);
-      
+      let newSubtitles = state.subtitles.filter((sub, i) => i !== action.subIndex);
+
       return { ...state, subtitles: newSubtitles };
     }
 

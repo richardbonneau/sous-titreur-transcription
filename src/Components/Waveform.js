@@ -79,7 +79,7 @@ function Waveform({}) {
         let allSegments = peaks.current.segments.getSegments();
 
         if (allSegments.length !== subtitles.length) {
-          console.log("generate segments again");
+          createSegmentsFromSubtitles()
         } else {
           subtitles.forEach((sub, i) => {
             if (sub.start !== allSegments[i].startTime)
@@ -98,6 +98,7 @@ function Waveform({}) {
     [subtitles]
   );
   const createSegmentsFromSubtitles = () => {
+    console.log("new segments?")
     peaks.current.segments.removeAll();
     peaks.current.segments.add(
       subtitles.map((sub, index) => {
