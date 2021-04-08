@@ -3,7 +3,7 @@ export const SEEKING = "SEEKING";
 export const VERTICAL_ZOOM = "VERTICAL_ZOOM";
 export const HORIZONTAL_ZOOM = "HORIZONTAL_ZOOM";
 export const IS_SEEKING = "IS_SEEKING";
-export const CURRENTLY_SELECTED = "CURRENTLY_SELECTED";
+
 
 export const isVideoPlaying = (isPlaying) => {
   return {
@@ -37,9 +37,4 @@ export const videoIsSeeking = (videoIsSeeking) => {
   };
 };
 
-export const selectSub = (subIndex) => {
-  return {
-    type: CURRENTLY_SELECTED,
-    subIndex,
-  };
-};
+

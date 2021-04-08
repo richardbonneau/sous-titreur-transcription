@@ -1,11 +1,4 @@
-import {
-  PLAY_PAUSE,
-  SEEKING,
-  VERTICAL_ZOOM,
-  HORIZONTAL_ZOOM,
-  IS_SEEKING,
-  CURRENTLY_SELECTED,
-} from "../Actions";
+import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM, IS_SEEKING } from "../Actions";
 
 export default (
   state = {
@@ -14,7 +7,6 @@ export default (
     seekingTime: 0,
     barHeight: 1,
     verticalZoom: 0,
-    currentlySelected: null,
   },
   action
 ) => {
@@ -45,11 +37,7 @@ export default (
         ...state,
         horizontalZoom: action.newZoom,
       };
-    case CURRENTLY_SELECTED:
-      return {
-        ...state,
-        currentlySelected: action.subIndex,
-      };
+
     default:
       return state;
   }

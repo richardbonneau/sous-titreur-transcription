@@ -4,6 +4,7 @@ export const DATA_FAILURE = "DATA_FAILURE";
 export const MODIFY_SINGLE_CAPTION = "MODIFY_SINGLE_CAPTION";
 export const ADD_NEW_CAPTION = "ADD_NEW_CAPTION";
 export const DELETE_CAPTION = "DELETE_CAPTION";
+export const CURRENTLY_SELECTED = "CURRENTLY_SELECTED";
 
 export const requestData = () => {
   return {
@@ -45,6 +46,13 @@ export const addNewCaption = (oldCaption, newCaption, subIndex) => {
 export const deleteCaption = (subIndex) => {
   return {
     type: DELETE_CAPTION,
+    subIndex,
+  };
+};
+
+export const selectSub = (subIndex) => {
+  return {
+    type: CURRENTLY_SELECTED,
     subIndex,
   };
 };

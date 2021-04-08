@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Player, ControlBar } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
 import { isVideoPlaying, seeking, videoIsSeeking } from "../_Redux/Actions";

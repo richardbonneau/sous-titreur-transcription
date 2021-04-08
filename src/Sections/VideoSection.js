@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 
 import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
-import { Button, Label, Slider } from "@blueprintjs/core";
+import {  Label, Slider } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import { isVideoPlaying, verticalZoom } from "../_Redux/Actions";
+import { selectSub, verticalZoom } from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -16,31 +16,37 @@ const Container = styled.div`
 `;
 const VideoController = styled.div`
   margin-top: 2em;
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [verticalZoomSlider, setVerticalZoomSlider] = useState(1);
-  // const [horizontalZoomSlider,setHorizontalZoomSlider] = useState(0)
-  const isPlaying = useSelector((state) => state.media.isPlaying);
+  const [search, setSearch] = useState("");
+  const subtitles = useSelector((state) => state.data.subtitles);
+ 
+
+  const startSearch = () => {
+    let foundIndex;
+    subtitles.forEach((sub,i) => {
+      if(!foundIndex && sub.lines.join("\n").search(search) !== -1) foundIndex = i
+    });
+    console.log("search",search,foundIndex)
+    dispatch(selectSub(foundIndex))
+  };
 
   return (
     <Container>
       <VideoPlayer playbackSpeed={playbackSpeed} />
 
       <VideoController>
-        <div>
-          <Button icon="step-backward" />
-          <Button
-            large={true}
-            icon={isPlaying ? "pause" : "play"}
-            onClick={() => dispatch(isVideoPlaying(!isPlaying))}
-          />
-          <Button icon="step-forward" />
-        </div>
         <Label>
-          Playback Speed
+          Vitesse
           <div class="bp3-select .modifier">
             <select onChange={(e) => setPlaybackSpeed(e.target.value)}>
               <option value={0.5}>0.5x</option>
@@ -51,7 +57,26 @@ function VideoSection() {
             </select>
           </div>
         </Label>
-
+        <div>
+          <Label>
+            Recherche
+            <div />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyUp={(e) => (e.key === "Enter" ? startSearch() : null)}
+            />
+          </Label>
+        </div>
+        {/* <div> */}
+        {/* <Button icon="step-backward" /> */}
+        {/* <Button
+            large={true}
+            icon={isPlaying ? "pause" : "play"}
+            onClick={() => dispatch(isVideoPlaying(!isPlaying))}
+          /> */}
+        {/* <Button icon="step-forward" /> */}
+        {/* </div> */}
         <Label>
           Zoom Vertical
           <Slider

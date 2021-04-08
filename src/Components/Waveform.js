@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { modifySingleCaption } from "../_Redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 

@@ -1,11 +1,12 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Elevation, Icon } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { modifySingleCaption, seeking, addNewCaption, deleteCaption } from "../_Redux/Actions";
 
 const Container = styled.div`
-  margin-bottom: 0.2em;
+  /* margin-bottom: 0.2em; */
+  padding: 0.01em;
   .bp3-card {
     display: flex;
     margin: 5px;
@@ -39,20 +40,23 @@ const InputContainer = styled.div`
   align-items: flex-end;
   textarea {
     width: 100%;
+    width: 100%;
     text-align: center;
     resize: none;
-    height: 40px;
     border: none;
   }
 `;
 
-function SubtitleCard({ subIndex, subData }) {
+function SubtitleCard({ subIndex, subData, isSelected }) {
   const dispatch = useDispatch();
   const [shiftDown, setShiftDown] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [subtitleText, setSubtitleText] = useState("");
+  const [isSelectedSub, setIsSelectedSub] = useState(false);
+
   const subtitles = useSelector((state) => state.data.subtitles);
+  const currentlySelected = useSelector((state) => state.data.currentlySelected);
 
   useEffect(
     function onMount() {
@@ -63,6 +67,11 @@ function SubtitleCard({ subIndex, subData }) {
     },
     [subtitles]
   );
+
+  useEffect(() => {
+    if (currentlySelected === subIndex) setIsSelectedSub(true);
+    else setIsSelectedSub(false);
+  }, [currentlySelected]);
 
   const setNewTime = () => {
     let startInput = Number(startTime);
@@ -100,19 +109,16 @@ function SubtitleCard({ subIndex, subData }) {
       event.preventDefault();
       const oldCaption = linesToString.substr(0, event.target.selectionStart).split("\n");
       const newCaption = linesToString.substr(event.target.selectionStart).split("\n");
-      console.log("oldCaption", oldCaption, "newCaption", newCaption);
       dispatch(addNewCaption(oldCaption, newCaption, subIndex));
-    }
+    } else if (event.key === "Backspace" && subtitleText === "") dispatch(deleteCaption(subIndex));
   };
   const keyUp = (event) => {
     const linesToString = subData.lines.join("\n");
-
     if (event.key === "Shift") setShiftDown(false);
-    if (event.key === "Backspace" && linesToString === "") dispatch(deleteCaption(subIndex));
   };
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: isSelectedSub ? "red" : "white" }}>
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
           <SubtitleNumber onClick={() => dispatch(seeking(subData.start))}>

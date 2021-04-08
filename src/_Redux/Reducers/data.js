@@ -4,6 +4,7 @@ import {
   MODIFY_SINGLE_CAPTION,
   ADD_NEW_CAPTION,
   DELETE_CAPTION,
+  CURRENTLY_SELECTED
 } from "../Actions";
 
 export default (
@@ -13,6 +14,7 @@ export default (
     videoUrl: null,
     subtitles: [],
     vttFile: null,
+    currentlySelected: null,
   },
   action
 ) => {
@@ -64,6 +66,12 @@ export default (
 
       return { ...state, subtitles: newSubtitles };
     }
+
+    case CURRENTLY_SELECTED:
+      return {
+        ...state,
+        currentlySelected: action.subIndex,
+      };
 
     default:
       return state;
