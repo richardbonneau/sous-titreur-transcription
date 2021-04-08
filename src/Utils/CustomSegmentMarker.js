@@ -139,6 +139,7 @@ function defineBounds(self, group) {
 }
 
 function resizeCaption(self) {
+  console.log("self",self)
   let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
   let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];

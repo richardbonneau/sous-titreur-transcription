@@ -6,7 +6,7 @@ import { isVideoPlaying, seeking, videoIsSeeking } from "../_Redux/Actions";
 import styled from "styled-components";
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: 600px;
   padding: 0 1em;
 
   width: 100%;

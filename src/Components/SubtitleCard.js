@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { Card, Elevation, Icon } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,6 +49,7 @@ const InputContainer = styled.div`
 
 function SubtitleCard({ subIndex, subData, isSelected }) {
   const dispatch = useDispatch();
+  const scrollTo = useRef();
   const [shiftDown, setShiftDown] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -69,8 +70,9 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   );
 
   useEffect(() => {
-    if (currentlySelected === subIndex) setIsSelectedSub(true);
-    else setIsSelectedSub(false);
+    if (currentlySelected === subIndex) scrollTo.current.scrollIntoView({behavior: 'smooth',})
+    // else setIsSelectedSub(false);
+
   }, [currentlySelected]);
 
   const setNewTime = () => {
@@ -118,7 +120,10 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   };
 
   return (
-    <Container style={{ backgroundColor: isSelectedSub ? "red" : "white" }}>
+    <Container
+      style={{ backgroundColor: isSelectedSub ? "red" : "white" }}
+      ref={scrollTo }
+    >
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
           <SubtitleNumber onClick={() => dispatch(seeking(subData.start))}>

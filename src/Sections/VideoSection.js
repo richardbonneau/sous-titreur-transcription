@@ -21,6 +21,9 @@ const VideoController = styled.div`
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
+  .bp3-label{
+    margin: 25px;
+  }
 `;
 
 function VideoSection() {
@@ -34,9 +37,9 @@ function VideoSection() {
   const startSearch = () => {
     let foundIndex;
     subtitles.forEach((sub,i) => {
-      if(!foundIndex && sub.lines.join("\n").search(search) !== -1) foundIndex = i
+      if(!foundIndex && sub.lines.join("\n").toLowerCase().search(search.toLowerCase()) !== -1) foundIndex = i
     });
-    console.log("search",search,foundIndex)
+    
     dispatch(selectSub(foundIndex))
   };
 
@@ -79,6 +82,18 @@ function VideoSection() {
         {/* </div> */}
         <Label>
           Zoom Vertical
+          <Slider
+            min={1}
+            max={6}
+            labelStepSize={1}
+            stepSize={1}
+            onRelease={(newValue) => dispatch(verticalZoom(newValue))}
+            onChange={(newValue) => setVerticalZoomSlider(newValue)}
+            value={verticalZoomSlider}
+          />
+        </Label>
+        <Label>
+          Zoom Horizontal
           <Slider
             min={1}
             max={6}

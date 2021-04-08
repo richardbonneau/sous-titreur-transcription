@@ -10,6 +10,8 @@ const Container = styled.div`
   }
   .bp3-button {
     color: white;
+    border: 1px solid white;
+    margin:0 5px;
   }
 `;
 
@@ -21,7 +23,8 @@ function Titlebar() {
           <Navbar.Heading>Sous-Titreur</Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
-          <Button outlined={true} icon="document" text="Envoyer" />
+          <Button outlined={true} icon="floppy-disk" text="Sauvegarder" />
+          <Button outlined={true} icon="download" text="Télécharger" />
         </Navbar.Group>
       </Navbar>
     </Container>
