@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { modifySingleCaption } from "../_Redux/Actions";
+import { modifySingleCaption, selectSub } from "../_Redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 
 import styled from "styled-components";
@@ -48,8 +48,9 @@ function Waveform({}) {
   const video = useSelector((state) => state.data.videoUrl);
   const peaksUrl = useSelector((state) => state.data.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
+  const horizontalZoom = useSelector((state) => state.media.horizontalZoom);
+
   const subtitles = useSelector((state) => state.data.subtitles);
-  const subtitlesRef = useRef();
 
   const peaks = useRef();
   const zoomviewWaveformRef = useRef();
@@ -66,11 +67,18 @@ function Waveform({}) {
     function incomingVerticalZoomChange() {
       if (peaks.current) {
         const zoomView = peaks.current.views.getView("zoomview");
-
         zoomView.setAmplitudeScale(verticalZoom);
       }
     },
     [verticalZoom]
+  );
+  useEffect(
+    function incomingHorizontalZoomChange() {
+      if (peaks.current) {
+        peaks.current.zoom.setZoom(horizontalZoom);
+      }
+    },
+    [horizontalZoom]
   );
 
   useEffect(
@@ -91,7 +99,6 @@ function Waveform({}) {
             }
           });
         }
-        subtitlesRef.current = subtitles;
       }
     },
     [subtitles]
@@ -103,11 +110,11 @@ function Waveform({}) {
         return {
           startTime: sub.start,
           endTime: sub.end,
-
           editable: true,
           id: index,
           attributes: {
             label: sub.lines.join("\n"),
+            visibleMarkers: false,
           },
         };
       })
@@ -115,12 +122,22 @@ function Waveform({}) {
   };
 
   const segmentsDragEnd = (seg) => {
-    let newSubtitle = subtitlesRef.current[seg.id];
+    let newSubtitle = subtitles[seg.id];
 
     newSubtitle.start = seg.startTime;
     newSubtitle.end = seg.endTime;
 
     dispatch(modifySingleCaption(newSubtitle, seg.id));
+  };
+
+  const playheadEntersSegment = (segment) => {
+    dispatch(selectSub(segment.id));
+  };
+
+  const mouseOverSegment = (segment, enter) => {
+    console.log("SEGMENT TO UPDATE", segment, "visible markers", enter);
+    if (segment.attributes.visibleMarkers !== enter)
+      segment.update({ attributes: { visibleMarkers: enter, label: segment.attributes.label } });
   };
 
   const initPeaks = () => {
@@ -135,6 +152,7 @@ function Waveform({}) {
       dataUri: {
         arraybuffer: peaksUrl,
       },
+      zoomLevels: [256, 512, 1024, 2048, 4096],
       keyboard: true,
       logger: console.error.bind(console),
       randomizeSegmentColor: false,
@@ -142,22 +160,23 @@ function Waveform({}) {
       segmentColor: "#f8f8f8",
       segmentStartMarkerColor: "#00ff11",
       segmentEndMarkerColor: "#ff0000",
+      emitCueEvents: true,
     };
-
-    audioElementRef.current.src = audio;
 
     Peaks.init(options, (err, initalizedPeaks) => {
       if (err) console.error("err", err);
-
       peaks.current = initalizedPeaks;
-      subtitlesRef.current = subtitles;
-      audioElementRef.current.src = video;
+
       initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
 
-      createSegmentsFromSubtitles();
-
+      initalizedPeaks.on("segments.enter", playheadEntersSegment);
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
+      initalizedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
+      initalizedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
+
+      createSegmentsFromSubtitles();
       setPeaksReady(true);
+      console.log("options", initalizedPeaks);
     });
   };
 

@@ -32,11 +32,13 @@ DefaultSegmentMarker.prototype.init = function (group) {
   this._handle = new window.Konva.Rect({
     x: handleX,
     y: 0,
-    width: handleWidth,
+    width: handleWidth ,
     height: handleHeight,
     fill: this._options.color,
     stroke: this._options.color,
     strokeWidth: 1,
+    visible: this._options.segment.attributes.visibleMarkers
+    // hide:  this._options.segment.attributes.visibleMarkers
   });
 
   //Caption
@@ -107,10 +109,12 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   setTimeout(() => {
     resizeCaption(self);
     defineBounds(self, group);
+
   }, 50);
 };
 
 function newDragBoundFunc(self) {
+
   return function (pos) {
     let startMarker = self._options.layer._segmentShapes[
       self._options.segment._id
@@ -139,7 +143,7 @@ function defineBounds(self, group) {
 }
 
 function resizeCaption(self) {
-  console.log("self",self)
+  console.log("self", self);
   let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
   let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];

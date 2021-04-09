@@ -4,7 +4,7 @@ import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
 import {  Label, Slider } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import { selectSub, verticalZoom } from "../_Redux/Actions";
+import { selectSub, verticalZoom ,horizontalZoom} from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +30,7 @@ function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [verticalZoomSlider, setVerticalZoomSlider] = useState(1);
+  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
   const [search, setSearch] = useState("");
   const subtitles = useSelector((state) => state.data.subtitles);
  
@@ -42,6 +43,7 @@ function VideoSection() {
     
     dispatch(selectSub(foundIndex))
   };
+  console.log("horizontalZoomSlider",horizontalZoomSlider)
 
   return (
     <Container>
@@ -71,15 +73,7 @@ function VideoSection() {
             />
           </Label>
         </div>
-        {/* <div> */}
-        {/* <Button icon="step-backward" /> */}
-        {/* <Button
-            large={true}
-            icon={isPlaying ? "pause" : "play"}
-            onClick={() => dispatch(isVideoPlaying(!isPlaying))}
-          /> */}
-        {/* <Button icon="step-forward" /> */}
-        {/* </div> */}
+
         <Label>
           Zoom Vertical
           <Slider
@@ -95,13 +89,13 @@ function VideoSection() {
         <Label>
           Zoom Horizontal
           <Slider
-            min={1}
-            max={6}
+            min={0}
+            max={4}
             labelStepSize={1}
             stepSize={1}
-            onRelease={(newValue) => dispatch(verticalZoom(newValue))}
-            onChange={(newValue) => setVerticalZoomSlider(newValue)}
-            value={verticalZoomSlider}
+            onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
+            onChange={(newValue) => setHorizontalZoomSlider(newValue)}
+            value={horizontalZoomSlider}
           />
         </Label>
       </VideoController>

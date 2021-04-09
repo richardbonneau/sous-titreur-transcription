@@ -74,7 +74,8 @@ function VideoPlayer({ playbackSpeed }) {
 
   return (
     <Container>
-      <Player ref={player} playsInline src={videoUrl}>
+      <Player ref={player} >
+        <source src={videoUrl} />
         <ControlBar></ControlBar>
       </Player>
     </Container>

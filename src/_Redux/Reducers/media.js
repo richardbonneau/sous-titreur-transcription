@@ -5,11 +5,12 @@ export default (
     isPlaying: false,
     isSeeking: false,
     seekingTime: 0,
-    barHeight: 1,
+    horizontalZoom: 0,
     verticalZoom: 0,
   },
   action
 ) => {
+  // console.log(action,state)
   switch (action.type) {
     case PLAY_PAUSE:
       return {
@@ -28,6 +29,7 @@ export default (
         seekingTime: action.seekingTime,
       };
     case VERTICAL_ZOOM:
+      
       return {
         ...state,
         verticalZoom: action.newZoom,

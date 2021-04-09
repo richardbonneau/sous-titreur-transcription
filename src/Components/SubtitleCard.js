@@ -1,8 +1,8 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, Elevation, Icon } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { modifySingleCaption, seeking, addNewCaption, deleteCaption } from "../_Redux/Actions";
+import { modifySingleCaption, seeking, addNewCaption, deleteCaption,selectSub } from "../_Redux/Actions";
 
 const Container = styled.div`
   /* margin-bottom: 0.2em; */
@@ -39,7 +39,7 @@ const InputContainer = styled.div`
   display: flex;
   align-items: flex-end;
   textarea {
-    width: 100%;
+    height: 100%;
     width: 100%;
     text-align: center;
     resize: none;
@@ -54,7 +54,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [subtitleText, setSubtitleText] = useState("");
-  const [isSelectedSub, setIsSelectedSub] = useState(false);
+
 
   const subtitles = useSelector((state) => state.data.subtitles);
   const currentlySelected = useSelector((state) => state.data.currentlySelected);
@@ -70,8 +70,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   );
 
   useEffect(() => {
-    if (currentlySelected === subIndex) scrollTo.current.scrollIntoView({behavior: 'smooth',})
-    // else setIsSelectedSub(false);
+    if (currentlySelected === subIndex) scrollTo.current.scrollIntoView({ behavior: "smooth" });
 
   }, [currentlySelected]);
 
@@ -120,13 +119,15 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   };
 
   return (
-    <Container
-      style={{ backgroundColor: isSelectedSub ? "red" : "white" }}
-      ref={scrollTo }
-    >
+    <Container ref={scrollTo}>
       <Card elevation={Elevation.ONE}>
         <TimeContainer>
-          <SubtitleNumber onClick={() => dispatch(seeking(subData.start))}>
+          <SubtitleNumber
+            onClick={() => {
+              dispatch(selectSub(subIndex));
+              dispatch(seeking(subData.start));
+            }}
+          >
             {subIndex + 1}
           </SubtitleNumber>
           <div className="subtime">
