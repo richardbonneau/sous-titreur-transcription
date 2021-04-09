@@ -32,13 +32,12 @@ DefaultSegmentMarker.prototype.init = function (group) {
   this._handle = new window.Konva.Rect({
     x: handleX,
     y: 0,
-    width: handleWidth ,
+    width: handleWidth,
     height: handleHeight,
     fill: this._options.color,
     stroke: this._options.color,
     strokeWidth: 1,
-    visible: this._options.segment.attributes.visibleMarkers
-    // hide:  this._options.segment.attributes.visibleMarkers
+    visible: this._options.segment.attributes.visibleMarkers,
   });
 
   //Caption
@@ -77,14 +76,14 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var xPosition = self._options.startMarker ? -24 : 24;
 
   if (self._options.draggable) {
-    group.on("dragstart", function () {
-      if (self._options.startMarker) {
-        self._label.setX(xPosition - self._label.getWidth());
-      }
+  //   group.on("dragstart", function () {
+  //     if (self._options.startMarker) {
+  //       self._label.setX(xPosition - self._label.getWidth());
+  //     }
 
-      self._label.show();
-      self._options.layer.draw();
-    });
+  //     self._label.show();
+  //     self._options.layer.draw();
+  //   });
 
     group.on("dragend", function () {
       resizeCaption(self);
@@ -93,28 +92,36 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     });
   }
 
-  self._handle.on("mouseover touchstart", function () {
-    if (self._options.startMarker) {
-      self._label.setX(xPosition - self._label.getWidth());
-    }
-
-    self._label.show();
-    self._options.layer.draw();
+  self._handle.on("mouseover", function () {
+    // self._handle.show()
   });
 
-  self._handle.on("mouseout touchend", function () {
-    self._label.hide();
-    self._options.layer.draw();
+  self._handle.on("mouseout", function () {
+
+      if (self._options.startMarker) {
+        let endMarker = self._options.layer._segmentShapes[
+          self._options.segment._id
+        ].getEndMarker();
+        self._handle.hide();
+        endMarker._marker._handle.hide();
+      } else {
+        let startMarker = self._options.layer._segmentShapes[
+          self._options.segment._id
+        ].getStartMarker();
+        startMarker._marker._handle.hide();
+        self._handle.hide();
+      }
+      self._options.layer.draw();
+    
   });
+
   setTimeout(() => {
     resizeCaption(self);
     defineBounds(self, group);
-
   }, 50);
 };
 
 function newDragBoundFunc(self) {
-
   return function (pos) {
     let startMarker = self._options.layer._segmentShapes[
       self._options.segment._id
