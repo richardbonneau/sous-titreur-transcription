@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { modifySingleCaption, selectSub } from "../_Redux/Actions";
+import { modifySingleCaption, selectSub, modifyMultipleCaption } from "../_Redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 
 import styled from "styled-components";
@@ -82,10 +82,10 @@ function Waveform({}) {
   );
 
   useEffect(
-    function incomingSubtitlesChanges() {
+    function syncSegmentsWithSubtitles() {
       if (peaks.current) {
         let allSegments = peaks.current.segments.getSegments();
-
+        console.log("allSegments", allSegments);
         if (allSegments.length !== subtitles.length) {
           createSegmentsFromSubtitles();
         } else {
@@ -103,6 +103,7 @@ function Waveform({}) {
     },
     [subtitles]
   );
+
   const createSegmentsFromSubtitles = () => {
     peaks.current.segments.removeAll();
     peaks.current.segments.add(
@@ -121,13 +122,36 @@ function Waveform({}) {
     );
   };
 
-  const segmentsDragEnd = (seg) => {
-    let newSubtitle = subtitles[seg.id];
+  const segmentsDragEnd = (seg, isStartMarker) => {
+    console.log("seg", seg);
 
-    newSubtitle.start = seg.startTime;
+    let neighbourIndex = isStartMarker ? seg.id - 1 : seg.id + 1;
+
+    let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
+
+    let modifiedSubtitles = []
+    console.log(
+      "seg._peaks.segments._segmentsById[neighbourIndex] ",
+      seg._peaks.segments._segmentsById[neighbourIndex]
+    );
+    if (neighbour) {
+      if (isStartMarker) {
+        let neighbourIndex = seg.id - 1;
+        if (seg._startTime < seg._peaks.segments._segmentsById[neighbourIndex]._endTime) {
+          let newSubtitle = { ...subtitles[neighbourIndex] };
+          newSubtitle.end = seg._startTime;
+          modifiedSubtitles.push({newCaption:newSubtitle,index:neighbourIndex})
+        }
+      }
+    }
+
+    let newSubtitle = subtitles[seg.id];
+    console.log("seg.startTime", seg._startTime);
+    newSubtitle.start = seg._startTime;
     newSubtitle.end = seg.endTime;
 
-    dispatch(modifySingleCaption(newSubtitle, seg.id));
+    modifiedSubtitles.push({newCaption:newSubtitle,index:seg.id})
+    dispatch(modifyMultipleCaption(modifiedSubtitles));
   };
 
   const playheadEntersSegment = (segment) => {
@@ -171,8 +195,8 @@ function Waveform({}) {
 
       initalizedPeaks.on("segments.enter", playheadEntersSegment);
       initalizedPeaks.on("segments.dragend", segmentsDragEnd);
-      initalizedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
-      initalizedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
+      // initalizedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
+      // initalizedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
 
       createSegmentsFromSubtitles();
       setPeaksReady(true);

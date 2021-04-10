@@ -4,7 +4,8 @@ import {
   MODIFY_SINGLE_CAPTION,
   ADD_NEW_CAPTION,
   DELETE_CAPTION,
-  CURRENTLY_SELECTED
+  CURRENTLY_SELECTED,
+  MODIFY_MULTIPLE_CAPTIONS
 } from "../Actions";
 
 export default (
@@ -35,6 +36,16 @@ export default (
     case MODIFY_SINGLE_CAPTION: {
       let newSubtitles = [...state.subtitles];
       newSubtitles[action.subIndex] = action.newCaption;
+      return { ...state, subtitles: newSubtitles };
+    }
+
+    case MODIFY_MULTIPLE_CAPTIONS: {
+      let newSubtitles = [...state.subtitles];
+      action.newCaptions.forEach((cap)=>{
+        console.log("cap.index",cap.index,"cap.newCaption",cap.newCaption)
+        newSubtitles[cap.index] = cap.newCaption;
+      })
+      console.log("newSubtitles",newSubtitles)
       return { ...state, subtitles: newSubtitles };
     }
 

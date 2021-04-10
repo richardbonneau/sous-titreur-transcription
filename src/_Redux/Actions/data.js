@@ -5,6 +5,7 @@ export const MODIFY_SINGLE_CAPTION = "MODIFY_SINGLE_CAPTION";
 export const ADD_NEW_CAPTION = "ADD_NEW_CAPTION";
 export const DELETE_CAPTION = "DELETE_CAPTION";
 export const CURRENTLY_SELECTED = "CURRENTLY_SELECTED";
+export const MODIFY_MULTIPLE_CAPTIONS = "MODIFY_MULTIPLE_CAPTIONS";
 
 export const requestData = () => {
   return {
@@ -31,6 +32,13 @@ export const modifySingleCaption = (newCaption, subIndex) => {
     type: MODIFY_SINGLE_CAPTION,
     subIndex,
     newCaption,
+  };
+};
+
+export const modifyMultipleCaption = (newCaptions) => {
+  return {
+    type: MODIFY_MULTIPLE_CAPTIONS,
+    newCaptions
   };
 };
 
