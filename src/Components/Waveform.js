@@ -130,10 +130,7 @@ function Waveform({}) {
     let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
 
     let modifiedSubtitles = []
-    console.log(
-      "seg._peaks.segments._segmentsById[neighbourIndex] ",
-      seg._peaks.segments._segmentsById[neighbourIndex]
-    );
+
     if (neighbour) {
       if (isStartMarker) {
         let neighbourIndex = seg.id - 1;
@@ -142,11 +139,17 @@ function Waveform({}) {
           newSubtitle.end = seg._startTime;
           modifiedSubtitles.push({newCaption:newSubtitle,index:neighbourIndex})
         }
+      } else {
+        let neighbourIndex = seg.id + 1;
+        if (seg._endTime > seg._peaks.segments._segmentsById[neighbourIndex]._startTime) {
+          let newSubtitle = { ...subtitles[neighbourIndex] };
+          newSubtitle.start = seg._endTime;
+          modifiedSubtitles.push({newCaption:newSubtitle,index:neighbourIndex})
+        }
       }
     }
 
     let newSubtitle = subtitles[seg.id];
-    console.log("seg.startTime", seg._startTime);
     newSubtitle.start = seg._startTime;
     newSubtitle.end = seg.endTime;
 

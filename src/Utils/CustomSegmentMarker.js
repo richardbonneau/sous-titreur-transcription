@@ -161,21 +161,28 @@ function newDragBoundFunc(self) {
       let leftNeighbour = self._options.layer._segmentShapes[self._options.segment._id - 1];
       if (endMarker) bounds.max = endMarker.getX() - endMarker.getWidth();
       if (leftNeighbour) {
-        const neighbourEndMarkerX = leftNeighbour.getEndMarker().getX();
         bounds.min = leftNeighbour.getStartMarker().getX();
 
-        if (neighbourEndMarkerX >= pos.x && neighbourEndMarkerX > bounds.min) {
-          leftNeighbour.getEndMarker().setX(pos.x);        
+
+        if (leftNeighbour.getEndMarker().getX() >= pos.x && pos.x > bounds.min) {
+          leftNeighbour.getEndMarker().setX(pos.x);
         }
-      } else {
-        if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
-        if (rightNeighbour) bounds.max = rightNeighbour.getEndMarker().getX();
       }
-      return {
-        x: pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x,
-        y: 0,
-      };
+    } else {
+      if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
+      if (rightNeighbour) {
+        bounds.max = rightNeighbour.getEndMarker().getX();
+
+
+        if (rightNeighbour.getStartMarker().getX() <= pos.x && pos.x < bounds.max) {
+          rightNeighbour.getStartMarker().setX(pos.x);
+        }
+      }
     }
+    return {
+      x: pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x,
+      y: 0,
+    };
   };
 }
 
