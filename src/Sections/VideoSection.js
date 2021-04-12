@@ -43,7 +43,7 @@ function VideoSection() {
     
     dispatch(selectSub(foundIndex))
   };
-  console.log("horizontalZoomSlider",horizontalZoomSlider)
+
 
   return (
     <Container>

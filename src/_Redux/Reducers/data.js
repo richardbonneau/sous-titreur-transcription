@@ -42,10 +42,9 @@ export default (
     case MODIFY_MULTIPLE_CAPTIONS: {
       let newSubtitles = [...state.subtitles];
       action.newCaptions.forEach((cap)=>{
-        console.log("cap.index",cap.index,"cap.newCaption",cap.newCaption)
+        console.log("cap",cap.newCaption,"newSubtitles[cap.index]",newSubtitles[cap.index])
         newSubtitles[cap.index] = cap.newCaption;
       })
-      console.log("newSubtitles",newSubtitles)
       return { ...state, subtitles: newSubtitles };
     }
 

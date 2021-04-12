@@ -44,7 +44,7 @@ DefaultSegmentMarker.prototype.init = function (group) {
   this._caption = new window.Konva.Text({
     x: xPosition + 40,
     y: 15,
-    text: this._options.segment.attributes.label,
+    text: this._options.segment._id + 1 + ": " + this._options.segment.attributes.label,
     fontFamily: this._options.fontFamily,
     fontSize: this._options.fontSize,
     fontStyle: this._options.fontStyle,
@@ -148,7 +148,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
 
 function newDragBoundFunc(self) {
   return function (pos) {
-    self.resizeCaption()
+    self.resizeCaption();
     let startMarker = self._options.layer._segmentShapes[
       self._options.segment._id
     ].getStartMarker();
@@ -166,21 +166,24 @@ function newDragBoundFunc(self) {
 
         if (leftNeighbour.getEndMarker().getX() >= pos.x && pos.x > bounds.min) {
           leftNeighbour.getEndMarker().setX(pos.x);
-          leftNeighbour._segment._setEndTime(leftNeighbour._view.pixelsToTime(leftNeighbour._view.getFrameOffset() + pos.x));
+          console.log("setting endtime")
+          leftNeighbour._segment._setEndTime(
+            leftNeighbour._view.pixelsToTime(leftNeighbour._view.getFrameOffset() + pos.x)
+          );
         }
       }
     } else {
-      
       if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
       if (rightNeighbour) {
         bounds.max = rightNeighbour.getEndMarker().getX();
 
         if (rightNeighbour.getStartMarker().getX() <= pos.x && pos.x < bounds.max) {
-          
           rightNeighbour.getStartMarker().setX(pos.x);
-          rightNeighbour._segment._setStartTime(rightNeighbour._view.pixelsToTime(rightNeighbour._view.getFrameOffset() + pos.x));
+          rightNeighbour._segment._setStartTime(
+            rightNeighbour._view.pixelsToTime(rightNeighbour._view.getFrameOffset() + pos.x)
+          );
 
-          rightNeighbour.getStartMarker()._marker.resizeCaption()
+          rightNeighbour.getStartMarker()._marker.resizeCaption();
         }
       }
     }
@@ -195,13 +198,12 @@ function defineBounds(self, group) {
   group.attrs.dragBoundFunc = newDragBoundFunc(self);
 }
 
-DefaultSegmentMarker.prototype.resizeCaption = function() {
-  // console.log("self", self);
+DefaultSegmentMarker.prototype.resizeCaption = function () {
   let startMarker = this._options.layer._segmentShapes[this._options.segment._id].getStartMarker();
   let endMarker = this._options.layer._segmentShapes[this._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];
   caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
-}
+};
 
 DefaultSegmentMarker.prototype.fitToView = function () {
   var height = this._options.layer.getHeight();
@@ -219,7 +221,3 @@ DefaultSegmentMarker.prototype.timeUpdated = function (time) {
 export function createSegmentMarker(options) {
   return new DefaultSegmentMarker(options);
 }
-
-
-
-
