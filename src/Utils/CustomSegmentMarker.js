@@ -166,7 +166,7 @@ function newDragBoundFunc(self) {
 
         if (leftNeighbour.getEndMarker().getX() >= pos.x && pos.x > bounds.min) {
           leftNeighbour.getEndMarker().setX(pos.x);
-   
+
           leftNeighbour._segment._setEndTime(
             leftNeighbour._view.pixelsToTime(leftNeighbour._view.getFrameOffset() + pos.x)
           );
@@ -202,7 +202,7 @@ DefaultSegmentMarker.prototype.resizeCaption = function () {
   let startMarker = this._options.layer._segmentShapes[this._options.segment._id].getStartMarker();
   let endMarker = this._options.layer._segmentShapes[this._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];
-  caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
+  if (caption) caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
 };
 
 DefaultSegmentMarker.prototype.fitToView = function () {
