@@ -40,12 +40,9 @@ const SpinnerContainer = styled.div`
   position: fixed;
 `;
 
-function Waveform({}) {
+function Waveform() {
   const dispatch = useDispatch();
   const [peaksReady, setPeaksReady] = useState(false);
-
-  const audio = useSelector((state) => state.data.audioUrl);
-  const video = useSelector((state) => state.data.videoUrl);
   const peaksUrl = useSelector((state) => state.data.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const horizontalZoom = useSelector((state) => state.media.horizontalZoom);
@@ -56,6 +53,8 @@ function Waveform({}) {
   const zoomviewWaveformRef = useRef();
   const overviewWaveformRef = useRef();
   const audioElementRef = useRef();
+  const subtitlesRef = useRef();
+  const currentlySelectedRef = useRef();
 
   useEffect(
     function initPeaksJs() {
@@ -82,11 +81,24 @@ function Waveform({}) {
   );
 
   useEffect(
+    function syncSubtitlesRefWithGlobalState() {
+      subtitlesRef.current = subtitles;
+    },
+    [subtitles]
+  );
+
+  useEffect(
+    function syncCurrentlySelectedRefWithGlobalState() {
+      currentlySelectedRef.current = currentlySelected;
+    },
+    [currentlySelected]
+  );
+
+  useEffect(
     function syncSegmentsWithSubtitles() {
-      
       if (peaks.current) {
         let allSegments = peaks.current.segments.getSegments();
-        console.log("allSegments",allSegments)
+
         if (allSegments.length !== subtitles.length) {
           createSegmentsFromSubtitles();
         } else {
@@ -96,7 +108,6 @@ function Waveform({}) {
             else if (sub.end !== allSegments[i].endTime)
               allSegments[i].update({ endTime: sub.end });
             else if (sub.lines.join("\n") !== allSegments[i].attributes.label) {
-              
               allSegments[i].update({ attributes: { label: sub.lines.join("\n") } });
             }
           });
@@ -125,6 +136,7 @@ function Waveform({}) {
   };
 
   const segmentsDragEnd = (seg, isStartMarker) => {
+
     let neighbourIndex = isStartMarker ? seg.id - 1 : seg.id + 1;
 
     let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
@@ -132,25 +144,24 @@ function Waveform({}) {
     let modifiedSubtitles = [];
 
     if (neighbour) {
-
       if (isStartMarker) {
-        if (neighbour.endTime < subtitles[neighbourIndex].end) {
-          let newSubtitle = subtitles[neighbourIndex] ;
+        if (neighbour.endTime < subtitlesRef.current[neighbourIndex].end) {
+          let newSubtitle = {...subtitlesRef.current[neighbourIndex]}
           newSubtitle.end = neighbour.endTime;
           modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
         }
-      } 
-      else {
-        if (neighbour.startTime > subtitles[neighbourIndex].start) {
-          let newSubtitle = subtitles[neighbourIndex];
-          console.log("newSubtitle",newSubtitle)
+      } else {
+        if (neighbour.startTime > subtitlesRef.current[neighbourIndex].start) {
+          let newSubtitle = {...subtitlesRef.current[neighbourIndex]};
+
           newSubtitle.start = neighbour.startTime;
           modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
         }
       }
     }
 
-    let newSubtitle = subtitles[seg.id];
+    let newSubtitle = {...subtitlesRef.current[seg.id]};
+
     newSubtitle.start = seg._startTime;
     newSubtitle.end = seg.endTime;
     modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
@@ -159,9 +170,8 @@ function Waveform({}) {
   };
 
   const playheadEntersSegment = (segment) => {
-    console.log(segment.id,currentlySelected,segment.id !== currentlySelected)
-    if(segment.id !== currentlySelected) dispatch(selectSub(segment.id));
-    
+
+    if (segment.id !== currentlySelectedRef.current) dispatch(selectSub(segment.id));
   };
 
   const mouseOverSegment = (segment, enter) => {

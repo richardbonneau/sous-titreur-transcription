@@ -19,6 +19,7 @@ export default (
   },
   action
 ) => {
+  console.log("action",action)
   switch (action.type) {
     case DATA_REQUEST:
       return {
@@ -42,7 +43,7 @@ export default (
     case MODIFY_MULTIPLE_CAPTIONS: {
       let newSubtitles = [...state.subtitles];
       action.newCaptions.forEach((cap)=>{
-        console.log("cap",cap.newCaption,"newSubtitles[cap.index]",newSubtitles[cap.index])
+
         newSubtitles[cap.index] = cap.newCaption;
       })
       return { ...state, subtitles: newSubtitles };
@@ -78,6 +79,7 @@ export default (
     }
 
     case CURRENTLY_SELECTED:
+
       return {
         ...state,
         currentlySelected: action.subIndex,

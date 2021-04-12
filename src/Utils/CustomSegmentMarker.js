@@ -166,7 +166,7 @@ function newDragBoundFunc(self) {
 
         if (leftNeighbour.getEndMarker().getX() >= pos.x && pos.x > bounds.min) {
           leftNeighbour.getEndMarker().setX(pos.x);
-          console.log("setting endtime")
+   
           leftNeighbour._segment._setEndTime(
             leftNeighbour._view.pixelsToTime(leftNeighbour._view.getFrameOffset() + pos.x)
           );

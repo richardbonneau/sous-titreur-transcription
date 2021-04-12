@@ -75,7 +75,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   }, [currentlySelected]);
 
   const setNewTime = () => {
-    console.log("SET NEW TIME")
+
     let startInput = Number(startTime);
     let endInput = Number(endTime);
 
@@ -95,7 +95,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   };
 
   const writeText = () => {
-    console.log("WRITE TEXT")
+
     let newLines = subtitleText.split("\n");
     let newCaption = { ...subData, lines: newLines };
     dispatch(modifySingleCaption(newCaption, subIndex));
