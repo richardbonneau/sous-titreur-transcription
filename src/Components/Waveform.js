@@ -129,22 +129,21 @@ function Waveform({}) {
 
     let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
 
-    let modifiedSubtitles = []
+    let modifiedSubtitles = [];
 
     if (neighbour) {
       if (isStartMarker) {
-        let neighbourIndex = seg.id - 1;
-        if (seg._startTime < seg._peaks.segments._segmentsById[neighbourIndex]._endTime) {
+        if (neighbour.endTime < subtitles[neighbourIndex].end) {
           let newSubtitle = { ...subtitles[neighbourIndex] };
-          newSubtitle.end = seg._startTime;
-          modifiedSubtitles.push({newCaption:newSubtitle,index:neighbourIndex})
+          newSubtitle.end = neighbour.endTime;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
         }
       } else {
-        let neighbourIndex = seg.id + 1;
-        if (seg._endTime > seg._peaks.segments._segmentsById[neighbourIndex]._startTime) {
+        console.log("neighbour.startTime",neighbour.startTime,"subtitles[neighbourIndex].start",subtitles[neighbourIndex].start)
+        if (neighbour.startTime > subtitles[neighbourIndex].start) {
           let newSubtitle = { ...subtitles[neighbourIndex] };
-          newSubtitle.start = seg._endTime;
-          modifiedSubtitles.push({newCaption:newSubtitle,index:neighbourIndex})
+          newSubtitle.start = neighbour.startTime;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
         }
       }
     }
@@ -153,7 +152,7 @@ function Waveform({}) {
     newSubtitle.start = seg._startTime;
     newSubtitle.end = seg.endTime;
 
-    modifiedSubtitles.push({newCaption:newSubtitle,index:seg.id})
+    modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
     dispatch(modifyMultipleCaption(modifiedSubtitles));
   };
 

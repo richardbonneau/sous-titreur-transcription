@@ -86,7 +86,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     //   });
 
     group.on("dragend", function () {
-      resizeCaption(self);
+      self.resizeCaption();
       self._label.hide();
       self._options.layer.draw();
     });
@@ -117,7 +117,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   // });
 
   setTimeout(() => {
-    resizeCaption(self);
+    this.resizeCaption();
     defineBounds(self, group);
   }, 50);
 };
@@ -148,6 +148,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
 
 function newDragBoundFunc(self) {
   return function (pos) {
+    self.resizeCaption()
     let startMarker = self._options.layer._segmentShapes[
       self._options.segment._id
     ].getStartMarker();
@@ -163,19 +164,23 @@ function newDragBoundFunc(self) {
       if (leftNeighbour) {
         bounds.min = leftNeighbour.getStartMarker().getX();
 
-
         if (leftNeighbour.getEndMarker().getX() >= pos.x && pos.x > bounds.min) {
           leftNeighbour.getEndMarker().setX(pos.x);
+          leftNeighbour._segment._setEndTime(leftNeighbour._view.pixelsToTime(pos.x));
         }
       }
     } else {
+      
       if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
       if (rightNeighbour) {
         bounds.max = rightNeighbour.getEndMarker().getX();
 
-
         if (rightNeighbour.getStartMarker().getX() <= pos.x && pos.x < bounds.max) {
+          
           rightNeighbour.getStartMarker().setX(pos.x);
+          rightNeighbour._segment._setStartTime(rightNeighbour._view.pixelsToTime(rightNeighbour._view.getFrameOffset() + pos.x));
+
+          rightNeighbour.getStartMarker()._marker.resizeCaption()
         }
       }
     }
@@ -190,10 +195,10 @@ function defineBounds(self, group) {
   group.attrs.dragBoundFunc = newDragBoundFunc(self);
 }
 
-function resizeCaption(self) {
-  console.log("self", self);
-  let startMarker = self._options.layer._segmentShapes[self._options.segment._id].getStartMarker();
-  let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+DefaultSegmentMarker.prototype.resizeCaption = function() {
+  // console.log("self", self);
+  let startMarker = this._options.layer._segmentShapes[this._options.segment._id].getStartMarker();
+  let endMarker = this._options.layer._segmentShapes[this._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];
   caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
 }
@@ -214,3 +219,7 @@ DefaultSegmentMarker.prototype.timeUpdated = function (time) {
 export function createSegmentMarker(options) {
   return new DefaultSegmentMarker(options);
 }
+
+
+
+
