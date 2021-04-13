@@ -14,31 +14,12 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer({ playbackSpeed }) {
-  const dispatch = useDispatch();
+function VideoPlayer({playbackSpeed}) {
   const player = useRef();
-  const [videoState, setVideoState] = useState({});
+
   const videoUrl = useSelector((state) => state.data.videoUrl);
   const subtitles = useSelector((state) => state.data.subtitles);
-  const isPlaying = useSelector((state) => state.media.isPlaying);
   const seekingTime = useSelector((state) => state.media.seekingTime);
-  const isSeeking = useSelector((state) => state.media.isSeeking);
-
-  useEffect(() => {
-    player.current.subscribeToStateChange((state) => setVideoState(state));
-  }, []);
-
-  useEffect(
-    function videoStateChanges() {
-      if (Object.keys(videoState).length > 0) {
-        if (!videoState.paused !== isPlaying && !videoState.seeking)
-          dispatch(isVideoPlaying(!videoState.paused));
-        if (seekingTime !== videoState.seekingTime) dispatch(seeking(videoState.seekingTime));
-        if (isSeeking !== videoState.seeking) dispatch(videoIsSeeking(videoState.seeking));
-      }
-    },
-    [videoState]
-  );
 
   useEffect(() => {
     if (player.current) {
@@ -60,21 +41,15 @@ function VideoPlayer({ playbackSpeed }) {
   }, [subtitles]);
 
   useEffect(() => {
-    if (isPlaying) player.current.play();
-    else player.current.pause();
-  }, [isPlaying]);
-
-  useEffect(() => {
     if (seekingTime !== 0) player.current.seek(seekingTime);
   }, [seekingTime]);
 
   useEffect(() => {
     player.current.playbackRate = playbackSpeed;
   }, [playbackSpeed]);
-
   return (
     <Container>
-      <Player ref={player} >
+      <Player ref={player}>
         <source src={videoUrl} />
         <ControlBar></ControlBar>
       </Player>

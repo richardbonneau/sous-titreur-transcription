@@ -31,6 +31,7 @@ DefaultSegmentMarker.prototype.init = function (group) {
   this._label.hide();
 
   // Handle - create with default y, the real value is set in fitToView().
+  console.log("this._options.segment.attributes.visibleMarkers",this._options.segment.attributes.visibleMarkers)
   this._handle = new window.Konva.Rect({
     x: handleX,
     y: 0,
@@ -94,59 +95,46 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
     });
   }
 
-  // self._handle.on("mouseover", function () {
-  //   console.log("showshowshowshowshowshowshowshowshowshow")
-  //   // self._handle.show()
-  // });
+  self._handle.on("mouseover", function () {
+    console.log("showshowshowshowshowshowshowshowshowshow")
+    // self._handle.show()
+  });
 
-  // self._handle.on("mouseout", function (e) {
-  //   let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
-  //   let startMarker = self._options.layer._segmentShapes[
-  //     self._options.segment._id
-  //   ].getStartMarker();
+  self._handle.on("mouseout", function (e) {
+    let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+    let startMarker = self._options.layer._segmentShapes[
+      self._options.segment._id
+    ].getStartMarker();
 
-  //   let mousePos = e.evt.layerX;
+    let mousePos = e.evt.layerX;
 
-  //   if (self._options.startMarker && mousePos < startMarker.getX()) {
+    if (self._options.startMarker && mousePos < startMarker.getX()) {
 
-  //     self._handle.hide();
-  //     endMarker._marker._handle.hide();
-  //   } else if(!self._options.startMarker && mousePos > endMarker.getX()) {
-  //     startMarker._marker._handle.hide();
-  //     self._handle.hide();
-  //   }
-  //   self._options.layer.draw();
-  // });
+      self._handle.hide();
+      endMarker._marker._handle.hide();
+    } else if(!self._options.startMarker && mousePos > endMarker.getX()) {
+      startMarker._marker._handle.hide();
+      self._handle.hide();
+    }
+    self._options.layer.draw();
+  });
 
   setTimeout(() => {
     this.resizeCaption();
     defineBounds(self, group);
+    defineMouseOver(self)
   }, 50);
 };
 
-// function newDragBoundFunc(self) {
-//   return function (pos) {
-//     let startMarker = self._options.layer._segmentShapes[
-//       self._options.segment._id
-//     ].getStartMarker();
-//     let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
-//     let leftNeighbour = self._options.layer._segmentShapes[self._options.segment._id - 1];
-//     let rightNeighbour = self._options.layer._segmentShapes[self._options.segment._id + 1];
+function defineMouseOver(self,group){
+  let segmentShape = self._options.layer._segmentShapes[self._options.segment._id]
+  console.log("segmentShape",segmentShape)
+  segmentShape._onMouseEnter = segmentShapeOnMouseEnter
+}
 
-//     let bounds = { min: 0, max: 9999 };
-//     if (self._options.startMarker) {
-//       if (leftNeighbour) bounds.min = leftNeighbour.getEndMarker().getX();
-//       if (endMarker) bounds.max = endMarker.getX() - endMarker.getWidth();
-//     } else {
-//       if (startMarker) bounds.min = startMarker.getX() + startMarker.getWidth();
-//       if (rightNeighbour) bounds.max = rightNeighbour.getStartMarker().getX();
-//     }
-//     return {
-//       x: pos.x > bounds.max ? bounds.max : pos.x < bounds.min ? bounds.min : pos.x,
-//       y: 0,
-//     };
-//   };
-// }
+function segmentShapeOnMouseEnter(){
+  console.log("event")
+}
 
 function newDragBoundFunc(self) {
   return function (pos) {

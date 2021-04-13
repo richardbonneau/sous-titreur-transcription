@@ -5,12 +5,7 @@ export const HORIZONTAL_ZOOM = "HORIZONTAL_ZOOM";
 export const IS_SEEKING = "IS_SEEKING";
 
 
-export const isVideoPlaying = (isPlaying) => {
-  return {
-    type: PLAY_PAUSE,
-    isPlaying,
-  };
-};
+
 export const seeking = (seekingTime) => {
   return {
     type: SEEKING,
@@ -30,11 +25,6 @@ export const horizontalZoom = (newZoom) => {
   };
 };
 
-export const videoIsSeeking = (videoIsSeeking) => {
-  return {
-    type: IS_SEEKING,
-    videoIsSeeking,
-  };
-};
+
 
 

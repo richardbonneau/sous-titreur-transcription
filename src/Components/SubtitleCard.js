@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, Elevation, Icon } from "@blueprintjs/core";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { modifySingleCaption, seeking, addNewCaption, deleteCaption,selectSub } from "../_Redux/Actions";
+import {
+  modifySingleCaption,
+  seeking,
+  addNewCaption,
+  deleteCaption,
+  selectSub,
+} from "../_Redux/Actions";
 
 const Container = styled.div`
   /* margin-bottom: 0.2em; */
@@ -55,7 +61,6 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   const [endTime, setEndTime] = useState("");
   const [subtitleText, setSubtitleText] = useState("");
 
-
   const subtitles = useSelector((state) => state.data.subtitles);
   const currentlySelected = useSelector((state) => state.data.currentlySelected);
 
@@ -71,23 +76,23 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
 
   useEffect(() => {
     if (currentlySelected === subIndex) scrollTo.current.scrollIntoView({ behavior: "smooth" });
-
   }, [currentlySelected]);
 
   const setNewTime = () => {
+    const playheadTime = 0;
+    const startInput = Number(startTime);
+    const endInput = Number(endTime);
 
-    let startInput = Number(startTime);
-    let endInput = Number(endTime);
-
-    let minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
-    let maxEnd =
+    const minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
+    const maxEnd =
       subIndex < subtitles[subtitles.length - 1] ? subtitles[subtitles.length - 1].start : 9999;
 
-    let newStartTime = startInput < minStart ? minStart : startInput;
-    let newEndTime = endInput > maxEnd ? maxEnd : endInput;
+    const newStartTime = startInput < minStart ? minStart : startInput;
+    const newEndTime = endInput > maxEnd ? maxEnd : endInput;
 
     let newCaption = { ...subData };
 
+    //If the user enters an invalid time, the value here would be NaN and cause an error.
     if (!isNaN(newStartTime)) newCaption.start = newStartTime;
     if (!isNaN(newEndTime)) newCaption.end = newEndTime;
 
@@ -95,7 +100,6 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   };
 
   const writeText = () => {
-
     let newLines = subtitleText.split("\n");
     let newCaption = { ...subData, lines: newLines };
     dispatch(modifySingleCaption(newCaption, subIndex));

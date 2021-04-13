@@ -179,9 +179,14 @@ function Waveform() {
   };
 
   const mouseOverSegment = (segment, enter) => {
+    console.log("sup",enter)
     if (segment.attributes.visibleMarkers !== enter)
       segment.update({ attributes: { visibleMarkers: enter, label: segment.attributes.label } });
   };
+
+  const getPlayheadTime=()=>{
+    peaks.current.player.getCurrentTime();
+  }
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
