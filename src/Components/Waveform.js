@@ -103,12 +103,18 @@ function Waveform() {
           createSegmentsFromSubtitles();
         } else {
           subtitles.forEach((sub, i) => {
-            if (sub.start !== allSegments[i].startTime)
-              allSegments[i].update({ startTime: sub.start });
-            else if (sub.end !== allSegments[i].endTime)
-              allSegments[i].update({ endTime: sub.end });
+            let toUpgrade = null;
+            if (sub.start !== allSegments[i].startTime) toUpgrade = { startTime: sub.start };
+            else if (sub.end !== allSegments[i].endTime) toUpgrade = { endTime: sub.end };
             else if (sub.lines.join("\n") !== allSegments[i].attributes.label) {
-              allSegments[i].update({ attributes: { label: sub.lines.join("\n") } });
+              toUpgrade = { attributes: { label: sub.lines.join("\n") } };
+            }
+
+            if (toUpgrade) {
+              allSegments[i].update(toUpgrade);
+
+              
+
             }
           });
         }
@@ -136,7 +142,6 @@ function Waveform() {
   };
 
   const segmentsDragEnd = (seg, isStartMarker) => {
-
     let neighbourIndex = isStartMarker ? seg.id - 1 : seg.id + 1;
 
     let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
@@ -146,13 +151,13 @@ function Waveform() {
     if (neighbour) {
       if (isStartMarker) {
         if (neighbour.endTime < subtitlesRef.current[neighbourIndex].end) {
-          let newSubtitle = {...subtitlesRef.current[neighbourIndex]}
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
           newSubtitle.end = neighbour.endTime;
           modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
         }
       } else {
         if (neighbour.startTime > subtitlesRef.current[neighbourIndex].start) {
-          let newSubtitle = {...subtitlesRef.current[neighbourIndex]};
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
 
           newSubtitle.start = neighbour.startTime;
           modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
@@ -160,7 +165,7 @@ function Waveform() {
       }
     }
 
-    let newSubtitle = {...subtitlesRef.current[seg.id]};
+    let newSubtitle = { ...subtitlesRef.current[seg.id] };
 
     newSubtitle.start = seg._startTime;
     newSubtitle.end = seg.endTime;
@@ -170,7 +175,6 @@ function Waveform() {
   };
 
   const playheadEntersSegment = (segment) => {
-
     if (segment.id !== currentlySelectedRef.current) dispatch(selectSub(segment.id));
   };
 

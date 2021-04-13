@@ -1,9 +1,11 @@
 function DefaultSegmentMarker(options) {
+  console.log("DefaultSegmentMarker")
   options.draggable = true;
   this._options = options;
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
+  console.log("init")
   var handleWidth = 15;
   var handleHeight = 30;
   var handleX = this._options.startMarker ? 0 : -handleWidth; // Place in the middle of the marker
@@ -203,6 +205,7 @@ DefaultSegmentMarker.prototype.resizeCaption = function () {
   let endMarker = this._options.layer._segmentShapes[this._options.segment._id].getEndMarker();
   let caption = startMarker._group.children[3];
   if (caption) caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
+  this._options.layer.draw();
 };
 
 DefaultSegmentMarker.prototype.fitToView = function () {
