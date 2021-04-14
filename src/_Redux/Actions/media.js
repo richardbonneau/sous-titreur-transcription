@@ -6,6 +6,7 @@ export const IS_SEEKING = "IS_SEEKING";
 
 
 
+
 export const seeking = (seekingTime) => {
   return {
     type: SEEKING,
@@ -24,7 +25,6 @@ export const horizontalZoom = (newZoom) => {
     newZoom,
   };
 };
-
 
 
 

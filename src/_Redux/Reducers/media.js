@@ -1,11 +1,11 @@
-import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM, IS_SEEKING } from "../Actions";
+import { PLAY_PAUSE, SEEKING, VERTICAL_ZOOM, HORIZONTAL_ZOOM, CURRENT_TIME } from "../Actions";
 
 export default (
   state = {
-    isPlaying: false,
     seekingTime: 0,
     horizontalZoom: 0,
     verticalZoom: 0,
+    currentTime: 0,
   },
   action
 ) => {
@@ -25,6 +25,7 @@ export default (
         ...state,
         horizontalZoom: action.newZoom,
       };
+
 
     default:
       return state;

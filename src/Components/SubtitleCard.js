@@ -62,6 +62,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   const [subtitleText, setSubtitleText] = useState("");
 
   const subtitles = useSelector((state) => state.data.subtitles);
+
   const currentlySelected = useSelector((state) => state.data.currentlySelected);
 
   useEffect(
@@ -79,7 +80,6 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   }, [currentlySelected]);
 
   const setNewTime = () => {
-    const playheadTime = 0;
     const startInput = Number(startTime);
     const endInput = Number(endTime);
 
@@ -120,7 +120,6 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
     } else if (event.key === "Backspace" && subtitleText === "") dispatch(deleteCaption(subIndex));
   };
   const keyUp = (event) => {
-    const linesToString = subData.lines.join("\n");
     if (event.key === "Shift") setShiftDown(false);
   };
 

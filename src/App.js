@@ -26,7 +26,6 @@ const TopSections = styled.div`
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    // setVideoPath("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
     dispatch(requestData());
     fetch("https://api.soustitreur.com/customer/get-srt", {
       headers: {

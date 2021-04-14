@@ -6,6 +6,7 @@ export const ADD_NEW_CAPTION = "ADD_NEW_CAPTION";
 export const DELETE_CAPTION = "DELETE_CAPTION";
 export const CURRENTLY_SELECTED = "CURRENTLY_SELECTED";
 export const MODIFY_MULTIPLE_CAPTIONS = "MODIFY_MULTIPLE_CAPTIONS";
+export const CURRENT_TIME = "CURRENT_TIME"
 
 export const requestData = () => {
   return {
@@ -62,5 +63,13 @@ export const selectSub = (subIndex) => {
   return {
     type: CURRENTLY_SELECTED,
     subIndex,
+  };
+};
+
+
+export const currentTime = (time) => {
+  return {
+    type: CURRENT_TIME,
+    time,
   };
 };

@@ -42,7 +42,9 @@ const SpinnerContainer = styled.div`
 
 function Waveform() {
   const dispatch = useDispatch();
+
   const [peaksReady, setPeaksReady] = useState(false);
+
   const peaksUrl = useSelector((state) => state.data.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const horizontalZoom = useSelector((state) => state.media.horizontalZoom);
@@ -56,12 +58,14 @@ function Waveform() {
   const subtitlesRef = useRef();
   const currentlySelectedRef = useRef();
 
+
   useEffect(
     function initPeaksJs() {
       if (peaksUrl) initPeaks();
     },
     [peaksUrl]
   );
+
   useEffect(
     function incomingVerticalZoomChange() {
       if (peaks.current) {
@@ -71,6 +75,7 @@ function Waveform() {
     },
     [verticalZoom]
   );
+
   useEffect(
     function incomingHorizontalZoomChange() {
       if (peaks.current) {
@@ -141,52 +146,7 @@ function Waveform() {
     );
   };
 
-  const segmentsDragEnd = (seg, isStartMarker) => {
-    let neighbourIndex = isStartMarker ? seg.id - 1 : seg.id + 1;
 
-    let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
-
-    let modifiedSubtitles = [];
-
-    if (neighbour) {
-      if (isStartMarker) {
-        if (neighbour.endTime < subtitlesRef.current[neighbourIndex].end) {
-          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
-          newSubtitle.end = neighbour.endTime;
-          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
-        }
-      } else {
-        if (neighbour.startTime > subtitlesRef.current[neighbourIndex].start) {
-          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
-
-          newSubtitle.start = neighbour.startTime;
-          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
-        }
-      }
-    }
-
-    let newSubtitle = { ...subtitlesRef.current[seg.id] };
-
-    newSubtitle.start = seg._startTime;
-    newSubtitle.end = seg.endTime;
-    modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
-
-    dispatch(modifyMultipleCaption(modifiedSubtitles));
-  };
-
-  const playheadEntersSegment = (segment) => {
-    if (segment.id !== currentlySelectedRef.current) dispatch(selectSub(segment.id));
-  };
-
-  const mouseOverSegment = (segment, enter) => {
-    console.log("sup",enter)
-    if (segment.attributes.visibleMarkers !== enter)
-      segment.update({ attributes: { visibleMarkers: enter, label: segment.attributes.label } });
-  };
-
-  const getPlayheadTime=()=>{
-    peaks.current.player.getCurrentTime();
-  }
 
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
@@ -225,6 +185,48 @@ function Waveform() {
       createSegmentsFromSubtitles();
       setPeaksReady(true);
     });
+  };
+
+  const segmentsDragEnd = (seg, isStartMarker) => {
+    let neighbourIndex = isStartMarker ? seg.id - 1 : seg.id + 1;
+
+    let neighbour = seg._peaks.segments._segmentsById[neighbourIndex];
+
+    let modifiedSubtitles = [];
+
+    if (neighbour) {
+      if (isStartMarker) {
+        if (neighbour.endTime < subtitlesRef.current[neighbourIndex].end) {
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
+          newSubtitle.end = neighbour.endTime;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
+        }
+      } else {
+        if (neighbour.startTime > subtitlesRef.current[neighbourIndex].start) {
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
+
+          newSubtitle.start = neighbour.startTime;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
+        }
+      }
+    }
+
+    let newSubtitle = { ...subtitlesRef.current[seg.id] };
+
+    newSubtitle.start = seg._startTime;
+    newSubtitle.end = seg.endTime;
+    modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
+
+    dispatch(modifyMultipleCaption(modifiedSubtitles));
+  };
+
+  const playheadEntersSegment = (segment) => {
+    if (segment.id !== currentlySelectedRef.current) dispatch(selectSub(segment.id));
+  };
+
+  const mouseOverSegment = (segment, enter) => {
+    if (segment.attributes.visibleMarkers !== enter)
+      segment.update({ attributes: { visibleMarkers: enter, label: segment.attributes.label } });
   };
 
   return (

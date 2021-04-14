@@ -5,7 +5,9 @@ import {
   ADD_NEW_CAPTION,
   DELETE_CAPTION,
   CURRENTLY_SELECTED,
-  MODIFY_MULTIPLE_CAPTIONS
+  MODIFY_MULTIPLE_CAPTIONS,
+  CURRENT_TIME,
+  currentTime
 } from "../Actions";
 
 export default (
@@ -16,10 +18,11 @@ export default (
     subtitles: [],
     vttFile: null,
     currentlySelected: null,
+    currentTime:0
   },
   action
 ) => {
-  console.log("action",action)
+  console.log("action", action);
   switch (action.type) {
     case DATA_REQUEST:
       return {
@@ -42,27 +45,30 @@ export default (
 
     case MODIFY_MULTIPLE_CAPTIONS: {
       let newSubtitles = [...state.subtitles];
-      action.newCaptions.forEach((cap)=>{
-
+      action.newCaptions.forEach((cap) => {
         newSubtitles[cap.index] = cap.newCaption;
-      })
+      });
       return { ...state, subtitles: newSubtitles };
     }
 
     case ADD_NEW_CAPTION: {
       let newSubtitles = [...state.subtitles];
-
+      const originalSubStartTime = newSubtitles[action.subIndex].start
+      const originalSubEndTime = newSubtitles[action.subIndex].end
+      
+      let splitTime = 0;
+      if(state.currentTime > originalSubStartTime && state.currentTime < originalSubEndTime) splitTime = state.currentTime
+      else splitTime = (originalSubEndTime - originalSubStartTime) / 2 + originalSubStartTime
+      
       let oldSub = {
         start: newSubtitles[action.subIndex].start,
-        end:
-          (newSubtitles[action.subIndex].end - newSubtitles[action.subIndex].start) / 2 +
-          newSubtitles[action.subIndex].start,
+        end:splitTime,
         lines: action.oldCaption,
       };
 
       let newSub = {
-        start: oldSub.end,
-        end: newSubtitles[action.subIndex].end,
+        start:splitTime,
+        end: originalSubEndTime,
         lines: action.newCaption,
       };
 
@@ -79,12 +85,15 @@ export default (
     }
 
     case CURRENTLY_SELECTED:
-
       return {
         ...state,
         currentlySelected: action.subIndex,
       };
-
+      case CURRENT_TIME:
+        return {
+          ...state,
+          currentTime: action.time,
+        };
     default:
       return state;
   }

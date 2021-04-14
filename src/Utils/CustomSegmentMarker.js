@@ -1,11 +1,11 @@
 function DefaultSegmentMarker(options) {
-  console.log("DefaultSegmentMarker")
+
   options.draggable = true;
   this._options = options;
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
-  console.log("init")
+
   var handleWidth = 15;
   var handleHeight = 30;
   var handleX = this._options.startMarker ? 0 : -handleWidth; // Place in the middle of the marker
@@ -31,7 +31,7 @@ DefaultSegmentMarker.prototype.init = function (group) {
   this._label.hide();
 
   // Handle - create with default y, the real value is set in fitToView().
-  console.log("this._options.segment.attributes.visibleMarkers",this._options.segment.attributes.visibleMarkers)
+
   this._handle = new window.Konva.Rect({
     x: handleX,
     y: 0,
@@ -79,14 +79,14 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var xPosition = self._options.startMarker ? -24 : 24;
 
   if (self._options.draggable) {
-    //   group.on("dragstart", function () {
-    //     if (self._options.startMarker) {
-    //       self._label.setX(xPosition - self._label.getWidth());
-    //     }
+      group.on("dragstart", function () {
+        if (self._options.startMarker) {
+          self._label.setX(xPosition - self._label.getWidth());
+        }
 
-    //     self._label.show();
-    //     self._options.layer.draw();
-    //   });
+        self._label.show();
+        self._options.layer.draw();
+      });
 
     group.on("dragend", function () {
       self.resizeCaption();
@@ -96,7 +96,7 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   }
 
   self._handle.on("mouseover", function () {
-    console.log("showshowshowshowshowshowshowshowshowshow")
+
     // self._handle.show()
   });
 
@@ -128,12 +128,12 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
 
 function defineMouseOver(self,group){
   let segmentShape = self._options.layer._segmentShapes[self._options.segment._id]
-  console.log("segmentShape",segmentShape)
+
   segmentShape._onMouseEnter = segmentShapeOnMouseEnter
 }
 
 function segmentShapeOnMouseEnter(){
-  console.log("event")
+  console.log("segmentShapeOnMouseEnter")
 }
 
 function newDragBoundFunc(self) {

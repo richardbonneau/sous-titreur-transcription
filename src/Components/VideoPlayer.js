@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Player, ControlBar } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
-import { isVideoPlaying, seeking, videoIsSeeking } from "../_Redux/Actions";
+import { currentTime } from "../_Redux/Actions";
 
 import styled from "styled-components";
 
@@ -15,11 +15,18 @@ const Container = styled.div`
 `;
 
 function VideoPlayer({playbackSpeed}) {
+  const dispatch = useDispatch()
   const player = useRef();
 
   const videoUrl = useSelector((state) => state.data.videoUrl);
   const subtitles = useSelector((state) => state.data.subtitles);
   const seekingTime = useSelector((state) => state.media.seekingTime);
+
+  useEffect(() => {
+    player.current.subscribeToStateChange((state) => dispatch(currentTime(state.currentTime)));
+  }, []);
+
+
 
   useEffect(() => {
     if (player.current) {
