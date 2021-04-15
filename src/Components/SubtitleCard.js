@@ -28,7 +28,7 @@ const TimeContainer = styled.div`
   display: flex;
   flex-direction: column;
   .subtime {
-    opacity: 0.4;
+    opacity: 0.5;
     display: flex;
   }
   input {
@@ -51,6 +51,10 @@ const InputContainer = styled.div`
     border: none;
   }
 `;
+const CharactersContainer = styled.div`
+ opacity: 0.5;
+`
+
 
 function SubtitleCard({ subIndex, subData, isSelected }) {
   const dispatch = useDispatch();
@@ -59,6 +63,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [subtitleText, setSubtitleText] = useState("");
+  const [charactersPerLine, setCharactersPerLine] = useState([]);
 
   const subtitles = useSelector((state) => state.data.subtitles);
 
@@ -66,10 +71,13 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
 
   useEffect(
     function incomingSubtitles() {
+      const characterCount = subData.lines.map((line) => line.length);
+      setCharactersPerLine(characterCount);
+
       const linesToString = subData.lines.join("\n");
+      setSubtitleText(linesToString);
       setStartTime(new Date(subData.start * 1000).toISOString().substr(11, 12));
       setEndTime(new Date(subData.end * 1000).toISOString().substr(11, 12));
-      setSubtitleText(linesToString);
     },
     [subtitles]
   );
@@ -169,6 +177,11 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
             value={subtitleText}
           />
         </InputContainer>
+        <CharactersContainer>
+          {charactersPerLine.map((num) => (
+            <div>{num}</div>
+          ))}
+        </CharactersContainer>
       </Card>
     </Container>
   );
