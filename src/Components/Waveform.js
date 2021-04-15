@@ -80,6 +80,8 @@ function Waveform() {
     function incomingHorizontalZoomChange() {
       if (peaks.current) {
         peaks.current.zoom.setZoom(horizontalZoom);
+        peaks.current.segments.removeAll();
+        createSegmentsFromSubtitles()
       }
     },
     [horizontalZoom]
