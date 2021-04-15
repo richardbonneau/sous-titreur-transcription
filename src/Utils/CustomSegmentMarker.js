@@ -76,51 +76,51 @@ DefaultSegmentMarker.prototype.init = function (group) {
 DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   var self = this;
 
-  var xPosition = self._options.startMarker ? -24 : 24;
+  // var xPosition = self._options.startMarker ? -24 : 24;
 
-  if (self._options.draggable) {
-      group.on("dragstart", function () {
-        if (self._options.startMarker) {
-          self._label.setX(xPosition - self._label.getWidth());
-        }
+  // if (self._options.draggable) {
+  //     group.on("dragstart", function () {
+  //       if (self._options.startMarker) {
+  //         self._label.setX(xPosition - self._label.getWidth());
+  //       }
 
-        self._label.show();
-        self._options.layer.draw();
-      });
+  //       self._label.show();
+  //       self._options.layer.draw();
+  //     });
 
-    group.on("dragend", function () {
-      self.resizeCaption();
-      self._label.hide();
-      self._options.layer.draw();
-    });
-  }
+  //   group.on("dragend", function () {
+  //     self.resizeCaption();
+  //     self._label.hide();
+  //     self._options.layer.draw();
+  //   });
+  // }
 
-  self._handle.on("mouseover", function () {
+  // self._handle.on("mouseover", function () {
 
-    // self._handle.show()
-  });
+  //   // self._handle.show()
+  // });
 
-  self._handle.on("mouseout", function (e) {
-    let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
-    let startMarker = self._options.layer._segmentShapes[
-      self._options.segment._id
-    ].getStartMarker();
+  // self._handle.on("mouseout", function (e) {
+  //   let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+  //   let startMarker = self._options.layer._segmentShapes[
+  //     self._options.segment._id
+  //   ].getStartMarker();
 
-    let mousePos = e.evt.layerX;
+  //   let mousePos = e.evt.layerX;
 
-    if (self._options.startMarker && mousePos < startMarker.getX()) {
+  //   if (self._options.startMarker && mousePos < startMarker.getX()) {
 
-      self._handle.hide();
-      endMarker._marker._handle.hide();
-    } else if(!self._options.startMarker && mousePos > endMarker.getX()) {
-      startMarker._marker._handle.hide();
-      self._handle.hide();
-    }
-    self._options.layer.draw();
-  });
+  //     self._handle.hide();
+  //     endMarker._marker._handle.hide();
+  //   } else if(!self._options.startMarker && mousePos > endMarker.getX()) {
+  //     startMarker._marker._handle.hide();
+  //     self._handle.hide();
+  //   }
+  //   self._options.layer.draw();
+  // });
 
   setTimeout(() => {
-    this.resizeCaption();
+    self.resizeCaption();
     defineBounds(self, group);
     defineMouseOver(self)
   }, 50);

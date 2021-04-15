@@ -11,7 +11,6 @@ import {
 } from "../_Redux/Actions";
 
 const Container = styled.div`
-  /* margin-bottom: 0.2em; */
   padding: 0.01em;
   .bp3-card {
     display: flex;
@@ -29,10 +28,10 @@ const TimeContainer = styled.div`
   display: flex;
   flex-direction: column;
   .subtime {
+    opacity: 0.4;
     display: flex;
   }
   input {
-    opacity: 0.4;
     padding-right: 1em;
     border: none;
   }
@@ -66,10 +65,10 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   const currentlySelected = useSelector((state) => state.data.currentlySelected);
 
   useEffect(
-    function onMount() {
+    function incomingSubtitles() {
       const linesToString = subData.lines.join("\n");
-      setStartTime(subData.start.toFixed(3));
-      setEndTime(subData.end.toFixed(3));
+      setStartTime(new Date(subData.start * 1000).toISOString().substr(11, 12));
+      setEndTime(new Date(subData.end * 1000).toISOString().substr(11, 12));
       setSubtitleText(linesToString);
     },
     [subtitles]
@@ -79,9 +78,15 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
     if (currentlySelected === subIndex) scrollTo.current.scrollIntoView({ behavior: "smooth" });
   }, [currentlySelected]);
 
+  const timestampToSeconds = (timestamp) => {
+    const hhmmss = timestamp.split(":");
+    const seconds = hhmmss[0] * 3600 + hhmmss[1] * 60 + +hhmmss[2];
+    return seconds;
+  };
+
   const setNewTime = () => {
-    const startInput = Number(startTime);
-    const endInput = Number(endTime);
+    const startInput = timestampToSeconds(startTime);
+    const endInput = timestampToSeconds(endTime);
 
     const minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
     const maxEnd =
