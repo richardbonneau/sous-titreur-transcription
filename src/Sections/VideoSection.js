@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
-import {  Label, Slider } from "@blueprintjs/core";
+import { Label, Slider, Dialog, Button } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
-import { selectSub, verticalZoom ,horizontalZoom} from "../_Redux/Actions";
+import { selectSub, verticalZoom, horizontalZoom } from "../_Redux/Actions";
 
 const Container = styled.div`
   display: flex;
@@ -21,8 +21,17 @@ const VideoController = styled.div`
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
-  .bp3-label{
+  .bp3-label {
     margin: 25px;
+  }
+`;
+
+const Shortcut = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  div {
+    max-width: 200px;
   }
 `;
 
@@ -31,19 +40,19 @@ function VideoSection() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [verticalZoomSlider, setVerticalZoomSlider] = useState(1);
   const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
+  const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
   const subtitles = useSelector((state) => state.data.subtitles);
- 
 
   const startSearch = () => {
     let foundIndex;
-    subtitles.forEach((sub,i) => {
-      if(!foundIndex && sub.lines.join("\n").toLowerCase().search(search.toLowerCase()) !== -1) foundIndex = i
+    subtitles.forEach((sub, i) => {
+      if (!foundIndex && sub.lines.join("\n").toLowerCase().search(search.toLowerCase()) !== -1)
+        foundIndex = i;
     });
-    
-    dispatch(selectSub(foundIndex))
-  };
 
+    dispatch(selectSub(foundIndex));
+  };
 
   return (
     <Container>
@@ -81,7 +90,7 @@ function VideoSection() {
             max={5}
             labelStepSize={1}
             stepSize={1}
-            onRelease={(newValue) => dispatch(verticalZoom(newValue+1))}
+            onRelease={(newValue) => dispatch(verticalZoom(newValue + 1))}
             onChange={(newValue) => setVerticalZoomSlider(newValue)}
             value={verticalZoomSlider}
           />
@@ -99,6 +108,24 @@ function VideoSection() {
           />
         </Label>
       </VideoController>
+
+      <Button onClick={() => setShortcutListOpened(true)}>Liste de raccourcis</Button>
+
+      <Dialog
+        icon="info-sign"
+        onClose={() => setShortcutListOpened(false)}
+        title="Liste de raccourcis"
+        isOpen={shortcutListOpened}
+      >
+        <Shortcut>
+          <div>Jouer/Pauser la vidéo</div>
+          <div>Espace</div>
+        </Shortcut>
+        <Shortcut>
+          <div>Bouger la chronologie globale de gauche à droite</div>
+          <div>Flèches gauche et droite</div>
+        </Shortcut>
+      </Dialog>
     </Container>
   );
 }

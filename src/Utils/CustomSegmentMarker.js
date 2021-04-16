@@ -160,6 +160,7 @@ function newDragBoundFunc(self) {
           leftNeighbour._segment._setEndTime(
             leftNeighbour._view.pixelsToTime(leftNeighbour._view.getFrameOffset() + pos.x)
           );
+          leftNeighbour.getEndMarker()._marker.resizeCaption();
         }
       }
     } else {
