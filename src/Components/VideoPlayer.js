@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Player, ControlBar } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
 import { currentTime } from "../_Redux/Actions";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import styled from "styled-components";
 
@@ -14,19 +15,23 @@ const Container = styled.div`
   }
 `;
 
-function VideoPlayer({playbackSpeed}) {
-  const dispatch = useDispatch()
+function VideoPlayer({ playbackSpeed }) {
+  const dispatch = useDispatch();
   const player = useRef();
+  const isPlaying = useRef();
 
   const videoUrl = useSelector((state) => state.data.videoUrl);
   const subtitles = useSelector((state) => state.data.subtitles);
   const seekingTime = useSelector((state) => state.media.seekingTime);
 
+  useHotkeys("space", () => (isPlaying.current ? player.current.pause() : player.current.play()));
+
   useEffect(() => {
-    player.current.subscribeToStateChange((state) => dispatch(currentTime(state.currentTime)));
+    player.current.subscribeToStateChange((state) => {
+      if (isPlaying.current !== !state.paused) isPlaying.current = !state.paused;
+      dispatch(currentTime(state.currentTime));
+    });
   }, []);
-
-
 
   useEffect(() => {
     if (player.current) {

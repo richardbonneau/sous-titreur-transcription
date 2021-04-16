@@ -78,10 +78,10 @@ function VideoSection() {
           Zoom Vertical
           <Slider
             min={1}
-            max={6}
+            max={5}
             labelStepSize={1}
             stepSize={1}
-            onRelease={(newValue) => dispatch(verticalZoom(newValue))}
+            onRelease={(newValue) => dispatch(verticalZoom(newValue+1))}
             onChange={(newValue) => setVerticalZoomSlider(newValue)}
             value={verticalZoomSlider}
           />

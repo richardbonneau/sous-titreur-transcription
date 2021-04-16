@@ -13,6 +13,7 @@
     "react": "^17.0.2",
     "react-audio-waveform": "^0.0.5",
     "react-dom": "^17.0.2",
+    "react-hotkeys-hook": "^3.3.0",
     "react-redux": "^7.2.3",
     "react-scripts": "4.0.3",
     "react-wavesurfer": "^0.8.6",

@@ -52,9 +52,8 @@ const InputContainer = styled.div`
   }
 `;
 const CharactersContainer = styled.div`
- opacity: 0.5;
-`
-
+  opacity: 0.5;
+`;
 
 function SubtitleCard({ subIndex, subData, isSelected }) {
   const dispatch = useDispatch();
@@ -88,7 +87,9 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
 
   const timestampToSeconds = (timestamp) => {
     const hhmmss = timestamp.split(":");
+
     const seconds = hhmmss[0] * 3600 + hhmmss[1] * 60 + +hhmmss[2];
+
     return seconds;
   };
 
@@ -97,11 +98,20 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
     const endInput = timestampToSeconds(endTime);
 
     const minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
-    const maxEnd =
-      subIndex < subtitles[subtitles.length - 1] ? subtitles[subtitles.length - 1].start : 9999;
+    const maxEnd = subIndex < subtitles.length - 1 ? subtitles[subIndex + 1].start : 9999;
 
-    const newStartTime = startInput < minStart ? minStart : startInput;
-    const newEndTime = endInput > maxEnd ? maxEnd : endInput;
+    let newStartTime;
+
+    if (startInput > minStart && startInput < endInput) newStartTime = startInput;
+    else if (startInput > endInput) newStartTime = endInput;
+    else newStartTime = minStart;
+
+    let newEndTime;
+    if (endInput < maxEnd && endInput > startInput) {
+      newEndTime = endInput;
+    } else if (endInput < startInput) {
+      newStartTime = startInput;
+    } else newEndTime = maxEnd;
 
     let newCaption = { ...subData };
 

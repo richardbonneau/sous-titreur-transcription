@@ -110,6 +110,7 @@ function Waveform() {
           createSegmentsFromSubtitles();
         } else {
           subtitles.forEach((sub, i) => {
+     
             let toUpgrade = null;
             if (sub.start !== allSegments[i].startTime) toUpgrade = { startTime: sub.start };
             else if (sub.end !== allSegments[i].endTime) toUpgrade = { endTime: sub.end };
