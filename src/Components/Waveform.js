@@ -9,7 +9,7 @@ import Peaks from "peaks.js";
 import { createSegmentMarker } from "../Utils/CustomSegmentMarker";
 
 const Container = styled.div`
-  height: 290px;
+  height: 240px;
   width: 100%;
   .bp3-spinner {
     position: absolute;
@@ -173,6 +173,7 @@ function Waveform() {
       segmentEndMarkerColor: "#ff0000",
       overviewHighlightColor: 'blue',
       emitCueEvents: true,
+      height: 150,
     };
 
     Peaks.init(options, (err, initalizedPeaks) => {

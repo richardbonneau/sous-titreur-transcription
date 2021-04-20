@@ -15,23 +15,36 @@ const Container = styled.div`
   flex: 1;
 `;
 const VideoController = styled.div`
-  margin-top: 2em;
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-  .bp3-label {
-    margin: 25px;
-  }
-`;
+  padding: 1em 0;
+  /* align-items: center; */
 
-const Shortcut = styled.div`
+  /* flex-direction: column; */
+  overflow-y: scroll;
+  /* height: calc(100vh - 38em); */
+  justify-content: space-around;
+`;
+const Controls = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  width: 100%;
+`;
+const Shortcuts = styled.div`
+  display: flex;
+  /* flex-direction: column; */
   padding: 1em;
-  div {
-    max-width: 200px;
+  overflow-y: scroll;
+  /* height: calc(100vh - 38em); */
+  justify-content: space-around;
+  .shortcut-label {
+    font-size: 10px;
+    border-bottom: 1px solid black;
+    text-align: center;
+  }
+  .shortcut-key {
+    margin-bottom: 1em;
+    text-align: center;
   }
 `;
 
@@ -64,78 +77,73 @@ function VideoSection() {
   return (
     <Container>
       <VideoPlayer playbackSpeed={playbackSpeed} />
-
-      <VideoController>
-        <Label>
-          Vitesse
-          <div class="bp3-select .modifier">
-            <select onChange={(e) => setPlaybackSpeed(e.target.value)}>
-              <option value={0.5}>0.5x</option>
-              <option selected value={1}>
-                1x
-              </option>
-              <option value={1.5}>1.5x</option>
-            </select>
-          </div>
-        </Label>
-        <div>
+      <Controls>
+        <VideoController>
           <Label>
-            Recherche
-            <div />
-            <input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setLastSearchedIndex(-1);
-              }}
-              onKeyUp={(e) => (e.key === "Enter" ? startSearch() : null)}
+            Vitesse
+            <div class="bp3-select .modifier">
+              <select onChange={(e) => setPlaybackSpeed(e.target.value)}>
+                <option value={0.5}>0.5x</option>
+                <option selected value={1}>
+                  1x
+                </option>
+                <option value={1.5}>1.5x</option>
+              </select>
+            </div>
+          </Label>
+          <div>
+            <Label>
+              Recherche
+              <div />
+              <input
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setLastSearchedIndex(-1);
+                }}
+                onKeyUp={(e) => (e.key === "Enter" ? startSearch() : null)}
+              />
+            </Label>
+          </div>
+
+          <Label>
+            Zoom Vertical
+            <Slider
+              min={1}
+              max={5}
+              labelStepSize={1}
+              stepSize={1}
+              onRelease={(newValue) => dispatch(verticalZoom(newValue + 1))}
+              onChange={(newValue) => setVerticalZoomSlider(newValue)}
+              value={verticalZoomSlider}
             />
           </Label>
-        </div>
+          <Label>
+            Zoom Horizontal
+            <Slider
+              min={0}
+              max={4}
+              labelStepSize={1}
+              stepSize={1}
+              onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
+              onChange={(newValue) => setHorizontalZoomSlider(newValue)}
+              value={horizontalZoomSlider}
+            />
+          </Label>
+        </VideoController>
+        <Shortcuts>
+          <div>
+            {" "}
+            <div className="shortcut-label">Jouer/Pauser la vidéo</div>
+            <div className="shortcut-key">Espace</div>
+          </div>
 
-        <Label>
-          Zoom Vertical
-          <Slider
-            min={1}
-            max={5}
-            labelStepSize={1}
-            stepSize={1}
-            onRelease={(newValue) => dispatch(verticalZoom(newValue + 1))}
-            onChange={(newValue) => setVerticalZoomSlider(newValue)}
-            value={verticalZoomSlider}
-          />
-        </Label>
-        <Label>
-          Zoom Horizontal
-          <Slider
-            min={0}
-            max={4}
-            labelStepSize={1}
-            stepSize={1}
-            onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
-            onChange={(newValue) => setHorizontalZoomSlider(newValue)}
-            value={horizontalZoomSlider}
-          />
-        </Label>
-      </VideoController>
-
-      <Button onClick={() => setShortcutListOpened(true)}>Liste de raccourcis</Button>
-
-      <Dialog
-        icon="info-sign"
-        onClose={() => setShortcutListOpened(false)}
-        title="Liste de raccourcis"
-        isOpen={shortcutListOpened}
-      >
-        <Shortcut>
-          <div>Jouer/Pauser la vidéo</div>
-          <div>Espace</div>
-        </Shortcut>
-        <Shortcut>
-          <div>Bouger la chronologie globale de gauche à droite</div>
-          <div>Flèches gauche et droite</div>
-        </Shortcut>
-      </Dialog>
+          <div>
+            <div className="shortcut-label">Bouger la chronologie globale de gauche à droite</div>
+            <div className="shortcut-key">Flèches gauche et droite</div>
+          </div>
+        </Shortcuts>
+      </Controls>
     </Container>
   );
 }

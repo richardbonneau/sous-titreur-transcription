@@ -15,7 +15,7 @@ const Container = styled.div`
 const TopSections = styled.div`
   display: flex;
 
-  height: calc(100vh - 352px);
+  height: calc(100vh - 303px);
 
   align-items: center;
   flex-direction: row;
