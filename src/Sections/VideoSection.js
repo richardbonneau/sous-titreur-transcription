@@ -42,15 +42,22 @@ function VideoSection() {
   const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
   const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
+  const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);
   const subtitles = useSelector((state) => state.data.subtitles);
 
   const startSearch = () => {
     let foundIndex;
     subtitles.forEach((sub, i) => {
-      if (!foundIndex && sub.lines.join("\n").toLowerCase().search(search.toLowerCase()) !== -1)
+      if (
+        !foundIndex &&
+        i > lastSearchedIndex &&
+        sub.lines.join("\n").toLowerCase().search(search.toLowerCase()) !== -1
+      ) {
         foundIndex = i;
+        setLastSearchedIndex(i);
+      }
     });
-
+    if (!foundIndex) setLastSearchedIndex(-1);
     dispatch(selectSub(foundIndex));
   };
 
@@ -77,7 +84,10 @@ function VideoSection() {
             <div />
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setLastSearchedIndex(-1);
+              }}
               onKeyUp={(e) => (e.key === "Enter" ? startSearch() : null)}
             />
           </Label>

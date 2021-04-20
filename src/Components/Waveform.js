@@ -171,6 +171,7 @@ function Waveform() {
       segmentColor: "#f8f8f8",
       segmentStartMarkerColor: "#00ff11",
       segmentEndMarkerColor: "#ff0000",
+      overviewHighlightColor: 'blue',
       emitCueEvents: true,
     };
 

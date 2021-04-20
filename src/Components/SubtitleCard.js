@@ -198,8 +198,8 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
           />
         </InputContainer>
         <CharactersContainer>
-          {charactersPerLine.map((num) => (
-            <div>{num}</div>
+          {charactersPerLine.map((num,i) => (
+            <div key={"char"+i}>{num}</div>
           ))}
         </CharactersContainer>
         <Icon icon="trash" onClick={()=>openDeleteCaptionDialog(subIndex)} />
