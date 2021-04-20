@@ -16,6 +16,15 @@ const Container = styled.div`
     display: flex;
     margin: 5px;
   }
+  .bp3-icon-trash{
+    width: 3em;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    margin: -2em -2em 0 0;
+    padding:1em;
+    height: 45px;
+  }
 `;
 const SubtitleNumber = styled.div`
   font-size: 1.3em;
@@ -24,7 +33,7 @@ const SubtitleNumber = styled.div`
   cursor: pointer;
 `;
 const TimeContainer = styled.div`
-  width: 175px;
+  width: 110px;
   display: flex;
   flex-direction: column;
   .subtime {
@@ -45,7 +54,7 @@ const InputContainer = styled.div`
   align-items: flex-end;
   textarea {
     height: 100%;
-    width: 100%;
+    width: 99%;
     text-align: center;
     resize: none;
     border: none;
@@ -55,7 +64,7 @@ const CharactersContainer = styled.div`
   opacity: 0.5;
 `;
 
-function SubtitleCard({ subIndex, subData, isSelected }) {
+function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
   const dispatch = useDispatch();
   const scrollTo = useRef();
   const [shiftDown, setShiftDown] = useState(false);
@@ -149,6 +158,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
   return (
     <Container ref={scrollTo}>
       <Card elevation={Elevation.ONE}>
+        
         <TimeContainer>
           <SubtitleNumber
             onClick={() => {
@@ -192,6 +202,7 @@ function SubtitleCard({ subIndex, subData, isSelected }) {
             <div>{num}</div>
           ))}
         </CharactersContainer>
+        <Icon icon="trash" onClick={()=>openDeleteCaptionDialog(subIndex)} />
       </Card>
     </Container>
   );
