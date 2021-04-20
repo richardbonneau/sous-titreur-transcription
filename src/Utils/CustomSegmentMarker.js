@@ -122,19 +122,16 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   setTimeout(() => {
     self.resizeCaption();
     defineBounds(self, group);
-    defineMouseOver(self)
+    // defineMouseOver(self)
   }, 50);
 };
 
-function defineMouseOver(self,group){
-  let segmentShape = self._options.layer._segmentShapes[self._options.segment._id]
+// function defineMouseOver(self,group){
+//   let segmentShape = self._options.layer._segmentShapes[self._options.segment._id]
 
-  segmentShape._onMouseEnter = segmentShapeOnMouseEnter
-}
+//   segmentShape._onMouseEnter = segmentShapeOnMouseEnter
+// }
 
-function segmentShapeOnMouseEnter(){
-  console.log("segmentShapeOnMouseEnter")
-}
 
 function newDragBoundFunc(self) {
   return function (pos) {
@@ -190,8 +187,13 @@ function defineBounds(self, group) {
 }
 
 DefaultSegmentMarker.prototype.resizeCaption = function () {
-  let startMarker = this._options.layer._segmentShapes[this._options.segment._id].getStartMarker();
-  let endMarker = this._options.layer._segmentShapes[this._options.segment._id].getEndMarker();
+  
+  const segmentShape = this._options.layer._segmentShapes[this._options.segment._id]
+  console.log("segmentShape",segmentShape)
+  if(!segmentShape) return;
+  
+  let startMarker = segmentShape.getStartMarker();
+  let endMarker = segmentShape.getEndMarker();
   let caption = startMarker._group.children[3];
   if (caption) caption.setWidth(endMarker.getX() - startMarker.getX() - 30);
   this._options.layer.draw();
