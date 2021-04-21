@@ -24,7 +24,7 @@ function VideoPlayer({ playbackSpeed }) {
   const subtitles = useSelector((state) => state.data.subtitles);
   const seekingTime = useSelector((state) => state.media.seekingTime);
 
-  useHotkeys("space", () => (isPlaying.current ? player.current.pause() : player.current.play()));
+  useHotkeys("ctrl+space", () => (isPlaying.current ? player.current.pause() : player.current.play()),{enableOnTags:["TEXTAREA"]});
 
   useEffect(() => {
     player.current.subscribeToStateChange((state) => {

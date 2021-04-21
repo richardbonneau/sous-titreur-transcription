@@ -18,11 +18,9 @@ const VideoController = styled.div`
   display: flex;
   width: 100%;
   padding: 1em 0;
-  /* align-items: center; */
 
-  /* flex-direction: column; */
-  overflow-y: scroll;
-  /* height: calc(100vh - 38em); */
+  flex-wrap: wrap;
+
   justify-content: space-around;
 `;
 const Controls = styled.div`
@@ -32,10 +30,9 @@ const Controls = styled.div`
 `;
 const Shortcuts = styled.div`
   display: flex;
-  /* flex-direction: column; */
+
   padding: 1em;
-  overflow-y: scroll;
-  /* height: calc(100vh - 38em); */
+
   justify-content: space-around;
   .shortcut-label {
     font-size: 10px;
@@ -51,8 +48,8 @@ const Shortcuts = styled.div`
 function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [verticalZoomSlider, setVerticalZoomSlider] = useState(1);
-  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
+  const [verticalZoomSlider, setVerticalZoomSlider] = useState(4);
+  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(4);
   const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
   const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);
@@ -109,9 +106,9 @@ function VideoSection() {
           <Label>
             Zoom Vertical
             <Slider
-              min={1}
-              max={5}
-              labelStepSize={1}
+              min={0}
+              max={4}
+              labelValues={[]}
               stepSize={1}
               onRelease={(newValue) => dispatch(verticalZoom(newValue + 1))}
               onChange={(newValue) => setVerticalZoomSlider(newValue)}
@@ -123,7 +120,7 @@ function VideoSection() {
             <Slider
               min={0}
               max={4}
-              labelStepSize={1}
+              labelValues={[]}
               stepSize={1}
               onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
               onChange={(newValue) => setHorizontalZoomSlider(newValue)}
@@ -135,7 +132,7 @@ function VideoSection() {
           <div>
             {" "}
             <div className="shortcut-label">Jouer/Pauser la vidéo</div>
-            <div className="shortcut-key">Espace</div>
+            <div className="shortcut-key">CTRL + Espace</div>
           </div>
 
           <div>
