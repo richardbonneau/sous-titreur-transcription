@@ -22,6 +22,15 @@ const VideoController = styled.div`
   flex-wrap: wrap;
 
   justify-content: space-around;
+
+  input{
+    margin-top: 6px;
+  }
+
+  .bp3-label{
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 `;
 const Controls = styled.div`
   display: flex;
@@ -48,8 +57,8 @@ const Shortcuts = styled.div`
 function VideoSection() {
   const dispatch = useDispatch();
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [verticalZoomSlider, setVerticalZoomSlider] = useState(4);
-  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(4);
+  const [verticalZoomSlider, setVerticalZoomSlider] = useState(0);
+  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
   const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
   const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);

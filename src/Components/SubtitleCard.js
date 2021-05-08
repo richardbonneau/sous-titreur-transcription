@@ -157,7 +157,7 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
 
   return (
     <Container ref={scrollTo}>
-      <Card elevation={Elevation.ONE}>
+      <Card elevation={Elevation.ONE} style={currentlySelected === subIndex?{border:"2px solid black"}:{}}>
         
         <TimeContainer>
           <SubtitleNumber

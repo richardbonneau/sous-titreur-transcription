@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { requestData, receiveData } from "./_Redux/Actions/data";
 import "./App.css";
 import styled from "styled-components";
@@ -33,17 +33,11 @@ function App() {
         "Content-Type": "application/json",
       },
       method: "post",
-
-
-      // court
-      // body: JSON.stringify({ ident: "606def0995049815127141_6607" }),
-      // long
       body: JSON.stringify({ ident: "606ca3a09e5c2079835619_6551" }),
-      
     })
       .then((res) => res.json())
       .then((body) => {
-        dispatch(receiveData(body.data));
+        dispatch(receiveData({ ...body.data, ident: "606ca3a09e5c2079835619_6551" }));
       });
   }, []);
 

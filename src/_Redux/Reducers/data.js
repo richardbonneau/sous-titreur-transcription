@@ -13,6 +13,7 @@ import {
 export default (
   state = {
     isFetching: false,
+    ident:"",
     peaksUrl: null,
     videoUrl: null,
     subtitles: [],
@@ -35,6 +36,7 @@ export default (
         peaksUrl: action.data.waveform,
         videoUrl: action.data.videolink,
         subtitles: action.data.subtitles,
+        ident: action.data.ident
       };
     case MODIFY_SINGLE_CAPTION: {
       let newSubtitles = [...state.subtitles];
