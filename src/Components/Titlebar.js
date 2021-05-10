@@ -30,31 +30,16 @@ function Titlebar() {
   const identifiant = useSelector((state) => state.data.ident);
   const subtitles = useSelector((state) => state.data.subtitles);
 
-  const toUnicode = (str) => {
-    return str
-      .split("")
-      .map(function (value, index, array) {
-        var temp = value.charCodeAt(0).toString(16).toUpperCase();
-        if (temp.length > 2) {
-          return "\\u" + temp;
-        }
-        return value;
-      })
-      .join("");
-  };
-
   const sendSubtitlesToAPI = () => {
-    console.log({ ident: identifiant, subtitles });
-    console.log(toUnicode("ok é"));
-    // fetch("https://api.soustitreur.com/customer/save-srt", {
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   method: "post",
-    //   body: JSON.stringify(),
+    fetch("https://api.soustitreur.com/customer/save-srt", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify({ ident: identifiant, subtitles }),
 
-    // })
+    })
   };
 
   return (

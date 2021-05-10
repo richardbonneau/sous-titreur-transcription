@@ -176,16 +176,16 @@ function Waveform() {
       height: 150,
     };
 
-    Peaks.init(options, (err, initalizedPeaks) => {
+    Peaks.init(options, (err, initializedPeaks) => {
       if (err) console.error("err", err);
-      peaks.current = initalizedPeaks;
+      peaks.current = initializedPeaks;
 
-      initalizedPeaks.options.createSegmentMarker = createSegmentMarker;
+      initializedPeaks.options.createSegmentMarker = createSegmentMarker;
 
-      initalizedPeaks.on("segments.enter", playheadEntersSegment);
-      initalizedPeaks.on("segments.dragend", segmentsDragEnd);
-      // initalizedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
-      // initalizedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
+      initializedPeaks.on("segments.enter", playheadEntersSegment);
+      initializedPeaks.on("segments.dragend", segmentsDragEnd);
+      // initializedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
+      // initializedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
 
       createSegmentsFromSubtitles();
       setPeaksReady(true);
