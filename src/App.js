@@ -26,6 +26,10 @@ const TopSections = styled.div`
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
+    const splittedUrl = window.location.href.split("/")
+    const ident = splittedUrl[splittedUrl.length-1]
+    console.log("ident: ",ident)
+    //606ca3a09e5c2079835619_6551
     dispatch(requestData());
     fetch("https://api.soustitreur.com/customer/get-srt", {
       headers: {
@@ -33,11 +37,11 @@ function App() {
         "Content-Type": "application/json",
       },
       method: "post",
-      body: JSON.stringify({ ident: "606ca3a09e5c2079835619_6551" }),
+      body: JSON.stringify({ ident }),
     })
       .then((res) => res.json())
       .then((body) => {
-        dispatch(receiveData({ ...body.data, ident: "606ca3a09e5c2079835619_6551" }));
+        dispatch(receiveData({ ...body.data,ident }));
       });
   }, []);
 

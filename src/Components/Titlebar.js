@@ -16,16 +16,6 @@ const Container = styled.div`
   }
 `;
 
-// post data => exemple : {"ident": "604a7d13cb7cd089704016_5494","subtitles": [{
-//             "start": 0.403,
-//             "end": 1.153,
-//             "lines": ["Bonjour \u00e0 toi."]
-//         }, {
-//             "start": 1.399,
-//             "end": 4.497,
-//             "lines": ["Tu es une femme active mais tu es\u00a0", "peut-\u00eatre aussi en cong\u00e9 maternit\u00e9,"]
-//         }]}
-
 function Titlebar() {
   const identifiant = useSelector((state) => state.data.ident);
   const subtitles = useSelector((state) => state.data.subtitles);
@@ -38,8 +28,11 @@ function Titlebar() {
       },
       method: "post",
       body: JSON.stringify({ ident: identifiant, subtitles }),
-
     })
+      .then((res) => res.json())
+      .then((body) => {
+        console.log(body);
+      });
   };
 
   return (
