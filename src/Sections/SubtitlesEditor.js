@@ -10,6 +10,7 @@ const Container = styled.div`
   min-width: 700px;
   height: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
   flex: 1;
 `;
 const DialogContent = styled.div`

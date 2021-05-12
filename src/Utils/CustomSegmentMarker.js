@@ -189,7 +189,7 @@ function defineBounds(self, group) {
 DefaultSegmentMarker.prototype.resizeCaption = function () {
   
   const segmentShape = this._options.layer._segmentShapes[this._options.segment._id]
-  console.log("segmentShape",segmentShape)
+
   if(!segmentShape) return;
   
   let startMarker = segmentShape.getStartMarker();

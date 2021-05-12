@@ -41,6 +41,7 @@ function App() {
     })
       .then((res) => res.json())
       .then((body) => {
+        console.log("body",body)
         dispatch(receiveData({ ...body.data,ident }));
       });
   }, []);

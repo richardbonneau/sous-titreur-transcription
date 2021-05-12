@@ -19,7 +19,8 @@ export default (
     subtitles: [],
     vttFile: null,
     currentlySelected: null,
-    currentTime:0
+    currentTime:0,
+    waveformData:[]
   },
   action
 ) => {
@@ -36,7 +37,8 @@ export default (
         peaksUrl: action.data.waveform,
         videoUrl: action.data.videolink,
         subtitles: action.data.subtitles,
-        ident: action.data.ident
+        ident: action.data.ident,
+        waveformData: action.data.waveformobj
       };
     case MODIFY_SINGLE_CAPTION: {
       let newSubtitles = [...state.subtitles];
