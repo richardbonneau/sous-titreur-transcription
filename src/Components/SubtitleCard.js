@@ -157,14 +157,14 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
 
   return (
     <Container ref={scrollTo}>
-      <Card elevation={Elevation.ONE} style={currentlySelected === subIndex?{border:"2px solid black"}:{}}>
+      <Card elevation={Elevation.ONE} style={currentlySelected === subIndex?{border:"2px solid black"}:{}}     onClick={() => {
+              dispatch(selectSub(subIndex));
+              dispatch(seeking(subData.start));
+            }}>
         
         <TimeContainer>
           <SubtitleNumber
-            onClick={() => {
-              dispatch(selectSub(subIndex));
-              dispatch(seeking(subData.start));
-            }}
+        
           >
             {subIndex + 1}
           </SubtitleNumber>

@@ -61,7 +61,7 @@ function VideoPlayer({ playbackSpeed }) {
   }, [playbackSpeed]);
   return (
     <Container>
-      <Player ref={player}>
+      <Player ref={player} aspectRatio="16:9">
         <source src={videoUrl} />
         <ControlBar></ControlBar>
       </Player>
