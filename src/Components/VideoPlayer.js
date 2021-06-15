@@ -9,10 +9,7 @@ import styled from "styled-components";
 const Container = styled.div`
   max-width: 600px;
   padding: 0 1em;
-
   width: 100%;
-  @media (min-width: 1040px) {
-  }
 `;
 
 function VideoPlayer({ playbackSpeed }) {
@@ -20,8 +17,8 @@ function VideoPlayer({ playbackSpeed }) {
   const player = useRef();
   const isPlaying = useRef();
 
-  const videoUrl = useSelector((state) => state.data.videoUrl);
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const videoUrl = useSelector((state) => state.data.present.videoUrl);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
   const seekingTime = useSelector((state) => state.media.seekingTime);
 
   useHotkeys("ctrl+space", () => (isPlaying.current ? player.current.pause() : player.current.play()),{enableOnTags:["TEXTAREA"]});

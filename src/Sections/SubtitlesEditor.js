@@ -27,7 +27,7 @@ function SubtitlesEditor() {
   const dispatch = useDispatch();
   const [deleteSubDialog, setDeleteSubDialog] = useState(false);
   const [subtitleToDelete, setSubtitleToDelete] = useState(null);
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
 
   const openDeleteCaptionDialog = (subIndex) => {
     setSubtitleToDelete(subIndex);

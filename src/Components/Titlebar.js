@@ -17,8 +17,8 @@ const Container = styled.div`
 `;
 
 function Titlebar() {
-  const identifiant = useSelector((state) => state.data.ident);
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const identifiant = useSelector((state) => state.data.present.ident);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
 
   const sendSubtitlesToAPI = () => {
     fetch("https://api.soustitreur.com/customer/save-srt", {

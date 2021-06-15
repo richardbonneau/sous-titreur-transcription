@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState,useEffect } from "react";
+import { ActionCreators } from 'redux-undo';
 import styled from "styled-components";
 import VideoPlayer from "../Components/VideoPlayer";
 import { Label, Slider, Dialog, Button } from "@blueprintjs/core";
@@ -30,6 +30,13 @@ const VideoController = styled.div`
   .bp3-label{
     margin-left: 5px;
     margin-right: 5px;
+  }
+  .undo-redo {
+    display:flex;
+    flex-direction:column;
+    button{
+      margin-top: 5px;
+    }
   }
 `;
 const Controls = styled.div`
@@ -62,8 +69,12 @@ function VideoSection() {
   const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
   const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
+  const test = useSelector(state=>console.log(state))
 
+  useEffect(()=>{
+    dispatch(ActionCreators.clearHistory());
+  },[])
   const startSearch = () => {
     let foundIndex;
     subtitles.forEach((sub, i) => {
@@ -85,6 +96,11 @@ function VideoSection() {
       <VideoPlayer playbackSpeed={playbackSpeed} />
       <Controls>
         <VideoController>
+          <Label className="undo-redo">Défaire<Button icon="undo" onClick={()=>{
+            console.log("undo aweille")
+            dispatch(ActionCreators.undo())
+          }} /></Label>
+          <Label className="undo-redo">Refaire<Button icon="redo" onClick={()=>dispatch(ActionCreators.redo())} /></Label>
           <Label>
             Vitesse
             <div class="bp3-select .modifier">

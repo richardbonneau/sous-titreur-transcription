@@ -45,11 +45,11 @@ function Waveform() {
 
   const [peaksReady, setPeaksReady] = useState(false);
 
-  const peaksUrl = useSelector((state) => state.data.peaksUrl);
+  const peaksUrl = useSelector((state) => state.data.present.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
   const horizontalZoom = useSelector((state) => state.media.horizontalZoom);
-  const currentlySelected = useSelector((state) => state.data.currentlySelected);
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const currentlySelected = useSelector((state) => state.data.present.currentlySelected);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
 
   const peaks = useRef();
   const zoomviewWaveformRef = useRef();

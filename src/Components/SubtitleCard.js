@@ -16,13 +16,13 @@ const Container = styled.div`
     display: flex;
     margin: 5px;
   }
-  .bp3-icon-trash{
+  .bp3-icon-trash {
     width: 3em;
     display: flex;
     justify-content: center;
     cursor: pointer;
     margin: -2em -2em 0 0;
-    padding:1em;
+    padding: 1em;
     height: 45px;
   }
 `;
@@ -73,9 +73,9 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
   const [subtitleText, setSubtitleText] = useState("");
   const [charactersPerLine, setCharactersPerLine] = useState([]);
 
-  const subtitles = useSelector((state) => state.data.subtitles);
+  const subtitles = useSelector((state) => state.data.present.subtitles);
 
-  const currentlySelected = useSelector((state) => state.data.currentlySelected);
+  const currentlySelected = useSelector((state) => state.data.present.currentlySelected);
 
   useEffect(
     function incomingSubtitles() {
@@ -107,10 +107,8 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
     const minStart = subIndex > 0 ? subtitles[subIndex - 1].end : 0;
     const maxEnd = subIndex < subtitles.length - 1 ? subtitles[subIndex + 1].start : 9999;
 
-
-
     let newStartTime;
- 
+
     if (startInput > minStart && startInput < subData.end) newStartTime = startInput;
     else if (startInput > subData.end) newStartTime = subData.end;
     else newStartTime = minStart;
@@ -157,17 +155,16 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
 
   return (
     <Container ref={scrollTo}>
-      <Card elevation={Elevation.ONE} style={currentlySelected === subIndex?{border:"2px solid black"}:{}}     onClick={() => {
-              dispatch(selectSub(subIndex));
-              dispatch(seeking(subData.start));
-            }}>
-        
+      <Card
+        elevation={Elevation.ONE}
+        style={currentlySelected === subIndex ? { border: "2px solid black" } : {}}
+        onClick={() => {
+          dispatch(selectSub(subIndex));
+          dispatch(seeking(subData.start+0.0001));
+        }}
+      >
         <TimeContainer>
-          <SubtitleNumber
-        
-          >
-            {subIndex + 1}
-          </SubtitleNumber>
+          <SubtitleNumber>{subIndex + 1}</SubtitleNumber>
           <div className="subtime">
             <Icon icon={"double-chevron-right"} />
             <input
@@ -198,11 +195,11 @@ function SubtitleCard({ subIndex, subData, openDeleteCaptionDialog }) {
           />
         </InputContainer>
         <CharactersContainer>
-          {charactersPerLine.map((num,i) => (
-            <div key={"char"+i}>{num}</div>
+          {charactersPerLine.map((num, i) => (
+            <div key={"char" + i}>{num}</div>
           ))}
         </CharactersContainer>
-        <Icon icon="trash" onClick={()=>openDeleteCaptionDialog(subIndex)} />
+        <Icon icon="trash" onClick={() => openDeleteCaptionDialog(subIndex)} />
       </Card>
     </Container>
   );
