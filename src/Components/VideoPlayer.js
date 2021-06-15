@@ -3,13 +3,15 @@ import { Player, ControlBar } from "video-react";
 import { useSelector, useDispatch } from "react-redux";
 import { currentTime } from "../_Redux/Actions";
 import { useHotkeys } from "react-hotkeys-hook";
-
 import styled from "styled-components";
 
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 400px;
   padding: 0 1em;
   width: 100%;
+  @media (min-width: 1000px) {
+    max-width: 600px;
+  }
 `;
 
 function VideoPlayer({ playbackSpeed }) {

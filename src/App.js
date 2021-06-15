@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { requestData, receiveData } from "./_Redux/Actions/data";
+import { requestData, receiveData, seeking } from "./_Redux/Actions";
 import "./App.css";
 import styled from "styled-components";
 import SubtitlesEditor from "./Sections/SubtitlesEditor";
@@ -9,8 +9,7 @@ import Titlebar from "./Components/Titlebar";
 import VideoSection from "./Sections/VideoSection";
 
 const Container = styled.div`
-  @media (min-width: 1040px) {
-  }
+  
 `;
 const TopSections = styled.div`
   display: flex;
@@ -43,6 +42,11 @@ function App() {
       .then((body) => {
         console.log("body",body)
         dispatch(receiveData({ ...body.data,ident }));
+        if(window.location.href.includes("&time=")){
+          const splittedUrl = window.location.href.split("&time=");
+          const time = Number(splittedUrl[1])
+          dispatch(seeking(time));
+        }
       });
   }, []);
 

@@ -7,7 +7,7 @@ import { deleteCaption } from "../_Redux/Actions";
 
 const Container = styled.div`
   width: 100%;
-  min-width: 700px;
+  min-width: 600px;
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;

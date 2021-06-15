@@ -74,7 +74,8 @@ function VideoSection() {
 
   useEffect(()=>{
     dispatch(ActionCreators.clearHistory());
-  },[])
+  },[]);
+
   const startSearch = () => {
     let foundIndex;
     subtitles.forEach((sub, i) => {
