@@ -9,7 +9,7 @@ const Container = styled.div`
   max-width: 400px;
   padding: 0 1em;
   width: 100%;
-  @media (min-width: 1000px) {
+  @media (min-width: 1300px) {
     max-width: 600px;
   }
 `;

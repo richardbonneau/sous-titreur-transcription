@@ -13,6 +13,7 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   flex: 1;
+  overflow-y: scroll;
 `;
 const VideoController = styled.div`
   display: flex;
@@ -38,6 +39,9 @@ const VideoController = styled.div`
       margin-top: 5px;
     }
   }
+  .searchbox { 
+    max-width: 120px;
+  }
 `;
 const Controls = styled.div`
   display: flex;
@@ -46,10 +50,17 @@ const Controls = styled.div`
 `;
 const Shortcuts = styled.div`
   display: flex;
-
+  flex-wrap: wrap;
   padding: 1em;
-
   justify-content: space-around;
+
+  .bp3-slider {
+    max-width: 90px;
+    min-width:0;
+  }
+  .shortcut-container {
+    padding: 0 15px;
+  }
   .shortcut-label {
     font-size: 10px;
     border-bottom: 1px solid black;
@@ -119,6 +130,7 @@ function VideoSection() {
               Recherche
               <div />
               <input
+              className="searchbox"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -155,15 +167,35 @@ function VideoSection() {
           </Label>
         </VideoController>
         <Shortcuts>
-          <div>
+          <div className="shortcut-container">
             {" "}
-            <div className="shortcut-label">Jouer/Pauser la vidéo</div>
-            <div className="shortcut-key">CTRL + Espace</div>
+            <div className="shortcut-label">Jouer/Pause</div>
+            <div className="shortcut-key">CTRL+Espace</div>
           </div>
 
-          <div>
-            <div className="shortcut-label">Bouger la chronologie globale de gauche à droite</div>
-            <div className="shortcut-key">Flèches gauche et droite</div>
+          <div className="shortcut-container">
+            <div className="shortcut-label">Bouger la chronologie</div>
+            <div className="shortcut-key">← →</div>
+          </div>
+
+          <div className="shortcut-container">
+            <div className="shortcut-label">Défaire</div>
+            <div className="shortcut-key">CTRL+Z</div>
+          </div>
+
+          <div className="shortcut-container">
+            <div className="shortcut-label">Refaire</div>
+            <div className="shortcut-key">CTRL+SHIFT+Z</div>
+          </div>
+
+          <div className="shortcut-container">
+            <div className="shortcut-label">Nouveau Sous-titre</div>
+            <div className="shortcut-key">Enter</div>
+          </div>
+
+          <div className="shortcut-container">
+            <div className="shortcut-label">Retour de ligne</div>
+            <div className="shortcut-key">SHIFT+Enter</div>
           </div>
         </Shortcuts>
       </Controls>

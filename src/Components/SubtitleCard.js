@@ -15,13 +15,14 @@ const Container = styled.div`
   .bp3-card {
     display: flex;
     margin: 5px;
+    padding: 5px 20px;
   }
   .bp3-icon-trash {
     width: 3em;
     display: flex;
     justify-content: center;
     cursor: pointer;
-    margin: -2em -2em 0 0;
+    margin: -1em -2em 0 0;
     padding: 1em;
     height: 45px;
   }
