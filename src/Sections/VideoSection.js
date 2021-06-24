@@ -83,7 +83,6 @@ function VideoSection() {
   const [search, setSearch] = useState("");
   const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);
   const subtitles = useSelector((state) => state.data.present.subtitles);
-  const test = useSelector(state=>console.log(state))
 
   useEffect(()=>{
     dispatch(ActionCreators.clearHistory());

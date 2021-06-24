@@ -24,7 +24,6 @@ export default (
   },
   action
 ) => {
-  console.log("action.type",action.type)
   switch (action.type) {
     case DATA_REQUEST:
       return {

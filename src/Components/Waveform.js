@@ -183,6 +183,7 @@ function Waveform() {
       initializedPeaks.options.createSegmentMarker = createSegmentMarker;
 
       initializedPeaks.on("segments.enter", playheadEntersSegment);
+      // initializedPeaks.on("segments.dragged", (a,b,c)=>console.log("a",a,"b",b,"c",c));
       initializedPeaks.on("segments.dragend", segmentsDragEnd);
       // initializedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
       // initializedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));

@@ -1,11 +1,9 @@
 function DefaultSegmentMarker(options) {
-
   options.draggable = true;
   this._options = options;
 }
 
 DefaultSegmentMarker.prototype.init = function (group) {
-
   var handleWidth = 15;
   var handleHeight = 30;
   var handleX = this._options.startMarker ? 0 : -handleWidth; // Place in the middle of the marker
@@ -122,7 +120,6 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
   setTimeout(() => {
     self.resizeCaption();
     defineBounds(self, group);
-    // defineMouseOver(self)
   }, 50);
 };
 
@@ -132,14 +129,13 @@ DefaultSegmentMarker.prototype.bindEventHandlers = function (group) {
 //   segmentShape._onMouseEnter = segmentShapeOnMouseEnter
 // }
 
-
 function newDragBoundFunc(self) {
   return function (pos) {
     self.resizeCaption();
-    let startMarker = self._options.layer._segmentShapes[
-      self._options.segment._id
-    ].getStartMarker();
-    let endMarker = self._options.layer._segmentShapes[self._options.segment._id].getEndMarker();
+    let segment = self._options.layer._segmentShapes[self._options.segment._id];
+    let startMarker = segment.getStartMarker();
+    let endMarker = segment.getEndMarker();
+    console.log(startMarker)
 
     let rightNeighbour = self._options.layer._segmentShapes[self._options.segment._id + 1];
 
@@ -187,11 +183,10 @@ function defineBounds(self, group) {
 }
 
 DefaultSegmentMarker.prototype.resizeCaption = function () {
-  
-  const segmentShape = this._options.layer._segmentShapes[this._options.segment._id]
+  const segmentShape = this._options.layer._segmentShapes[this._options.segment._id];
 
-  if(!segmentShape) return;
-  
+  if (!segmentShape) return;
+
   let startMarker = segmentShape.getStartMarker();
   let endMarker = segmentShape.getEndMarker();
   let caption = startMarker._group.children[3];
@@ -203,7 +198,7 @@ DefaultSegmentMarker.prototype.fitToView = function () {
   var height = this._options.layer.getHeight();
 
   this._label.y(height / 2 - 5);
-  this._handle.y(height / 2 - 10.5);
+  this._handle.y(height / 2 + 45);
 
   this._line.points([0.5, 0, 0.5, height]);
 };
