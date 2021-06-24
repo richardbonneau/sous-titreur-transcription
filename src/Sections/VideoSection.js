@@ -5,6 +5,7 @@ import VideoPlayer from "../Components/VideoPlayer";
 import { Label, Slider, Dialog, Button } from "@blueprintjs/core";
 import { useSelector, useDispatch } from "react-redux";
 import { selectSub, verticalZoom, horizontalZoom } from "../_Redux/Actions";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const Container = styled.div`
   display: flex;
@@ -19,18 +20,16 @@ const VideoController = styled.div`
   display: flex;
   width: 100%;
   padding: 1em 0;
-
   flex-wrap: wrap;
-
-  justify-content: space-around;
+  justify-content: center;
 
   input{
     margin-top: 6px;
   }
 
   .bp3-label{
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
   .undo-redo {
     display:flex;
@@ -52,7 +51,7 @@ const Shortcuts = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 1em;
-  justify-content: space-around;
+  justify-content: center;
 
   .bp3-slider {
     max-width: 90px;
@@ -65,6 +64,8 @@ const Shortcuts = styled.div`
     font-size: 10px;
     border-bottom: 1px solid black;
     text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
   }
   .shortcut-key {
     margin-bottom: 1em;
@@ -74,6 +75,7 @@ const Shortcuts = styled.div`
 
 function VideoSection() {
   const dispatch = useDispatch();
+  const [OS,setOS] = useState("Win");
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [verticalZoomSlider, setVerticalZoomSlider] = useState(0);
   const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
@@ -85,6 +87,7 @@ function VideoSection() {
 
   useEffect(()=>{
     dispatch(ActionCreators.clearHistory());
+    if(window.navigator.appVersion.indexOf('Mac') !== -1) setOS("Mac");
   },[]);
 
   const startSearch = () => {
@@ -103,13 +106,31 @@ function VideoSection() {
     dispatch(selectSub(foundIndex));
   };
 
+
+useHotkeys("ctrl+z", (e) => {
+  e.preventDefault();
+  dispatch(ActionCreators.undo())
+});
+useHotkeys("ctrl+shift+z", (e) => {
+  e.preventDefault();
+  dispatch(ActionCreators.redo())
+});
+
+useHotkeys("cmd+z", (e) => {
+  e.preventDefault();
+  dispatch(ActionCreators.undo())
+});
+useHotkeys("cmd+shift+z", (e) => {
+  e.preventDefault();
+  dispatch(ActionCreators.redo())
+});
+
   return (
     <Container>
       <VideoPlayer playbackSpeed={playbackSpeed} />
       <Controls>
         <VideoController>
           <Label className="undo-redo">Défaire<Button icon="undo" onClick={()=>{
-            console.log("undo aweille")
             dispatch(ActionCreators.undo())
           }} /></Label>
           <Label className="undo-redo">Refaire<Button icon="redo" onClick={()=>dispatch(ActionCreators.redo())} /></Label>
@@ -170,7 +191,7 @@ function VideoSection() {
           <div className="shortcut-container">
             {" "}
             <div className="shortcut-label">Jouer/Pause</div>
-            <div className="shortcut-key">CTRL+Espace</div>
+            <div className="shortcut-key">{OS==="Win"?"CTRL+Espace":"CMD+Espace"}</div>
           </div>
 
           <div className="shortcut-container">
@@ -180,12 +201,12 @@ function VideoSection() {
 
           <div className="shortcut-container">
             <div className="shortcut-label">Défaire</div>
-            <div className="shortcut-key">CTRL+Z</div>
+            <div className="shortcut-key">{OS==="Win"?"CTRL+Z":"CMD+Z"}</div>
           </div>
 
           <div className="shortcut-container">
             <div className="shortcut-label">Refaire</div>
-            <div className="shortcut-key">CTRL+SHIFT+Z</div>
+            <div className="shortcut-key">{OS==="Win"?"CTRL+SHIFT+Z":"CMD+SHIFT+Z"}</div>
           </div>
 
           <div className="shortcut-container">
