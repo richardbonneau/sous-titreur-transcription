@@ -44,6 +44,7 @@ function Waveform() {
   const dispatch = useDispatch();
 
   const [peaksReady, setPeaksReady] = useState(false);
+  
 
   const peaksUrl = useSelector((state) => state.data.present.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
@@ -52,12 +53,13 @@ function Waveform() {
   const subtitles = useSelector((state) => state.data.present.subtitles);
 
   const peaks = useRef();
+  const draggedMarkerId = useRef();
+  const currentMagnetTime = useRef();
   const zoomviewWaveformRef = useRef();
   const overviewWaveformRef = useRef();
   const audioElementRef = useRef();
   const subtitlesRef = useRef();
   const currentlySelectedRef = useRef();
-
 
   useEffect(
     function initPeaksJs() {
@@ -81,7 +83,7 @@ function Waveform() {
       if (peaks.current) {
         peaks.current.zoom.setZoom(horizontalZoom);
         peaks.current.segments.removeAll();
-        createSegmentsFromSubtitles()
+        createSegmentsFromSubtitles();
       }
     },
     [horizontalZoom]
@@ -103,6 +105,7 @@ function Waveform() {
 
   useEffect(
     function syncSegmentsWithSubtitles() {
+
       if (peaks.current) {
         let allSegments = peaks.current.segments.getSegments();
 
@@ -110,7 +113,6 @@ function Waveform() {
           createSegmentsFromSubtitles();
         } else {
           subtitles.forEach((sub, i) => {
-     
             let toUpgrade = null;
             if (sub.start !== allSegments[i].startTime) toUpgrade = { startTime: sub.start };
             else if (sub.end !== allSegments[i].endTime) toUpgrade = { endTime: sub.end };
@@ -120,9 +122,6 @@ function Waveform() {
 
             if (toUpgrade) {
               allSegments[i].update(toUpgrade);
-
-              
-
             }
           });
         }
@@ -149,8 +148,6 @@ function Waveform() {
     );
   };
 
-
-
   const initPeaks = () => {
     audioElementRef.current = document.querySelector(".video-react-video");
 
@@ -171,7 +168,7 @@ function Waveform() {
       segmentColor: "#f8f8f8",
       segmentStartMarkerColor: "#00ff11",
       segmentEndMarkerColor: "#ff0000",
-      overviewHighlightColor: 'blue',
+      overviewHighlightColor: "blue",
       emitCueEvents: true,
       height: 150,
     };
@@ -183,14 +180,51 @@ function Waveform() {
       initializedPeaks.options.createSegmentMarker = createSegmentMarker;
 
       initializedPeaks.on("segments.enter", playheadEntersSegment);
-      // initializedPeaks.on("segments.dragged", (a,b,c)=>console.log("a",a,"b",b,"c",c));
+      initializedPeaks.on("segments.dragged", segmentsDragged);
       initializedPeaks.on("segments.dragend", segmentsDragEnd);
       // initializedPeaks.on("segments.mouseenter", (seg) => mouseOverSegment(seg, true));
       // initializedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
 
       createSegmentsFromSubtitles();
+      
       setPeaksReady(true);
     });
+  };
+
+  const segmentsDragged = (segment, isStartMarker) => {
+    if(draggedMarkerId.current !== segment.id){
+      draggedMarkerId.current = segment.id;
+    }
+    const startMagnetSpots = [5,10,15];
+    const endMagnetSpots = [3,8,12];
+    let didMagnetize = false;
+
+    let magnetSpots = [];
+    let time = 0;
+
+    if (isStartMarker) {
+      magnetSpots = startMagnetSpots;
+      time = segment.startTime;
+    } else {
+      magnetSpots = endMagnetSpots;
+      time = segment.endTime;
+    }
+
+      magnetSpots.forEach(magnetSpot=>{
+
+        if (
+          (time < magnetSpot && time > magnetSpot - 0.2) ||
+          (time > magnetSpot && time < magnetSpot + 0.2)
+        ) {
+          didMagnetize = true;
+          peaks.current.points.add({ time: magnetSpot, labelText: "", color: "#666"});
+          currentMagnetTime.current = magnetSpot
+        }
+      });
+
+      if(!didMagnetize) {
+        peaks.current.points.removeAll();
+      }
   };
 
   const segmentsDragEnd = (seg, isStartMarker) => {
@@ -223,7 +257,18 @@ function Waveform() {
     newSubtitle.end = seg.endTime;
     modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
 
+    // Magnet
+    if(currentMagnetTime.current){
+      let newSubtitle = { ...subtitlesRef.current[draggedMarkerId.current] };
+      newSubtitle.start = currentMagnetTime.current
+      modifiedSubtitles.push({ newCaption: newSubtitle, index: draggedMarkerId.current });
+      
+    }
+    peaks.current.points.removeAll();
+    currentMagnetTime.current = null;
     dispatch(modifyMultipleCaption(modifiedSubtitles));
+
+
   };
 
   const playheadEntersSegment = (segment) => {

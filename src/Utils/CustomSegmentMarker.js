@@ -135,7 +135,6 @@ function newDragBoundFunc(self) {
     let segment = self._options.layer._segmentShapes[self._options.segment._id];
     let startMarker = segment.getStartMarker();
     let endMarker = segment.getEndMarker();
-    console.log(startMarker)
 
     let rightNeighbour = self._options.layer._segmentShapes[self._options.segment._id + 1];
 
