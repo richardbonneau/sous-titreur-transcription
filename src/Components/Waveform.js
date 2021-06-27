@@ -44,7 +44,6 @@ function Waveform() {
   const dispatch = useDispatch();
 
   const [peaksReady, setPeaksReady] = useState(false);
-  
 
   const peaksUrl = useSelector((state) => state.data.present.peaksUrl);
   const verticalZoom = useSelector((state) => state.media.verticalZoom);
@@ -53,7 +52,6 @@ function Waveform() {
   const subtitles = useSelector((state) => state.data.present.subtitles);
 
   const peaks = useRef();
-  const draggedMarkerId = useRef();
   const currentMagnetTime = useRef();
   const zoomviewWaveformRef = useRef();
   const overviewWaveformRef = useRef();
@@ -105,7 +103,6 @@ function Waveform() {
 
   useEffect(
     function syncSegmentsWithSubtitles() {
-
       if (peaks.current) {
         let allSegments = peaks.current.segments.getSegments();
 
@@ -186,17 +183,14 @@ function Waveform() {
       // initializedPeaks.on("segments.mouseleave", (seg) => mouseOverSegment(seg, false));
 
       createSegmentsFromSubtitles();
-      
+
       setPeaksReady(true);
     });
   };
 
   const segmentsDragged = (segment, isStartMarker) => {
-    if(draggedMarkerId.current !== segment.id){
-      draggedMarkerId.current = segment.id;
-    }
-    const startMagnetSpots = [5,10,15];
-    const endMagnetSpots = [3,8,12];
+    const startMagnetSpots = [5, 10, 15];
+    const endMagnetSpots = [3, 8, 12];
     let didMagnetize = false;
 
     let magnetSpots = [];
@@ -209,22 +203,22 @@ function Waveform() {
       magnetSpots = endMagnetSpots;
       time = segment.endTime;
     }
-
-      magnetSpots.forEach(magnetSpot=>{
-
-        if (
-          (time < magnetSpot && time > magnetSpot - 0.2) ||
-          (time > magnetSpot && time < magnetSpot + 0.2)
-        ) {
-          didMagnetize = true;
-          peaks.current.points.add({ time: magnetSpot, labelText: "", color: "#666"});
-          currentMagnetTime.current = magnetSpot
-        }
-      });
-
-      if(!didMagnetize) {
-        peaks.current.points.removeAll();
+    console.log("currentMagnetTime in dragged",currentMagnetTime.current)
+    magnetSpots.forEach((magnetSpot) => {
+      if (
+        (time < magnetSpot && time > magnetSpot - 0.2) ||
+        (time > magnetSpot && time < magnetSpot + 0.2)
+      ) {
+        didMagnetize = true;
+        peaks.current.points.add({ time: magnetSpot, labelText: "", color: "#666" });
+        currentMagnetTime.current = magnetSpot;
       }
+    });
+
+    if (!didMagnetize) {
+      peaks.current.points.removeAll();
+      currentMagnetTime.current = null;
+    }
   };
 
   const segmentsDragEnd = (seg, isStartMarker) => {
@@ -258,17 +252,30 @@ function Waveform() {
     modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
 
     // Magnet
-    if(currentMagnetTime.current){
-      let newSubtitle = { ...subtitlesRef.current[draggedMarkerId.current] };
-      newSubtitle.start = currentMagnetTime.current
-      modifiedSubtitles.push({ newCaption: newSubtitle, index: draggedMarkerId.current });
-      
+    console.log("currentMagnetTime in drag end",currentMagnetTime.current)
+    if (currentMagnetTime.current) {
+      let newSubtitle = { ...subtitlesRef.current[seg.id] };
+      if (isStartMarker) {
+        newSubtitle.start = currentMagnetTime.current;
+        if (neighbour && neighbour.endTime > currentMagnetTime.current) {
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
+          newSubtitle.end = currentMagnetTime.current;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
+        }
+      } else {
+        newSubtitle.end = currentMagnetTime.current;
+        if (neighbour && neighbour.startTime < currentMagnetTime.current) {
+          let newSubtitle = { ...subtitlesRef.current[neighbourIndex] };
+          newSubtitle.start = currentMagnetTime.current;
+          modifiedSubtitles.push({ newCaption: newSubtitle, index: neighbourIndex });
+        }
+      }
+
+      modifiedSubtitles.push({ newCaption: newSubtitle, index: seg.id });
     }
     peaks.current.points.removeAll();
     currentMagnetTime.current = null;
     dispatch(modifyMultipleCaption(modifiedSubtitles));
-
-
   };
 
   const playheadEntersSegment = (segment) => {
