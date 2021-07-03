@@ -1,5 +1,5 @@
 {
-  "name": "sous-titres",
+  "name": "sous-titreur-transcription",
   "proxy": "https://cat-fact.herokuapp.com",
   "version": "0.1.0",
   "private": true,
