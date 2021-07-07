@@ -77,9 +77,6 @@ function VideoSection() {
   const dispatch = useDispatch();
   const [OS,setOS] = useState("Win");
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [verticalZoomSlider, setVerticalZoomSlider] = useState(0);
-  const [horizontalZoomSlider, setHorizontalZoomSlider] = useState(0);
-  const [shortcutListOpened, setShortcutListOpened] = useState(false);
   const [search, setSearch] = useState("");
   const [lastSearchedIndex, setLastSearchedIndex] = useState(-1);
   const subtitles = useSelector((state) => state.data.present.subtitles);
@@ -160,31 +157,6 @@ useHotkeys("cmd+shift+z", (e) => {
               />
             </Label>
           </div>
-
-          <Label>
-            Zoom Vertical
-            <Slider
-              min={0}
-              max={4}
-              labelValues={[]}
-              stepSize={1}
-              onRelease={(newValue) => dispatch(verticalZoom(newValue + 1))}
-              onChange={(newValue) => setVerticalZoomSlider(newValue)}
-              value={verticalZoomSlider}
-            />
-          </Label>
-          <Label>
-            Zoom Horizontal
-            <Slider
-              min={0}
-              max={4}
-              labelValues={[]}
-              stepSize={1}
-              onRelease={(newValue) => dispatch(horizontalZoom(newValue))}
-              onChange={(newValue) => setHorizontalZoomSlider(newValue)}
-              value={horizontalZoomSlider}
-            />
-          </Label>
         </VideoController>
         <Shortcuts>
           <div className="shortcut-container">
@@ -192,12 +164,7 @@ useHotkeys("cmd+shift+z", (e) => {
             <div className="shortcut-label">Jouer/Pause</div>
             <div className="shortcut-key">{OS==="Win"?"CTRL+Espace":"CMD+Espace"}</div>
           </div>
-
-          <div className="shortcut-container">
-            <div className="shortcut-label">Bouger la chronologie</div>
-            <div className="shortcut-key">← →</div>
-          </div>
-
+          
           <div className="shortcut-container">
             <div className="shortcut-label">Défaire</div>
             <div className="shortcut-key">{OS==="Win"?"CTRL+Z":"CMD+Z"}</div>
@@ -208,15 +175,7 @@ useHotkeys("cmd+shift+z", (e) => {
             <div className="shortcut-key">{OS==="Win"?"CTRL+SHIFT+Z":"CMD+SHIFT+Z"}</div>
           </div>
 
-          <div className="shortcut-container">
-            <div className="shortcut-label">Nouveau Sous-titre</div>
-            <div className="shortcut-key">Enter</div>
-          </div>
-
-          <div className="shortcut-container">
-            <div className="shortcut-label">Retour de ligne</div>
-            <div className="shortcut-key">SHIFT+Enter</div>
-          </div>
+         
         </Shortcuts>
       </Controls>
     </Container>

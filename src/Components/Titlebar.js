@@ -70,7 +70,7 @@ function Titlebar() {
     <Container>
       <Navbar>
         <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading>Sous-Titreur</Navbar.Heading>
+          <Navbar.Heading>Sous-Titreur : Transcription</Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Button outlined={true} icon="upload" text="Partager" onClick={shareCurrentTime} />
