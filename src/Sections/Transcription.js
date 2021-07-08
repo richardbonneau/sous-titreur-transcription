@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { MenuDivider, Button, Menu, MenuItem } from "@blueprintjs/core";
+import { Position, Button, Menu, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteCaption } from "../_Redux/Actions";
-import getCaretCoordinates from "textarea-caret-position";
+import getCaretCoordinates from "textarea-caret";
 
 const Container = styled.div`
   width: 100%;
@@ -21,42 +21,74 @@ const Container = styled.div`
     resize: none;
     border: none;
   }
+  .context-menu {
+    position: absolute;
+    z-index: 100;
+    left: ${(props) => props.caretPosition.left};
+    top: ${(props) => props.caretPosition.top};
+  }
 `;
 
 function Transcription() {
   const dispatch = useDispatch();
+  const caretPosition = useRef({ top: 0, left: 0 });
+
+  const [isPopoverOpened, setIsPopoverOpened] = useState(false);
   const [transcriptionText, setTranscriptionText] = useState("");
+  const [contextMenu, setContextMenu] = useState([]);
 
   const frequentMistakes = useSelector((state) => state.data.present.frequentMistakes);
   const frequentlyUsedWords = useSelector((state) => state.data.present.frequentlyUsedWords);
 
   useEffect(() => {
+    const element = document.querySelector("textarea");
     document.querySelector("textarea").addEventListener("input", function () {
-      var coordinates = getCaretCoordinates(document.querySelector("textarea"));
-      console.log(coordinates,document.querySelector("textarea"))
-      // console.log(coordinates.top);
-      // console.log(coordinates.left);
+      var coordinates = getCaretCoordinates(element, element.selectionEnd);
+      console.log(coordinates, document.querySelector("textarea"));
+      caretPosition.current = {
+        top: coordinates.top + "px",
+        left: coordinates.left + "px",
+        height: coordinates.height + "px",
+      };
     });
   }, []);
 
-  const exampleMenu = (
-    <Menu>
-      {frequentlyUsedWords.map((word) => (
-        <MenuItem text={word} />
-      ))}
-    </Menu>
-  );
+  useEffect(() => {
+    const textToArray = transcriptionText.split(" ");
+    const lastWord = textToArray[textToArray.length - 1];
+
+    frequentlyUsedWords.forEach((word) => {
+      const firstTwoCharacters = word.substring(0, 2);
+      if (lastWord.toLowerCase().includes(firstTwoCharacters.toLowerCase()) && lastWord.toLowerCase() !== word.toLowerCase()) {
+        console.log("oi",lastWord.toLowerCase());
+        setContextMenu([word]);
+
+      } 
+    });
+  }, [transcriptionText]);
+
+  const contextOptionClicked = (word) => {
+    const lastIndex = transcriptionText.lastIndexOf(" ");
+    const originalTextWithoutLastWord = transcriptionText.substring(0, lastIndex);
+    setContextMenu([])
+    setTranscriptionText(originalTextWithoutLastWord + " " + word);
+  };
 
   return (
-    <Container>
+    <Container caretPosition={caretPosition.current}>
       <textarea
         type="text"
-        onChange={(e) => setTranscriptionText(e.target.value)}
+        onChange={(e) => {
+          setTranscriptionText(e.target.value);
+        }}
         value={transcriptionText}
       />
-      <Popover2 content={exampleMenu} placement="right-end">
-        <Button icon="share" text="Open in..." />
-      </Popover2>
+
+      <Menu className="context-menu">
+        {contextMenu.map((word) => (
+          <MenuItem text={word} onClick={() => contextOptionClicked(word)} />
+        ))}
+      </Menu>
     </Container>
   );
 }
