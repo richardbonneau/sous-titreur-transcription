@@ -142,41 +142,9 @@ useHotkeys("cmd+shift+z", (e) => {
               </select>
             </div>
           </Label>
-          <div>
-            <Label>
-              Recherche
-              <div />
-              <input
-              className="searchbox"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setLastSearchedIndex(-1);
-                }}
-                onKeyUp={(e) => (e.key === "Enter" ? startSearch() : null)}
-              />
-            </Label>
-          </div>
+
         </VideoController>
-        <Shortcuts>
-          <div className="shortcut-container">
-            {" "}
-            <div className="shortcut-label">Jouer/Pause</div>
-            <div className="shortcut-key">{OS==="Win"?"CTRL+Espace":"CMD+Espace"}</div>
-          </div>
-          
-          <div className="shortcut-container">
-            <div className="shortcut-label">Défaire</div>
-            <div className="shortcut-key">{OS==="Win"?"CTRL+Z":"CMD+Z"}</div>
-          </div>
 
-          <div className="shortcut-container">
-            <div className="shortcut-label">Refaire</div>
-            <div className="shortcut-key">{OS==="Win"?"CTRL+SHIFT+Z":"CMD+SHIFT+Z"}</div>
-          </div>
-
-         
-        </Shortcuts>
       </Controls>
     </Container>
   );

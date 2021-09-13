@@ -15,16 +15,7 @@ export default (
         ...state,
         seekingTime: action.seekingTime,
       };
-    case VERTICAL_ZOOM:
-      return {
-        ...state,
-        verticalZoom: action.newZoom,
-      };
-    case HORIZONTAL_ZOOM:
-      return {
-        ...state,
-        horizontalZoom: action.newZoom,
-      };
+
 
 
     default:

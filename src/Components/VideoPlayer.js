@@ -20,7 +20,6 @@ function VideoPlayer({ playbackSpeed }) {
   const isPlaying = useRef();
 
   const videoUrl = useSelector((state) => state.data.present.videoUrl);
-
   const seekingTime = useSelector((state) => state.media.seekingTime);
 
   useHotkeys("ctrl+space", () => (isPlaying.current ? player.current.pause() : player.current.play()),{enableOnTags:["TEXTAREA"]});
@@ -32,24 +31,6 @@ function VideoPlayer({ playbackSpeed }) {
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (player.current) {
-  //     let videoElement = player.current.video.video;
-
-  //     var i = 0;
-  //     for (let track of videoElement.textTracks) {
-  //       track.mode = "disabled";
-
-  //       i++;
-  //     }
-  //     const track = videoElement.addTextTrack("captions");
-  //     track.mode = "showing";
-  //     subtitles.forEach((sub) => {
-  //       const cueEn = new VTTCue(sub.start, sub.end, sub.lines.join("\n"));
-  //       track.addCue(cueEn);
-  //     });
-  //   }
-  // }, [subtitles]);
 
   useEffect(() => {
     if (seekingTime !== 0) player.current.seek(seekingTime);
@@ -58,6 +39,7 @@ function VideoPlayer({ playbackSpeed }) {
   useEffect(() => {
     player.current.playbackRate = playbackSpeed;
   }, [playbackSpeed]);
+
   return (
     <Container>
       <Player ref={player} aspectRatio="16:9">
